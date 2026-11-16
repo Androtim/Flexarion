@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { STUDIO } from "../data/site";
+---
+
+<BaseLayout
+  title="Contact & Kit Presse — Flexarion Studio (Aix-en-Provence)"
+  description="Contactez Flexarion Studio à Aix-en-Provence : demandes presse, kit média officiel de Veridia 2140 et réseaux sociaux officiels (@flexarion)."
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Contact & Presse", href: "/contact/" },
+  ]}
+>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Relations Presse · Partenaires · Communauté</span>
+      <h1>Contacter Flexarion Studio</h1>
+      <p class="lead">
+        Vous êtes journaliste jeu vidéo, curateur indépendant, créateur de contenu ou partenaire à
+        <strong>Aix-en-Provence</strong> ? Retrouvez ci-dessous nos points de contact officiels et les
+        ressources du dossier de presse <strong>Veridia 2140</strong>.
+      </p>
+
+      <div class="grid-2" style="margin-top: 2rem;">
+        <article class="card">
+          <span class="eyebrow badge-emerald">Canaux officiels</span>
+          <h2>Réseaux &amp; Coordonnées</h2>
+          <ul style="padding-left: 1.2rem; color: var(--text-secondary); display: grid; gap: 0.6rem;">
+            <li>
+              <strong>Localisation :</strong> Aix-en-Provence, Provence-Alpes-Côte d'Azur, France
+            </li>
+            <li>
+              <strong>Instagram principal :</strong>{" "}
+              <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">
+                {STUDIO.instagramHandle}
+              </a>{" "}
+              (redirection depuis <code>{STUDIO.instagramBackupHandle}</code>)
+            </li>
+            <li>
+              <strong>Dépôt technique &amp; documentation :</strong>{" "}
+              <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">
+                github.com/Androtim/Flexarion
+              </a>
+            </li>
+            <li>
+              <strong>Contact presse / démo :</strong>{" "}
+              <a href={`mailto:${STUDIO.email}`}>{STUDIO.email}</a>
+            </li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Kit Presse (Fact Sheet)</span>
+          <h2>L'essentiel pour citer Flexarion</h2>
+          <ul style="padding-left: 1.2rem; color: var(--text-secondary); display: grid; gap: 0.6rem;">
+            <li><strong>Studio :</strong> Flexarion Studio (fondé en 2026 à Aix-en-Provence)</li>
+            <li><strong>Jeu phare :</strong> Veridia 2140 (City-builder &amp; Stratégie Solarpunk)</li>
+            <li><strong>Modèle économique :</strong> 19,99 € PC + Démo Prologue Arbois gratuite</li>
+            <li>
+              <strong>Visuels HD disponibles :</strong>{" "}
+              <a href="/images/veridia-hero.jpg" target="_blank">Key Art Veridia 2140</a> ·{" "}
+              <a href="/images/devlog-hydrology.jpg" target="_blank">Réseau Hydrique</a> ·{" "}
+              <a href="/images/flexarion-logo.svg" target="_blank">Logo Vectoriel SVG</a>
+            </li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

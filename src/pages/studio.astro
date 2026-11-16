@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { STUDIO } from "../data/site";
+
+const teamMembers = [
+  {
+    name: "Timothée B. (Androtim)",
+    role: "Architecture Logicielle, Simulation & SEO Technique",
+    bio: "Conception du moteur déterministe de flux par graphes, pipeline CI/CD et optimisation Core Web Vitals.",
+  },
+  {
+    name: "Membre 2 (À compléter)",
+    role: "Game Design & Équilibrage Systémique",
+    bio: "Modélisation des courbes climatiques, ergonomie des restanques et scénarios de crise hydrique.",
+  },
+  {
+    name: "Membre 3 (À compléter)",
+    role: "Direction Artistique Solarpunk & UI/UX",
+    bio: "Identité visuelle bleu nuit / or solaire / émeraude, interface diégétique et concept arts provençaux.",
+  },
+  {
+    name: "Membre 4 (À compléter)",
+    role: "Narration, Devlogs & Community Management",
+    bio: "Écriture de l'univers 2140, animation de @flexarion et relations presse jeux indépendants.",
+  },
+];
+---
+
+<BaseLayout
+  title="Le Studio Flexarion — Équipe & Histoire à Aix-en-Provence"
+  description="Découvrez l'histoire de Flexarion Studio à Aix-en-Provence, notre manifeste Solarpunk méditerranéen et notre politique de transparence sur l'IA."
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Le Studio", href: "/studio/" },
+  ]}
+>
+  <section class="section">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Silo Studio · Aix-en-Provence</span>
+        <h1>Flexarion : un collectif indépendant né au cœur d'Aix-en-Provence</h1>
+        <p class="lead">
+          Fondé en 2026 par des développeurs issus de l'IUT d'Aix-Marseille, <strong>Flexarion Studio</strong>
+          explore une voie singulière : marier rigueur informatique et récits de science-fiction optimistes
+          ancrés dans le Sud de la France.
+        </p>
+        <p>
+          Là où la majorité des studios SF puisent dans des mégapoles dystopiques génériques, nous observons
+          le territoire qui nous entoure — la montagne Sainte-Victoire, les aqueducs historiques et la gestion
+          de l'eau en Méditerranée — pour bâtir des mondes jouables qui ont du sens.
+        </p>
+      </div>
+
+      <figure class="hero-frame">
+        <img
+          src="/images/veridia-hero.jpg"
+          alt="Territoire provençal futuriste imaginé par Flexarion Studio à Aix-en-Provence"
+          width="1280"
+          height="720"
+        />
+        <figcaption class="hero-caption">
+          <span>Inspiration territoriale : Aix-en-Provence &amp; plateau de l'Arbois</span>
+          <span>2026</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="team-heading">
+    <div class="container">
+      <span class="eyebrow badge-emerald">L'équipe fondatrice</span>
+      <h2 id="team-heading">Quatre pôles complémentaires basés en Provence</h2>
+      <p class="lead">
+        Une structure à taille humaine où technique, narration et communication avancent ensemble.
+      </p>
+
+      <div class="grid-2" style="margin-top: 1.5rem;">
+        {
+          teamMembers.map((member) => (
+            <article class="card">
+              <span class="eyebrow" style="margin-bottom: 0.65rem;">
+                {member.role}
+              </span>
+              <h3>{member.name}</h3>
+              <p style="margin-bottom: 0;">{member.bio}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="manifesto-heading">
+    <div class="container grid-2">
+      <article class="card">
+        <span class="eyebrow">Manifeste Solarpunk</span>
+        <h2 id="manifesto-heading">Notre philosophie de création</h2>
+        <p>
+          Nous croyons aux jeux vidéo qui respectent le temps et l'intelligence des joueurs : pas de
+          monétisation agressive, des systèmes lisibles basés sur de vraies lois physiques et une écriture
+          humaine relue avec exigence.
+        </p>
+        <a href="/jeux/veridia-2140/">Voir notre premier projet : Veridia 2140 →</a>
+      </article>
+
+      <article class="card">
+        <span class="eyebrow badge-emerald">Éthique &amp; Transparence IA</span>
+        <h2>Usage encadré de l'intelligence artificielle</h2>
+        <p>
+          Dans une démarche de transparence, Flexarion utilise des assistants IA pour prototyper ses
+          illustrations conceptuelles et automatiser les contrôles techniques SEO, tandis que la direction
+          artistique finale, le code critique et la voix éditoriale restent pilotés par l'équipe humaine.
+        </p>
+        <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">
+          Consulter le journal technique sur GitHub →
+        </a>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

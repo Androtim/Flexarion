@@ -71,11 +71,11 @@ for (const file of htmlFiles) {
   }
 
   // Meta description
-  const descMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
+  const descMatch = html.match(/<meta\s+name=(["'])description\1\s+content=(["'])([\s\S]*?)\2/i);
   if (!descMatch) {
     fail(rel, "Balise <meta name=\"description\"> manquante.");
   } else {
-    const desc = descMatch[1].trim();
+    const desc = descMatch[3].trim();
     if (desc.length < 90 || desc.length > 170) {
       warn(rel, `Longueur meta description à ajuster (${desc.length} car.).`);
     }
@@ -86,7 +86,7 @@ for (const file of htmlFiles) {
   }
 
   // Canonical
-  if (!/<link\s+rel=["']canonical["']\s+href=["']https?:\/\/[^"']+["']/i.test(html)) {
+  if (!/<link\s+rel=(["'])canonical\1\s+href=(["'])https?:\/\/[^"']+\2/i.test(html)) {
     fail(rel, "Balise <link rel=\"canonical\"> manquante ou relative.");
   }
 
@@ -99,13 +99,13 @@ for (const file of htmlFiles) {
   }
 
   // JSON-LD Schema.org
-  const ldMatches = [...html.matchAll(/<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  const ldMatches = [...html.matchAll(/<script\s+type=(["'])application\/ld\+json\1[^>]*>([\s\S]*?)<\/script>/gi)];
   if (ldMatches.length === 0) {
     fail(rel, "Aucune donnée structurée JSON-LD (Schema.org) détectée.");
   } else {
     for (const m of ldMatches) {
       try {
-        JSON.parse(m[1]);
+        JSON.parse(m[2]);
       } catch {
         fail(rel, "JSON-LD invalide (échec de parsing JSON).");
       }
@@ -116,8 +116,8 @@ for (const file of htmlFiles) {
   const imgMatches = [...html.matchAll(/<img\b([^>]*)>/gi)];
   for (const img of imgMatches) {
     const attrs = img[1];
-    const altMatch = attrs.match(/\balt=["']([^"']*)["']/i);
-    if (!altMatch || altMatch[1].trim().length === 0) {
+    const altMatch = attrs.match(/\balt=(["'])((?:(?!\1).)*)\1/i);
+    if (!altMatch || altMatch[2].trim().length === 0) {
       fail(rel, `Image sans attribut alt descriptif : <img ${attrs.slice(0, 80)}...>`);
     }
   }

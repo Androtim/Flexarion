@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const devlogs = (await getCollection("devlogs")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout
+  title="Devlogs Flexarion — Carnets de développement Veridia 2140"
+  description="Suivez les devlogs techniques et artistiques de Flexarion Studio à Aix-en-Provence : worldbuilding Solarpunk, graphes hydriques et simulation."
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Devlogs", href: "/devlogs/" },
+  ]}
+>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Silo Devlogs · Transparence technique</span>
+      <h1>Journal de développement — Flexarion Studio</h1>
+      <p class="lead">
+        Chaque carnet documente une avancée concrète de <strong>Veridia 2140</strong> : choix de direction
+        artistique à Aix-en-Provence, algorithmes de simulation et apprentissages d'équipe.
+      </p>
+
+      <div class="grid-2" style="margin-top: 2rem;">
+        {
+          devlogs.map((post) => (
+            <article class="card card-media">
+              <img src={post.data.image} alt={post.data.imageAlt} width="800" height="450" />
+              <div class="card-body">
+                <span class="eyebrow badge-emerald" style="margin-bottom: 0.65rem;">
+                  {post.data.tag} · {post.data.readingTime}
+                </span>
+                <h2>
+                  <a href={`/devlogs/${post.id}/`} style="color: var(--text-primary);">
+                    {post.data.title}
+                  </a>
+                </h2>
+                <p>{post.data.description}</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                  Par {post.data.author} —{" "}
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {post.data.pubDate.toLocaleDateString("fr-FR", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                </p>
+                <a href={`/devlogs/${post.id}/`} class="btn btn-secondary">
+                  Lire l'article complet →
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

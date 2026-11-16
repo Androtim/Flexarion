@@ -1,0 +1,24 @@
+import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
+
+const site = process.env.SITE_URL || "https://flexarion.alwaysdata.net";
+const base = process.env.BASE_PATH || "/";
+
+export default defineConfig({
+  site,
+  base,
+  trailingSlash: "always",
+  integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: "fr",
+        locales: {
+          fr: "fr-FR",
+        },
+      },
+    }),
+  ],
+  build: {
+    inlineStylesheets: "auto",
+  },
+});

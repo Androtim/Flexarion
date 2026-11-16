@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Logo Flexarion Studio">
+  <defs>
+    <linearGradient id="fx-gold" x1="8" y1="8" x2="40" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFD470" />
+      <stop offset="100%" stop-color="#E59E22" />
+    </linearGradient>
+    <linearGradient id="fx-emerald" x1="26" y1="16" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4DF0B8" />
+      <stop offset="100%" stop-color="#17A678" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#08141E" />
+  <path d="M32 10L12 44H24L32 30L40 44H52L32 10Z" fill="url(#fx-gold)" />
+  <path d="M47 21C36 22 27 31 25 46C35 45 45 36 47 21Z" fill="url(#fx-emerald)" opacity="0.95" />
+  <path d="M27 44L41 29M34 37H42M31 40V32" stroke="#08141E" stroke-width="2" stroke-linecap="round" />
+  <circle cx="42" cy="37" r="2" fill="#08141E" />
+  <circle cx="31" cy="32" r="2" fill="#08141E" />
+</svg>
