@@ -1,0 +1,189 @@
+---
+import "../styles/global.css";
+import { NAV_ITEMS, STUDIO, buildOrganizationSchema } from "../data/site";
+
+export interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  breadcrumbs?: BreadcrumbItem[];
+  schemas?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  ogImage = "/images/veridia-hero.jpg",
+  ogType = "website",
+  breadcrumbs = [],
+  schemas = [],
+} = Astro.props;
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).href;
+const absoluteOgImage = new URL(ogImage, siteOrigin).href;
+const currentPath = Astro.url.pathname;
+
+const breadcrumbSchema =
+  breadcrumbs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs.map((item, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          name: item.name,
+          item: new URL(item.href, siteOrigin).href,
+        })),
+      }
+    : null;
+
+const allSchemas = [
+  buildOrganizationSchema(siteOrigin),
+  ...(breadcrumbSchema ? [breadcrumbSchema] : []),
+  ...schemas,
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={STUDIO.legalName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={absoluteOgImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
+    <!-- Données structurées JSON-LD (SEO & GEO) -->
+    {
+      allSchemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      ))
+    }
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="/" class="brand-link" aria-label="Accueil Flexarion Studio">
+          <img src="/images/flexarion-logo.svg" alt="Logo Flexarion Studio Aix-en-Provence" width="200" height="44" />
+        </a>
+
+        <nav aria-label="Navigation principale">
+          <ul class="nav-links">
+            {
+              NAV_ITEMS.map((item) => {
+                const isActive =
+                  item.href === "/"
+                    ? currentPath === "/"
+                    : currentPath.startsWith(item.href);
+                return (
+                  <li>
+                    <a
+                      href={item.href}
+                      aria-current={isActive ? "page" : undefined}
+                      class={item.isCta ? "nav-cta" : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      {
+        breadcrumbs.length > 0 && (
+          <div class="container" style="padding-top: 1.5rem;">
+            <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+              {breadcrumbs.map((crumb, index) => (
+                <>
+                  {index > 0 && <span aria-hidden="true">/</span>}
+                  {index === breadcrumbs.length - 1 ? (
+                    <span aria-current="page">{crumb.name}</span>
+                  ) : (
+                    <a href={crumb.href}>{crumb.name}</a>
+                  )}
+                </>
+              ))}
+            </nav>
+          </div>
+        )
+      }
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <p class="footer-title">Flexarion Studio — Aix-en-Provence</p>
+            <p>
+              Studio indépendant de développement de jeux vidéo dédié à la science-fiction
+              Solarpunk et à la simulation systémique. Créateurs de <strong>Veridia 2140</strong>.
+            </p>
+          </div>
+
+          <div>
+            <p class="footer-title">Architecture du site</p>
+            <ul class="footer-list">
+              <li><a href="/">Accueil Flexarion</a></li>
+              <li><a href="/studio/">Le Studio (Aix-en-Provence)</a></li>
+              <li><a href="/jeux/veridia-2140/">Jeu Phare : Veridia 2140</a></li>
+              <li><a href="/devlogs/">Journal de développement</a></li>
+              <li><a href="/contact/">Contact &amp; Dossier Presse</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="footer-title">Réseaux &amp; Ressources</p>
+            <ul class="footer-list">
+              <li>
+                <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">
+                  Instagram principal ({STUDIO.instagramHandle})
+                </a>
+              </li>
+              <li>
+                <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">
+                  Dépôt technique GitHub
+                </a>
+              </li>
+              <li><a href="/llms.txt">Index GEO (/llms.txt)</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>© 2026 Flexarion Studio — Aix-en-Provence. Tous droits réservés.</span>
+          <span>Projet BUT Informatique (AMU) · Transparence IA &amp; SEO Éthique White Hat</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

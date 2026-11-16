@@ -1,0 +1,18 @@
+{
+  "name": "flexarion-studio-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Site officiel du studio indépendant Flexarion (Aix-en-Provence) et de Veridia 2140 — optimisé SEO & GEO.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "audit:seo": "node scripts/audit-seo.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.5",
+    "astro": "^6.4.8"
+  }
+}
