@@ -4,7 +4,7 @@ seoTitle: "Devlog #1 : Genèse Solarpunk de Veridia 2140 à Aix | Flexarion"
 description: "Comment Flexarion Studio conçoit Veridia 2140, un city-builder Solarpunk enraciné entre le plateau de l'Arbois et la montagne Sainte-Victoire."
 pubDate: 2026-11-16
 author: "Équipe Flexarion"
-authorRole: "Game Design & Narration — Aix-en-Provence"
+authorRole: "Game Design & Narration, Aix-en-Provence"
 tag: "Direction Artistique & Lore"
 readingTime: "5 min de lecture"
 image: "/images/veridia-hero.jpg"
@@ -37,7 +37,7 @@ Plutôt que d'inventer une planète lointaine abstraite, nous avons modélisé d
 
 Pour transmettre cette sensation de « futur habitable », nous avons travaillé une palette précise :
 
-1. **Le bleu nuit abyssal (`#08141E`)** pour les interfaces techniques et la fraîcheur des nuits étoilées provençales.
+1. **Le bleu nuit abyssal (`#08141E`) et le calcaire provençal (`#F5F0E6`)** pour contraster la fraîcheur des nuits étoilées et la pierre chaude du jour.
 2. **L'or solaire (`#F5B841`)** qui évoque la pierre dorée au coucher du soleil et les capteurs thermiques.
 3. **Le vert émeraude botanique (`#2ED39A`)** réservé aux réseaux vivants : eau pure, cultures en terrasses et mycélium régulateur.
 

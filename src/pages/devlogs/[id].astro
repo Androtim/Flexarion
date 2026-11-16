@@ -59,11 +59,11 @@ const blogPostingSchema = {
 >
   <article class="section">
     <div class="container">
-      <div style="max-width: 78ch;">
-        <span class="eyebrow badge-emerald">{post.data.tag} · {post.data.readingTime}</span>
+      <div style="max-width: 74ch;">
+        <span class="kicker kicker-pine">{post.data.tag} · {post.data.readingTime}</span>
         <h1>{post.data.title}</h1>
-        <p style="font-size: 0.94rem; color: var(--text-muted); margin-bottom: 1.75rem;">
-          Publié par <strong>{post.data.author}</strong> ({post.data.authorRole}) le{" "}
+        <p style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-faint); margin-bottom: 2rem;">
+          Publié par <strong style="color: var(--ink);">{post.data.author}</strong> ({post.data.authorRole}) le{" "}
           <time datetime={post.data.pubDate.toISOString()}>
             {post.data.pubDate.toLocaleDateString("fr-FR", {
               year: "numeric",
@@ -74,19 +74,19 @@ const blogPostingSchema = {
         </p>
       </div>
 
-      <figure class="hero-frame" style="margin: 0 0 2.2rem; max-width: 900px;">
+      <figure class="plate-frame" style="margin: 0 0 2.25rem; max-width: 920px;">
         <img src={post.data.image} alt={post.data.imageAlt} width="1280" height="720" />
-        <figcaption class="hero-caption">
+        <figcaption class="plate-caption">
           <span>{post.data.imageAlt}</span>
-          <span>Flexarion Devlog</span>
+          <span>Archive Flexarion</span>
         </figcaption>
       </figure>
 
-      <aside class="card" style="max-width: 74ch; margin-bottom: 2.2rem; border-color: var(--border-gold);">
-        <h2 style="font-size: 1.12rem; color: var(--gold); margin-bottom: 0.65rem;">
-          À retenir en 3 points (Synthèse GEO)
+      <aside class="panel-muted" style="max-width: 68ch; margin-bottom: 2.25rem;">
+        <h2 style="font-size: 1.15rem; margin-bottom: 0.65rem;">
+          Points clés de ce carnet (Synthèse GEO)
         </h2>
-        <ul style="margin: 0; padding-left: 1.25rem; color: var(--text-secondary);">
+        <ul style="margin: 0; padding-left: 1.25rem; color: var(--ink-soft);">
           {post.data.summaryPoints.map((point) => <li>{point}</li>)}
         </ul>
       </aside>
@@ -97,19 +97,20 @@ const blogPostingSchema = {
 
       {
         otherDevlogs.length > 0 && (
-          <section style="margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08);">
-            <h2>Poursuivre dans le silo Devlogs</h2>
-            <div class="grid-2" style="margin-top: 1rem;">
+          <section class="section-ruled" style="margin-top: 3.5rem; padding-top: 2rem;">
+            <span class="kicker">Poursuivre dans le silo Devlogs</span>
+            <h2>Autres carnets de développement</h2>
+            <div class="grid-2" style="margin-top: 1.25rem;">
               {otherDevlogs.map((other) => (
-                <article class="card">
-                  <span class="eyebrow badge-emerald">{other.data.tag}</span>
+                <article class="dispatch-item">
+                  <span class="kicker kicker-pine" style="margin-bottom: 0.45rem;">{other.data.tag}</span>
                   <h3>
-                    <a href={`/devlogs/${other.id}/`} style="color: var(--text-primary);">
+                    <a href={`/devlogs/${other.id}/`} style="color: var(--ink);">
                       {other.data.title}
                     </a>
                   </h3>
                   <p>{other.data.description}</p>
-                  <a href={`/devlogs/${other.id}/`}>Lire cet article →</a>
+                  <a href={`/devlogs/${other.id}/`} class="link-editorial">Lire cet article →</a>
                 </article>
               ))}
             </div>
