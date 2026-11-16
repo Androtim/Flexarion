@@ -10,6 +10,7 @@ export const STUDIO = {
   youtube: "https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q",
   x: "https://x.com/FlexarionStudio",
   itch: "https://flexarion-studio.itch.io/",
+  tiktok: "https://www.tiktok.com/@flexarion_studio",
   xHandle: "@FlexarionStudio",
   instagramHandle: "@flexarion",
   instagramBackupHandle: "@flexarion.official",
@@ -69,7 +70,7 @@ export function buildOrganizationSchema(siteOrigin: string) {
       "City-builder",
       "Simulation systémique",
     ],
-    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.itch, STUDIO.githubRepo],
+    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.tiktok, STUDIO.itch, STUDIO.githubRepo],
   };
 }
 
