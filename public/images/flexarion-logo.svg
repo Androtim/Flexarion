@@ -1,19 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 52" fill="none" role="img" aria-label="Flexarion Studio">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 52" fill="none" role="img" aria-label="Flexarion Studio">
   <defs>
     <linearGradient id="fx-g" x1="6" y1="6" x2="36" y2="46" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FFD470" />
-      <stop offset="100%" stop-color="#E59E22" />
+      <stop offset="0%" stop-color="#F5B841" />
+      <stop offset="100%" stop-color="#C97E18" />
     </linearGradient>
     <linearGradient id="fx-e" x1="22" y1="12" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#4DF0B8" />
-      <stop offset="100%" stop-color="#17A678" />
+      <stop offset="0%" stop-color="#2ED39A" />
+      <stop offset="100%" stop-color="#155E44" />
     </linearGradient>
   </defs>
-  <rect x="2" y="4" width="44" height="44" rx="10" fill="#0D2233" stroke="#2ED39A" stroke-opacity="0.35" />
+  <rect x="2" y="4" width="44" height="44" rx="4" fill="#121917" />
   <path d="M24 11L10 36H18.5L24 26L29.5 36H38L24 11Z" fill="url(#fx-g)" />
   <path d="M35 19C26.5 19.8 19.8 26.5 18.2 38C26 37.2 33.5 30.2 35 19Z" fill="url(#fx-e)" />
-  <path d="M20 36.5L30.5 25.5" stroke="#08141E" stroke-width="1.8" stroke-linecap="round" />
-  <circle cx="29.5" cy="26.5" r="1.6" fill="#08141E" />
-  <text x="58" y="31" fill="#F4F7F5" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="22" font-weight="700" letter-spacing="2.2">FLEXARION</text>
-  <text x="59" y="44" fill="#2ED39A" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" font-weight="600" letter-spacing="1.8">STUDIO · AIX-EN-PROVENCE</text>
+  <path d="M20 36.5L30.5 25.5" stroke="#121917" stroke-width="1.8" stroke-linecap="round" />
+  <circle cx="29.5" cy="26.5" r="1.6" fill="#121917" />
+  <text x="58" y="30" fill="#121917" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" letter-spacing="1.6">FLEXARION</text>
+  <text x="59" y="43" fill="#155E44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9" font-weight="600" letter-spacing="1.8">STUDIO · AIX-EN-PROVENCE</text>
 </svg>
