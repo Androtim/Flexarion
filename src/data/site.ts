@@ -9,6 +9,7 @@ export const STUDIO = {
   instagramMain: "https://www.instagram.com/flexarion/",
   youtube: "https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q",
   x: "https://x.com/FlexarionStudio",
+  itch: "https://flexarion-studio.itch.io/",
   xHandle: "@FlexarionStudio",
   instagramHandle: "@flexarion",
   instagramBackupHandle: "@flexarion.official",
@@ -68,7 +69,7 @@ export function buildOrganizationSchema(siteOrigin: string) {
       "City-builder",
       "Simulation systémique",
     ],
-    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.githubRepo],
+    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.itch, STUDIO.githubRepo],
   };
 }
 

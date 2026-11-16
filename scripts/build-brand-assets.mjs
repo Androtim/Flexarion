@@ -152,3 +152,20 @@ await banner(2560, 1440, 1546, 423, "youtube/banniere-youtube.jpg");
 // Sur X, l'avatar recouvre le coin inférieur gauche : pas d'emblème, texte centré.
 await banner(1500, 500, 1300, 400, "x/banniere-x.jpg", false);
 
+// 7. itch.io : image de couverture 630×500 (vignette du jeu)
+{
+  const W = 630, H = 500;
+  const title = textPath(serif, "Veridia 2140", { x: 0, y: 0, size: 72, tracking: -1.5, fill: C.paper });
+  const sub = textPath(sans, "Un city-builder Solarpunk · Flexarion", { x: 0, y: 0, size: 24, fill: C.sun });
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+    <rect width="${W}" height="${H}" fill="${C.ink}"/>
+    <g transform="translate(${W / 2 - 110} 40) scale(${220 / 64})">${emblem()}</g>
+    <g transform="translate(${(W - title.width) / 2} 370)">${title.svg}</g>
+    <g transform="translate(${(W - sub.width) / 2} 420)">${sub.svg}</g>
+    <rect x="0" y="${H - 22}" width="${W}" height="22" fill="${C.pineLight}"/>
+  </svg>`;
+  fs.mkdirSync(path.join(root, "social/itch"), { recursive: true });
+  await sharp(Buffer.from(svg)).resize(W, H).png().toFile(path.join(root, "social/itch/couverture-itch.png"));
+  console.log("✓ social/itch/couverture-itch.png");
+}
+
