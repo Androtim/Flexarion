@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ResponsivePicture from "../../components/ResponsivePicture.astro";
 
 const devlogs = (await getCollection("devlogs")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -28,7 +29,14 @@ const devlogs = (await getCollection("devlogs")).sort(
         {
           devlogs.map((post, idx) => (
             <article class="dispatch-item">
-              <img src={post.data.image} alt={post.data.imageAlt} width="800" height="450" />
+              <ResponsivePicture
+                src={post.data.image}
+                alt={post.data.imageAlt}
+                width={1280}
+                height={720}
+                sizes="(max-width: 760px) 100vw, 560px"
+                eager={idx === 0}
+              />
               <span class="kicker kicker-pine" style="margin-bottom: 0.45rem;">
                 Carnet 0{idx + 1} · {post.data.tag} · {post.data.readingTime}
               </span>
