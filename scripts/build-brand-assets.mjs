@@ -118,3 +118,37 @@ await sharp(Buffer.from(avatarSvg), { density: 72 }).resize(1080, 1080).jpeg({ q
   .toFile(path.join(root, "social/instagram/assets/flexarion-avatar.jpg"));
 console.log("✓ social/instagram/assets/flexarion-avatar.jpg");
 console.log(`Logo : ${logoW}×68 (PNG ${logoW * 4}×272)`);
+
+// 6. Bannières réseaux sociaux : YouTube 2560×1440 (zone sûre centrale 1546×423) et X 1500×500
+function banner(w, h, safeW, safeH, out, withEmblem = true) {
+  const cx = w / 2, cy = h / 2;
+  const size = Math.round(safeH * 0.42);
+  const title = textPath(serif, "Flexarion", { x: 0, y: 0, size, tracking: -size * 0.02, fill: C.paper });
+  const subSize = Math.round(size * 0.24);
+  const sub = textPath(sans, "Studio de jeux vidéo de science-fiction · Aix-en-Provence", { x: 0, y: 0, size: subSize, fill: C.sun });
+  const emb = withEmblem ? Math.round(safeH * 0.62) : 0;
+  const gap = withEmblem ? Math.round(emb * 0.25) : 0;
+  const blockW = emb + gap + Math.max(title.width, sub.width);
+  const x0 = cx - blockW / 2;
+  const tx = x0 + emb + gap;
+  const ty = cy + size * 0.12;
+  const ridge = (k) => `M0 ${h} L0 ${h - 120 * k} L${w * 0.18} ${h - 140 * k} L${w * 0.33} ${h - 200 * k} L${w * 0.42} ${h - 290 * k} L${w * 0.46} ${h - 340 * k} L${w * 0.49} ${h - 325 * k} L${w * 0.53} ${h - 345 * k} L${w * 0.6} ${h - 280 * k} L${w * 0.78} ${h - 190 * k} L${w} ${h - 150 * k} L${w} ${h} Z`;
+  const k = h / 1440;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+    <defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#13262E"/><stop offset="0.7" stop-color="#2B4A52"/><stop offset="1" stop-color="#B9714A"/></linearGradient></defs>
+    <rect width="${w}" height="${h}" fill="url(#s)"/>
+    <path d="${ridge(k * 2.2)}" fill="#1C3A44" opacity="0.9"/>
+    <rect x="0" y="${h - 60 * k * 2.2}" width="${w}" height="${60 * k * 2.2}" fill="${C.pineLight}"/>
+    ${withEmblem ? `<g transform="translate(${x0} ${cy - emb / 2}) scale(${emb / 64})">${emblem()}</g>` : ""}
+    <g transform="translate(${tx} ${ty})">${title.svg}</g>
+    <g transform="translate(${tx + size * 0.04} ${ty + subSize * 1.9})">${sub.svg}</g>
+  </svg>`;
+  return sharp(Buffer.from(svg)).resize(w, h).jpeg({ quality: 90, mozjpeg: true })
+    .toFile(path.join(root, "social", out)).then(() => console.log("✓ social/" + out));
+}
+fs.mkdirSync(path.join(root, "social/youtube"), { recursive: true });
+fs.mkdirSync(path.join(root, "social/x"), { recursive: true });
+await banner(2560, 1440, 1546, 423, "youtube/banniere-youtube.jpg");
+// Sur X, l'avatar recouvre le coin inférieur gauche : pas d'emblème, texte centré.
+await banner(1500, 500, 1300, 400, "x/banniere-x.jpg", false);
+
