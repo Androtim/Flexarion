@@ -50,6 +50,24 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-16 18:10] · Claude Opus 5.5 via Claude Code (prototype jouable)
+- **Branche / Issue / PR :** `feat/game-prototype`
+- **Objectif :** Créer un premier prototype jouable de *Veridia 2140* (prérequis du défi « La ville des joueurs » : tous les 2 jours, le commentaire le plus aimé entre dans le jeu).
+- **Choix :** jeu **web** (TypeScript + canvas, sans moteur) plutôt qu'un exécutable : jouable en un clic sur mobile (public TikTok), mises à jour instantanées pour le défi, contenu sur le site (SEO) et page itch.io jouable.
+- **Ce qui a été fait :**
+  - `src/game/` : `map.ts` (carte 18×12 déterministe, relief), `sim.ts` (eau gravitaire répartie selon les besoins en aval, vanne, évaporation, chaleur, mycélium connexe éveillé par l'eau, santé des quartiers), `content.ts` (bâtiments et réglages, **c'est ici qu'entrent les ajouts du défi**), `render.ts` (canvas, vues Carte/Relief/Chaleur), `main.ts` (UI, souris + tactile, sauvegarde `localStorage`), `demo.ts` (joueur automatique).
+  - `src/components/GameApp.astro` (UI partagée), `src/pages/jouer.astro` (page indexée + règles du défi), `src/pages/jouer/embed.astro` (version itch.io, `noindex`, hors sitemap).
+  - `src/data/defi.ts` : liste des ajouts du défi (vide pour l'instant).
+  - `scripts/game-check.ts` (`npm run game:check`, ajouté à la CI) : atteignabilité des 5 quartiers, défaite sans construction, victoire d'une stratégie raisonnable.
+  - `scripts/build-itch.mjs` (`npm run itch:build`) : archive `social/itch/veridia-2140-web.zip` avec chemins relatifs.
+  - Mode démo pour captures/vidéos : `/jouer/?demo=45` (et `&vue=heat` ou `&vue=relief`).
+- **Équilibrage vérifié :** sans rien faire, partie perdue au jour 49 ; stratégie simple : 5/5 quartiers, avec des quartiers à ~50 % pendant la canicule.
+- **Vérifications :** build (11 pages), audit SEO 0 erreur, `game:check` OK, test d'interaction réel via Chrome DevTools (clics, eau, sauvegarde, vitesse) sur le site et sur l'archive itch.io servie en sous-dossier.
+- **Attention :** `pkill -f "astro preview"` tue aussi le shell qui contient ce texte : utiliser `pkill -f "astro previe[w]"` dans une commande séparée.
+- **Pour ajouter une idée du défi :** modifier `src/game/content.ts` (et `sim.ts`/`render.ts` si nouvelle mécanique), incrémenter `GAME_VERSION`, ajouter l'entrée dans `src/data/defi.ts`, puis `npm run game:check && npm run build && npm run audit:seo && npm run itch:build`, déployer et ré-uploader le zip sur itch.io.
+
+---
+
 ### [2026-11-16 16:40] · Claude Opus 5.5 via Claude Code (refonte v2)
 - **Branche / Issue / PR :** `design/map-first-revamp` (basée sur `feat/seo-brand-signals-and-lore`, PR #23)
 - **Objectif de la session :** Refondre tout le site pour qu'il ne ressemble plus à un site généré par IA (demande de l'utilisateur).

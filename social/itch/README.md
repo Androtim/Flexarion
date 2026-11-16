@@ -20,8 +20,10 @@ Site officiel : https://flexarion.alwaysdata.net
 - **Title :** `Veridia 2140`
 - **Project URL :** `veridia-2140` (→ `flexarion-studio.itch.io/veridia-2140`)
 - **Short description :** `Un city-builder Solarpunk dans le Pays d'Aix en 2140, par Flexarion.`
-- **Classification :** Games · **Kind of project :** Downloadable (aucun fichier) ou HTML vide
-- **Release status :** `Prototype` / `In development`
+- **Classification :** Games · **Kind of project :** **HTML** (jeu jouable dans le navigateur)
+- **Uploads :** `social/itch/veridia-2140-web.zip` (généré par `npm run build && npm run itch:build`), cocher **« This file will be played in the browser »**
+- **Embed options :** taille de la fenêtre `1280 × 900`, cocher **Mobile friendly** et **Fullscreen button**
+- **Release status :** `Prototype`
 - **Pricing :** `No payments` (aucune vente : projet étudiant)
 - **Cover image :** `social/itch/couverture-itch.png` (630×500)
 - **Trailer :** lien YouTube de la vidéo des aqueducs, une fois publiée
@@ -43,8 +45,14 @@ COMMENT ON JOUE
 • Le réseau : un mycélium cultivé sous les restanques transporte l'humidité vers les rues surchauffées.
 • Le verre : orientez les dômes solaires entre production d'énergie et confort des quartiers.
 
+LE PROTOTYPE : ÉTÉ 1
+Reliez le réservoir aux cinq quartiers d'Aix, réglez la vanne, posez bassins et mycélium, et tenez 90 jours d'été. Une partie dure environ 5 minutes. Souris ou tactile, sauvegarde automatique.
+
+LA VILLE DES JOUEURS
+Tous les deux jours, l'idée la plus aimée en commentaire sur nos réseaux entre dans le jeu.
+
 ÉTAT DU PROJET
-Veridia 2140 est un concept en pré-production, conçu dans le cadre d'un projet étudiant (BUT Informatique, IUT d'Aix-Marseille). Rien n'est vendu.
+Prototype réalisé dans le cadre d'un projet étudiant (BUT Informatique, IUT d'Aix-Marseille). Gratuit, rien n'est vendu.
 
 Devlogs, univers et coulisses : https://flexarion.alwaysdata.net
 ```

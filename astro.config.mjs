@@ -10,6 +10,8 @@ export default defineConfig({
   trailingSlash: "always",
   integrations: [
     sitemap({
+      // La version embarquée (itch.io) n'est pas une page à indexer.
+      filter: (page) => !page.includes("/jouer/embed/"),
       i18n: {
         defaultLocale: "fr",
         locales: {

@@ -29,3 +29,6 @@ jobs:
 
       - name: Run automated technical SEO audit
         run: npm run audit:seo
+
+      - name: Check game simulation balance
+        run: npm run game:check
