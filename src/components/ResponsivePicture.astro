@@ -1,0 +1,35 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const {
+  src,
+  alt,
+  width = 1280,
+  height = 720,
+  sizes = "(max-width: 920px) 100vw, 560px",
+  eager = false,
+} = Astro.props;
+
+const basePath = src.replace(/\.(jpg|jpeg|png|webp)$/i, "");
+const webpSrcSet = `${basePath}-640.webp 640w, ${basePath}.webp 1280w`;
+---
+
+<picture>
+  <source srcset={webpSrcSet} sizes={sizes} type="image/webp" />
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={eager ? "eager" : "lazy"}
+    decoding={eager ? "sync" : "async"}
+    fetchpriority={eager ? "high" : "auto"}
+  />
+</picture>

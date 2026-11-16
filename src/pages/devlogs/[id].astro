@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ResponsivePicture from "../../components/ResponsivePicture.astro";
 import { STUDIO } from "../../data/site";
 
 export async function getStaticPaths() {
@@ -49,6 +50,7 @@ const blogPostingSchema = {
   title={post.data.seoTitle}
   description={post.data.description}
   ogImage={post.data.image}
+  preloadHeroBase={post.data.image.replace(/\.(jpg|jpeg|png|webp)$/i, "")}
   ogType="article"
   breadcrumbs={[
     { name: "Accueil", href: "/" },
@@ -75,7 +77,14 @@ const blogPostingSchema = {
       </div>
 
       <figure class="plate-frame" style="margin: 0 0 2.25rem; max-width: 920px;">
-        <img src={post.data.image} alt={post.data.imageAlt} width="1280" height="720" />
+        <ResponsivePicture
+          src={post.data.image}
+          alt={post.data.imageAlt}
+          width={1280}
+          height={720}
+          sizes="(max-width: 920px) 100vw, 920px"
+          eager={true}
+        />
         <figcaption class="plate-caption">
           <span>{post.data.imageAlt}</span>
           <span>Archive Flexarion</span>
