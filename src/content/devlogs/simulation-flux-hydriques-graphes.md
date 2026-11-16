@@ -4,7 +4,7 @@ seoTitle: "Devlog #2 : Graphes de flux hydriques dans Veridia 2140 | Flexarion"
 description: "Plongée technique dans le moteur de Veridia 2140 : modélisation des aqueducs par graphes orientés, évaporation et échanges mycéliens."
 pubDate: 2026-11-16
 author: "Équipe Technique Flexarion"
-authorRole: "Ingénierie Simulation & Systèmes — Aix-en-Provence"
+authorRole: "Ingénierie Simulation & Systèmes, Aix-en-Provence"
 tag: "Ingénierie & Simulation"
 readingTime: "6 min de lecture"
 image: "/images/devlog-hydrology.jpg"
@@ -51,7 +51,7 @@ La seconde couche du jeu repose sur un **réseau mycélien symbiotique** enterr�
 
 1. Les zones exposées au soleil sans couvert végétal accumulent de la chaleur rayonnante.
 2. Les nœuds mycéliens redistribuent l'humidité excédentaire des bassins vers les îlots de chaleur voisins selon un algorithme de diffusion pondérée à faible coût (`O(k · |V|)` par frame).
-3. En retour, si la température dépasse un seuil critique sans apport hydrique, les filaments entrent en dormance et le joueur voit la bioluminescence s'estomper sur la carte — un retour visuel immédiat sans aucune fenêtre d'alerte intrusive.
+3. En retour, si la température dépasse un seuil critique sans apport hydrique, les filaments entrent en dormance et le joueur voit la bioluminescence s'estomper sur la carte, un retour visuel immédiat sans aucune fenêtre d'alerte intrusive.
 
 ## 3. Concevoir un moteur fluide (cible 60 FPS)
 

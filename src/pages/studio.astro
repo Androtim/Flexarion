@@ -4,30 +4,34 @@ import { STUDIO } from "../data/site";
 
 const teamMembers = [
   {
+    code: "Pôle 01",
     name: "Timothée B. (Androtim)",
     role: "Architecture Logicielle, Simulation & SEO Technique",
-    bio: "Conception du moteur déterministe de flux par graphes, pipeline CI/CD et optimisation Core Web Vitals.",
+    bio: "Conception du modèle de flux par graphes, gouvernance Git/CI et optimisation Core Web Vitals.",
   },
   {
+    code: "Pôle 02",
     name: "Membre 2 (À compléter)",
     role: "Game Design & Équilibrage Systémique",
     bio: "Modélisation des courbes climatiques, ergonomie des restanques et scénarios de crise hydrique.",
   },
   {
+    code: "Pôle 03",
     name: "Membre 3 (À compléter)",
     role: "Direction Artistique Solarpunk & UI/UX",
-    bio: "Identité visuelle bleu nuit / or solaire / émeraude, interface diégétique et concept arts provençaux.",
+    bio: "Identité visuelle papier calcaire, encre profonde, pin et terre cuite ; recherche iconographique provençale.",
   },
   {
+    code: "Pôle 04",
     name: "Membre 4 (À compléter)",
     role: "Narration, Devlogs & Community Management",
-    bio: "Écriture de l'univers 2140, animation de @flexarion et relations presse jeux indépendants.",
+    bio: "Écriture de l'univers 2140, animation éditoriale de @flexarion et relations presse jeux indépendants.",
   },
 ];
 ---
 
 <BaseLayout
-  title="Le Studio Flexarion — Équipe & Histoire à Aix-en-Provence"
+  title="Le Studio Flexarion : Équipe et Histoire à Aix-en-Provence"
   description="Découvrez l'histoire de Flexarion Studio à Aix-en-Provence, notre manifeste Solarpunk méditerranéen et notre politique de transparence sur l'IA."
   breadcrumbs={[
     { name: "Accueil", href: "/" },
@@ -35,58 +39,65 @@ const teamMembers = [
   ]}
 >
   <section class="section">
-    <div class="container hero-grid">
+    <div class="container hero-editorial">
       <div>
-        <span class="eyebrow">Silo Studio · Aix-en-Provence</span>
-        <h1>Flexarion : un collectif indépendant né au cœur d'Aix-en-Provence</h1>
+        <span class="kicker">Silo 01 / Le Studio à Aix-en-Provence</span>
+        <h1>Un collectif indépendant né au pied de la Sainte-Victoire.</h1>
         <p class="lead">
-          Fondé en 2026 par des développeurs issus de l'IUT d'Aix-Marseille, <strong>Flexarion Studio</strong>
-          explore une voie singulière : marier rigueur informatique et récits de science-fiction optimistes
-          ancrés dans le Sud de la France.
+          Imaginé en 2026 par des étudiants de l'IUT d'Aix-Marseille, <strong>Flexarion Studio</strong>
+          développe une approche singulière du jeu vidéo de science-fiction : relier l'ingénierie
+          informatique à des récits écologiques méditerranéens.
         </p>
         <p>
-          Là où la majorité des studios SF puisent dans des mégapoles dystopiques génériques, nous observons
-          le territoire qui nous entoure — la montagne Sainte-Victoire, les aqueducs historiques et la gestion
-          de l'eau en Méditerranée — pour bâtir un concept de jeu cohérent et documenté.
+          Plutôt que de reproduire des mégapoles dystopiques interchangeables, nous observons la pierre
+          calcaire locale, les restanques et la question de l'eau en Provence pour concevoir un univers
+          cohérent et documenté.
         </p>
-        <p style="font-size: 0.9rem; color: var(--text-muted);">
+        <p style="font-size: 0.9rem; color: var(--ink-faint);">
           <strong>Transparence académique :</strong> Flexarion est un studio fictif imaginé dans le cadre du
-          module <em>Plan de communication &amp; webmarketing à l'ère de l'IA</em> (BUT Informatique, IUT d'Aix-Marseille).
+          module <em>Plan de communication et webmarketing à l'ère de l'IA</em> (BUT Informatique, IUT d'Aix-Marseille).
         </p>
       </div>
 
-      <figure class="hero-frame">
+      <figure class="plate-frame">
         <img
           src="/images/veridia-hero.jpg"
           alt="Territoire provençal futuriste imaginé par Flexarion Studio à Aix-en-Provence"
           width="1280"
           height="720"
         />
-        <figcaption class="hero-caption">
-          <span>Inspiration territoriale : Aix-en-Provence &amp; plateau de l'Arbois</span>
+        <figcaption class="plate-caption">
+          <span>Inspiration territoriale : Aix-en-Provence et plateau de l'Arbois</span>
           <span>2026</span>
         </figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="section-tight" aria-labelledby="team-heading">
+  <section class="section-tight section-ruled" aria-labelledby="team-heading">
     <div class="container">
-      <span class="eyebrow badge-emerald">L'équipe fondatrice</span>
+      <span class="kicker kicker-pine">02 / L'équipe fondatrice</span>
       <h2 id="team-heading">Quatre pôles complémentaires basés en Provence</h2>
       <p class="lead">
-        Une structure à taille humaine où technique, narration et communication avancent ensemble.
+        Une organisation inspirée d'un vrai studio indépendant où programmation, design et communication
+        travaillent main dans la main.
       </p>
 
-      <div class="grid-2" style="margin-top: 1.5rem;">
+      <div class="archival-list">
         {
           teamMembers.map((member) => (
-            <article class="card">
-              <span class="eyebrow" style="margin-bottom: 0.65rem;">
-                {member.role}
+            <article class="archival-row">
+              <span class="archival-num">{member.code}</span>
+              <div>
+                <h3 style="margin-bottom: 0.25rem;">{member.name}</h3>
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--pine);">
+                  {member.role}
+                </span>
+              </div>
+              <p>{member.bio}</p>
+              <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint);">
+                Aix-en-Provence
               </span>
-              <h3>{member.name}</h3>
-              <p style="margin-bottom: 0;">{member.bio}</p>
             </article>
           ))
         }
@@ -94,28 +105,27 @@ const teamMembers = [
     </div>
   </section>
 
-  <section class="section-tight" aria-labelledby="manifesto-heading">
+  <section class="section-tight section-ruled" aria-labelledby="manifesto-heading">
     <div class="container grid-2">
-      <article class="card">
-        <span class="eyebrow">Manifeste Solarpunk</span>
+      <article class="panel">
+        <span class="kicker">Manifeste Solarpunk</span>
         <h2 id="manifesto-heading">Notre philosophie de création</h2>
         <p>
-          Nous croyons aux jeux vidéo qui respectent le temps et l'intelligence des joueurs : pas de
-          monétisation agressive, des systèmes lisibles basés sur de vraies lois physiques et une écriture
-          humaine relue avec exigence.
+          Nous défendons des jeux de gestion respectueux du joueur : zéro monétisation intrusive, des
+          systèmes lisibles fondés sur la physique des ressources et une écriture relue par des humains.
         </p>
-        <a href="/jeux/veridia-2140/">Voir notre premier projet : Veridia 2140 →</a>
+        <a href="/jeux/veridia-2140/" class="link-editorial">Consulter le dossier Veridia 2140 →</a>
       </article>
 
-      <article class="card">
-        <span class="eyebrow badge-emerald">Éthique &amp; Transparence IA</span>
+      <article class="panel-muted">
+        <span class="kicker kicker-pine">Éthique &amp; Transparence IA</span>
         <h2>Usage encadré de l'intelligence artificielle</h2>
         <p>
-          Dans une démarche de transparence, Flexarion utilise des assistants IA pour prototyper ses
-          illustrations conceptuelles et automatiser les contrôles techniques SEO, tandis que la direction
-          artistique finale, le code critique et la voix éditoriale restent pilotés par l'équipe humaine.
+          Flexarion recourt à l'IA pour explorer des visuels conceptuels, structurer son code et automatiser
+          les contrôles SEO techniques. La direction artistique, l'esprit critique et la voix éditoriale
+          restent sous contrôle humain.
         </p>
-        <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">
+        <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer" class="link-editorial">
           Consulter le journal technique sur GitHub →
         </a>
       </article>

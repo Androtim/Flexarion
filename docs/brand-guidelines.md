@@ -1,26 +1,27 @@
 # Charte Graphique & Identité Visuelle — Flexarion Studio
 
-## 1. Concept Visuel : *Solarpunk Méditerranéen*
-Contrairement aux studios SF génériques (noir/néon violet cyberpunk), Flexarion associe l'architecture solaire futuriste aux codes lumineux d'Aix-en-Provence : pierre calcaire chaude, lumière dorée du soir, eau turquoise et végétation botanique high-tech.
+## 1. Direction Artistique Éditoriale : *Calcaire, Encre & Solarpunk*
+Pour se démarquer radicalement des sites génériques sombres à dégradés néons, le site web de Flexarion adopte l'esthétique d'une **monographie de studio indépendant / presse provençale** : papier calcaire chaud, encre forestière profonde, filets architecturaux de `1px` et typographie éditoriale contrastée.
 
-## 2. Palette Chromatique Officielle
+## 2. Palette Chromatique du Site Web
 
 | Rôle | Nom | Code Hex | Usage principal |
 | :--- | :--- | :--- | :--- |
-| **Fond principal** | Bleu Nuit Abyssal | `#08141E` | Arrière-plans du site, avatar, sections immersives |
-| **Surface / Cartes** | Ardoise Provençale | `#0F2334` | Cartes éditoriales, blocs de code, encarts FAQ |
-| **Accent primaire** | Émeraude Botanique | `#2ED39A` | Liens actifs, boutons principaux, réseaux d'eau/mycélium |
-| **Accent secondaire** | Or Solaire Aixois | `#F5B841` | Titres clés, badges, reflets solaires, repères visuels |
-| **Texte principal** | Blanc Minéral | `#F4F7F5` | Corps de texte haute lisibilité (contraste WCAG AAA) |
-| **Texte secondaire** | Sauge Grisée | `#A9BFC4` | Métadonnées, légendes, sous-titres |
+| **Papier principal** | Calcaire Provençal | `#F5F0E6` | Fond éditorial principal (contraste élevé, lisible, anti-AI-slop) |
+| **Surface secondaire** | Pierre Sablée | `#EBE3D3` | Encarts de synthèse, blocs de métadonnées |
+| **Encre principale** | Encre Forestière | `#121917` | Titres, filets, footer, boutons primaires |
+| **Accent botanique** | Pin Méditerranéen | `#155E44` | Liens, soulignements actifs, repères techniques |
+| **Accent solaire** | Terre Cuite / Ocre | `#A95A22` | Numérotation archivistique (`01`, `02`), kickers éditoriaux |
+
+*(Les concept arts du jeu et l'avatar social conservent les teintes nocturnes `#08141E`, `#2ED39A` et `#F5B841` des scènes de crépuscule dans Veridia 2140.)*
 
 ## 3. Typographie
-- **Titres :** `Space Grotesk` (avec fallback géométrique système sans-serif propre)
-- **Corps de texte :** `Inter` / `system-ui` (lisibilité maximale, zéro CLS)
-- **Technique / Devlogs :** `JetBrains Mono` / `ui-monospace`
+- **Titres :** `Fraunces` (serif éditorial expressif à taille optique)
+- **Corps de texte :** `DM Sans` (sans-serif humaniste haute lisibilité)
+- **Métadonnées, coordonnées & code :** `IBM Plex Mono`
 
 ## 4. Assets Disponibles
-- `public/favicon.svg` & `public/images/flexarion-logo.svg` — Logo vectoriel du studio
+- `public/favicon.svg` & `public/images/flexarion-logo.svg` — Logo vectoriel du studio adapté au papier calcaire
 - `public/images/veridia-hero.jpg` — Key Art panoramique *Veridia 2140* (Sainte-Victoire & Dômes)
 - `public/images/devlog-hydrology.jpg` — Vue isométrique réseau hydrique & mycélium
 - `social/instagram/assets/flexarion-avatar.jpg` — Emblème 3D centré pour avatars sociaux

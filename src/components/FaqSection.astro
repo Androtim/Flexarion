@@ -27,17 +27,24 @@ const faqSchema = {
 };
 ---
 
-<section class="section-tight" aria-labelledby="faq-heading">
+<section class="section-tight section-ruled" aria-labelledby="faq-heading">
   <div class="container">
-    <span class="eyebrow badge-emerald">Questions fréquentes · GEO</span>
+    <span class="kicker kicker-pine">Questions fréquentes</span>
     <h2 id="faq-heading">{title}</h2>
     {subtitle && <p class="lead">{subtitle}</p>}
 
-    <div class="faq-list" style="margin-top: 1.5rem;">
+    <div class="faq-list">
       {
         items.map((item, idx) => (
           <details class="faq-item" open={idx === 0}>
-            <summary>{item.question}</summary>
+            <summary>
+              <span>
+                <span style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--ochre); margin-right: 0.65rem;">
+                  0{idx + 1}
+                </span>
+                {item.question}
+              </span>
+            </summary>
             <div class="faq-answer">
               <p style="margin: 0;">{item.answer}</p>
             </div>
