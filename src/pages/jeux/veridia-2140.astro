@@ -26,30 +26,24 @@ const videoGameSchema = {
     name: STUDIO.legalName,
     url: siteOrigin,
   },
-  offers: {
-    "@type": "Offer",
-    price: STUDIO.flagshipGame.price,
-    priceCurrency: STUDIO.flagshipGame.currency,
-    availability: "https://schema.org/PreOrder",
-  },
   image: `${siteOrigin}/images/veridia-hero.jpg`,
 };
 
 const gameFaqs = [
   {
-    question: "Quel est le modèle économique de Veridia 2140 ?",
+    question: "Quel est le modèle économique imaginé pour Veridia 2140 ?",
     answer:
-      "Veridia 2140 est un jeu indépendant payant vendu 19,99 € sur PC, sans aucune microtransaction ni boutique en ligne. Une démo gratuite baptisée Prologue Arbois permet d'essayer les mécaniques de base avant l'achat.",
+      "Dans le cadre de ce concept de studio, Veridia 2140 est pensé comme un jeu indépendant PC payant à achat unique (sans aucune microtransaction ni boutique en jeu), accompagné d'une démo jouable.",
+  },
+  {
+    question: "Veridia 2140 est-il déjà disponible à l'achat ?",
+    answer:
+      "Non : Veridia 2140 et Flexarion Studio sont un projet conceptuel de communication et d'ingénierie logicielle créé par des étudiants en BUT Informatique à Aix-en-Provence (IUT d'Aix-Marseille). Aucune vente ni précommande n'est ouverte.",
   },
   {
     question: "Qu'est-ce qui distingue Veridia 2140 des autres city-builders de science-fiction ?",
     answer:
-      "Contrairement aux jeux post-apocalyptiques ou spatiaux sombres, Veridia 2140 adopte une approche Solarpunk méditerranéenne située à Aix-en-Provence en 2140, avec une simulation déterministe de l'eau par graphes orientés et une thermorégulation mycélienne.",
-  },
-  {
-    question: "Sur quelles plateformes sortira Veridia 2140 ?",
-    answer:
-      "Le développement cible en priorité les ordinateurs PC (Windows et Linux) avec une sortie prévue sur Steam et itch.io.",
+      "Contrairement aux jeux post-apocalyptiques ou spatiaux sombres, Veridia 2140 adopte une approche Solarpunk méditerranéenne située à Aix-en-Provence en 2140, avec une modélisation de l'eau par graphes orientés et une thermorégulation mycélienne.",
   },
 ];
 ---
@@ -80,14 +74,18 @@ const gameFaqs = [
             <span class="spec-value">City-Builder &amp; Stratégie</span>
           </div>
           <div class="spec-box">
-            <span class="spec-label">Modèle économique</span>
-            <span class="spec-value">19,99 € + Démo gratuite</span>
+            <span class="spec-label">Modèle envisagé</span>
+            <span class="spec-value">Indé payant (0 microtransaction)</span>
           </div>
           <div class="spec-box">
-            <span class="spec-label">Plateformes</span>
-            <span class="spec-value">PC (Windows / Linux)</span>
+            <span class="spec-label">Statut du projet</span>
+            <span class="spec-value">Concept académique (AMU)</span>
           </div>
         </div>
+
+        <p style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-muted);">
+          <strong>Note de transparence :</strong> {STUDIO.flagshipGame.status}. Aucune vente ni précommande réelle n'est proposée sur ce site.
+        </p>
       </div>
 
       <figure class="hero-frame">

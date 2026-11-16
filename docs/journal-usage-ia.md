@@ -16,6 +16,7 @@
 | 2026-11-16 | Identité visuelle & Concept Arts | Sous-agent `image-generator` + SVG | Générer 4 visuels Solarpunk sans texte parasite (key art Sainte-Victoire 2140, schéma hydrique isométrique, terrasse studio Aix, avatar Instagram). | Contrôle visuel humain de chaque image (vérification de la cohérence palette `#08141E` / `#2ED39A` / `#F5B841`, absence d'artefacts texte, cadrage rond pour l'avatar). |
 | 2026-11-16 | Architecture Site Astro, SEO/GEO & Devlogs #1–#2 | **Gemini 4 Hydrogen** (structure) *(+ polissage prévu sur Claude Opus 5.5 / relecture groupe)* | Construire les 5 pages en silo, JSON-LD `Schema.org`, `llms.txt`, `sitemap` et les 2 premiers devlogs techniques. | À compléter lors de la relecture du groupe : personnalisation des prénoms réels, anecdotes étudiantes aixoises et réécriture manuelle des accroches. |
 | 2026-11-16 | Kit Instagram (`@flexarion` & `@flexarion_official`) | **Gemini 4 Hydrogen** | Rédiger les bios (≤150 car.), stratégie anti-cannibalisation et calendrier des 8 premiers posts. | Publication et adaptation humaine des légendes en temps réel lors du lancement CM2/TD2. |
+| 2026-11-16 | Correctif éthique & transparence académique | **Gemini 4 Hydrogen** (sur alerte critique de l'étudiant) | Supprimer le faux prix/précommande JSON-LD et ajouter un disclaimer académique IUT d'Aix-Marseille explicite sans casser le storytelling. | Excellent exemple d'esprit critique humain face à l'IA : l'étudiant a détecté le risque de tromperie commerciale sur un site public indexé. |
 
 ---
 

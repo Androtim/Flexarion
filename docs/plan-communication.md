@@ -21,7 +21,7 @@
 ### 1.2 Le Jeu Phare : *VERIDIA 2140*
 - **Genre :** City-builder tactique & simulation éco-futuriste (solo, vue isométrique).
 - **Pitch :** En 2140, le bassin aixois connaît des étés extrêmes. Le joueur pilote la reconstruction de **dômes climatiques en pierre calcaire et verre solaire** adossés à la montagne Sainte-Victoire, reliés par des aqueducs souterrains et des réseaux mycéliens intelligents qui régulent l'humidité et l'énergie.
-- **Modèle économique :** **Jeu indépendant payant (19,99 €)** sur PC (Steam & itch.io), avec une **démo gratuite jouable (Prologue Arbois)** et zéro microtransaction.
+- **Modèle économique envisagé :** **Jeu indépendant PC payant (achat unique sans microtransaction)** sur Steam & itch.io, accompagné d'une **démo gratuite** *(concept élaboré en cadre universitaire à l'IUT d'Aix-Marseille, sans commercialisation réelle ouverte)*.
 - **Pourquoi ce positionnement gagne le concours :**
   - **0 collision SEO** sur le titre *Veridia 2140*.
   - **Ancrage local authentique** (*Aix-en-Provence* + *Sainte-Victoire* intégrés dans le lore et les devlogs, renforçant le critère **E-E-A-T** et la différenciation face aux autres groupes).

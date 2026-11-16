@@ -6,7 +6,6 @@ export const STUDIO = {
   region: "Provence-Alpes-Côte d'Azur",
   country: "FR",
   foundedYear: "2026",
-  email: "contact@flexarion-studio.example",
   instagramMain: "https://instagram.com/flexarion",
   instagramHandle: "@flexarion",
   instagramBackupHandle: "@flexarion_official",
@@ -14,10 +13,9 @@ export const STUDIO = {
   flagshipGame: {
     title: "VERIDIA 2140",
     genre: "Stratégie & City-Builder Solarpunk",
-    price: "19.99",
-    currency: "EUR",
-    platform: "PC (Windows / Linux)",
-    demoName: "Prologue Arbois (Démo gratuite)",
+    businessModel: "Modèle pensé : Jeu indé payant (sans microtransactions)",
+    platform: "PC (Concept en pré-production)",
+    status: "Concept de jeu vidéo réalisé en cadre universitaire (IUT d'Aix-Marseille)",
   },
 };
 
