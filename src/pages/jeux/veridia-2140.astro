@@ -1,0 +1,184 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FaqSection from "../../components/FaqSection.astro";
+import { STUDIO } from "../../data/site";
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+
+const videoGameSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: STUDIO.flagshipGame.title,
+  description:
+    "City-builder tactique et simulation éco-futuriste Solarpunk en Provence en 2140, développé par Flexarion Studio à Aix-en-Provence.",
+  genre: ["Strategy", "City-Builder", "Science Fiction", "Solarpunk"],
+  gamePlatform: ["PC", "Windows", "Linux"],
+  applicationCategory: "Game",
+  operatingSystem: "Windows 11, Linux",
+  inLanguage: "fr",
+  author: {
+    "@type": "Organization",
+    name: STUDIO.legalName,
+    url: siteOrigin,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: STUDIO.legalName,
+    url: siteOrigin,
+  },
+  offers: {
+    "@type": "Offer",
+    price: STUDIO.flagshipGame.price,
+    priceCurrency: STUDIO.flagshipGame.currency,
+    availability: "https://schema.org/PreOrder",
+  },
+  image: `${siteOrigin}/images/veridia-hero.jpg`,
+};
+
+const gameFaqs = [
+  {
+    question: "Quel est le modèle économique de Veridia 2140 ?",
+    answer:
+      "Veridia 2140 est un jeu indépendant payant vendu 19,99 € sur PC, sans aucune microtransaction ni boutique en ligne. Une démo gratuite baptisée Prologue Arbois permet d'essayer les mécaniques de base avant l'achat.",
+  },
+  {
+    question: "Qu'est-ce qui distingue Veridia 2140 des autres city-builders de science-fiction ?",
+    answer:
+      "Contrairement aux jeux post-apocalyptiques ou spatiaux sombres, Veridia 2140 adopte une approche Solarpunk méditerranéenne située à Aix-en-Provence en 2140, avec une simulation déterministe de l'eau par graphes orientés et une thermorégulation mycélienne.",
+  },
+  {
+    question: "Sur quelles plateformes sortira Veridia 2140 ?",
+    answer:
+      "Le développement cible en priorité les ordinateurs PC (Windows et Linux) avec une sortie prévue sur Steam et itch.io.",
+  },
+];
+---
+
+<BaseLayout
+  title="Veridia 2140 — Jeu Solarpunk par Flexarion Studio (Aix-en-Provence)"
+  description="Découvrez Veridia 2140, le jeu phare de Flexarion Studio : city-builder Solarpunk en Provence, flux hydriques réalistes, réseau mycélien et modèle sans microtransaction."
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Veridia 2140", href: "/jeux/veridia-2140/" },
+  ]}
+  schemas={[videoGameSchema]}
+>
+  <section class="section">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Jeu Phare · Solarpunk Méditerranéen</span>
+        <h1>VERIDIA 2140 : bâtir les oasis solaires de Provence</h1>
+        <p class="lead">
+          En 2140, le sud de la France affronte des étés extrêmes. Aux commandes des dômes autonomes d'
+          <strong>Aix-en-Provence</strong>, concevez un écosystème urbain capable de capturer la rosée,
+          d'ombrager les cultures en restanques et de refroidir la roche grâce à un réseau mycélien vivant.
+        </p>
+
+        <div class="specs-grid" aria-label="Fiche technique de Veridia 2140">
+          <div class="spec-box">
+            <span class="spec-label">Genre</span>
+            <span class="spec-value">City-Builder &amp; Stratégie</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-label">Modèle économique</span>
+            <span class="spec-value">19,99 € + Démo gratuite</span>
+          </div>
+          <div class="spec-box">
+            <span class="spec-label">Plateformes</span>
+            <span class="spec-value">PC (Windows / Linux)</span>
+          </div>
+        </div>
+      </div>
+
+      <figure class="hero-frame">
+        <img
+          src="/images/veridia-hero.jpg"
+          alt="Illustration principale de Veridia 2140 avec ses dômes géodésiques en Provence"
+          width="1280"
+          height="720"
+        />
+        <figcaption class="hero-caption">
+          <span>Secteur Sainte-Victoire · Dôme calcaire &amp; aqueducs</span>
+          <span>Pre-Alpha</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="mechanics-heading">
+    <div class="container">
+      <span class="eyebrow badge-emerald">Mécaniques de jeu</span>
+      <h2 id="mechanics-heading">Trois systèmes physiques imbriqués</h2>
+      <div class="grid-3" style="margin-top: 1.5rem;">
+        <article class="card">
+          <h3>1. Hydrologie gravitaire</h3>
+          <p>
+            Chaque bassin et aqueduc forme un graphe orienté : le relief provençal dicte la pression de
+            l'eau, tandis que les pergolas solaires évitent l'évaporation pendant les canicules.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>2. Symbiose mycélienne</h3>
+          <p>
+            Sous les terrasses d'oliviers et de lavande, un réseau de mycélium bioluminescent transfère
+            l'humidité des zones fraîches vers les quartiers surchauffés.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>3. Architecture en calcaire &amp; verre</h3>
+          <p>
+            Choisissez l'orientation de chaque verrière géodésique : capter le maximum d'énergie solaire le
+            matin ou préserver l'inertie thermique nocturne du bâti.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="gallery-heading">
+    <div class="container">
+      <h2 id="gallery-heading">Aperçu du moteur &amp; carnets techniques</h2>
+      <div class="grid-2" style="margin-top: 1.5rem;">
+        <figure class="card card-media" style="margin: 0;">
+          <img
+            src="/images/devlog-hydrology.jpg"
+            alt="Vue isométrique des canaux d'eau turquoise et des capteurs solaires dans Veridia 2140"
+            width="1280"
+            height="720"
+            loading="lazy"
+          />
+          <figcaption class="card-body">
+            <h3 style="margin-bottom: 0.4rem;">Réseau hydrique sous dôme</h3>
+            <p style="margin-bottom: 0;">
+              Visualisation isométrique des terrasses de culture, des nœuds énergétiques ambre et des
+              conduites émeraude.
+            </p>
+          </figcaption>
+        </figure>
+
+        <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
+          <span class="eyebrow">Côté ingénierie</span>
+          <h3>Comment tourne la simulation ?</h3>
+          <p>
+            Nous documentons notre code de simulation (graphes orientés, automates cellulaires thermiques et
+            déterminisme à 60 FPS) dans nos carnets de développement ouverts.
+          </p>
+          <div class="actions">
+            <a href="/devlogs/simulation-flux-hydriques-graphes/" class="btn btn-primary">
+              Lire le Devlog Technique #2
+            </a>
+            <a href="/contact/" class="btn btn-secondary">Dossier Presse</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection
+    title="FAQ — Veridia 2140"
+    subtitle="Les informations essentielles sur le gameplay, la sortie PC et le modèle économique."
+    items={gameFaqs}
+  />
+</BaseLayout>

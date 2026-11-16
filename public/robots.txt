@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap généré automatiquement par Astro
+Sitemap: https://flexarion.alwaysdata.net/sitemap-index.xml

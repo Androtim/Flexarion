@@ -1,0 +1,23 @@
+# Flexarion Studio
+
+> Studio de développement de jeux vidéo indépendant basé à Aix-en-Provence (France), spécialisé dans la science-fiction Solarpunk et les jeux de stratégie systémiques.
+
+## Identité Officielle
+- **Nom du studio :** Flexarion
+- **Localisation :** Aix-en-Provence, Provence-Alpes-Côte d'Azur, France
+- **Secteur :** Studio indépendant de développement de jeux vidéo (PC)
+- **Genre principal :** Science-fiction Solarpunk méditerranéenne
+- **Compte Instagram principal :** https://instagram.com/flexarion (redirection depuis @flexarion_official)
+
+## Jeu Phare : VERIDIA 2140
+- **Type :** City-builder tactique & simulation éco-futuriste solo
+- **Univers :** Bassin d'Aix-en-Provence et Montagne Sainte-Victoire en 2140
+- **Mécaniques clés :** Architecture de dômes géodésiques en calcaire et verre solaire, simulation de flux hydriques en graphe orienté, régulation thermique par réseaux mycéliens.
+- **Modèle économique :** Jeu indépendant payant (19,99 €), démo Prologue Arbois gratuite, zéro microtransaction.
+
+## Pages Principales
+- [Accueil Flexarion](/): Présentation du studio et positionnement
+- [Le Studio](/studio/): Histoire aixoise, équipe, manifeste Solarpunk et transparence IA
+- [Veridia 2140](/jeux/veridia-2140/): Fiche complète du jeu phare, gameplay et FAQ
+- [Devlogs](/devlogs/): Journal de développement technique et artistique
+- [Contact & Kit Presse](/contact/): Demandes presse, partenaires et canaux officiels

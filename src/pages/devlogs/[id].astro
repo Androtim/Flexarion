@@ -1,0 +1,121 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { STUDIO } from "../../data/site";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("devlogs");
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post, allPosts: posts },
+  }));
+}
+
+const { post, allPosts } = Astro.props;
+const { Content } = await render(post);
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+const articleUrl = new URL(Astro.url.pathname, siteOrigin).href;
+const otherDevlogs = allPosts.filter((p) => p.id !== post.id);
+
+const blogPostingSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  image: new URL(post.data.image, siteOrigin).href,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  author: {
+    "@type": "Organization",
+    name: post.data.author,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: STUDIO.legalName,
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteOrigin}/images/flexarion-logo.svg`,
+    },
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": articleUrl,
+  },
+};
+---
+
+<BaseLayout
+  title={post.data.seoTitle}
+  description={post.data.description}
+  ogImage={post.data.image}
+  ogType="article"
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Devlogs", href: "/devlogs/" },
+    { name: post.data.title, href: `/devlogs/${post.id}/` },
+  ]}
+  schemas={[blogPostingSchema]}
+>
+  <article class="section">
+    <div class="container">
+      <div style="max-width: 78ch;">
+        <span class="eyebrow badge-emerald">{post.data.tag} · {post.data.readingTime}</span>
+        <h1>{post.data.title}</h1>
+        <p style="font-size: 0.94rem; color: var(--text-muted); margin-bottom: 1.75rem;">
+          Publié par <strong>{post.data.author}</strong> ({post.data.authorRole}) le{" "}
+          <time datetime={post.data.pubDate.toISOString()}>
+            {post.data.pubDate.toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+        </p>
+      </div>
+
+      <figure class="hero-frame" style="margin: 0 0 2.2rem; max-width: 900px;">
+        <img src={post.data.image} alt={post.data.imageAlt} width="1280" height="720" />
+        <figcaption class="hero-caption">
+          <span>{post.data.imageAlt}</span>
+          <span>Flexarion Devlog</span>
+        </figcaption>
+      </figure>
+
+      <aside class="card" style="max-width: 74ch; margin-bottom: 2.2rem; border-color: var(--border-gold);">
+        <h2 style="font-size: 1.12rem; color: var(--gold); margin-bottom: 0.65rem;">
+          À retenir en 3 points (Synthèse GEO)
+        </h2>
+        <ul style="margin: 0; padding-left: 1.25rem; color: var(--text-secondary);">
+          {post.data.summaryPoints.map((point) => <li>{point}</li>)}
+        </ul>
+      </aside>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        otherDevlogs.length > 0 && (
+          <section style="margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08);">
+            <h2>Poursuivre dans le silo Devlogs</h2>
+            <div class="grid-2" style="margin-top: 1rem;">
+              {otherDevlogs.map((other) => (
+                <article class="card">
+                  <span class="eyebrow badge-emerald">{other.data.tag}</span>
+                  <h3>
+                    <a href={`/devlogs/${other.id}/`} style="color: var(--text-primary);">
+                      {other.data.title}
+                    </a>
+                  </h3>
+                  <p>{other.data.description}</p>
+                  <a href={`/devlogs/${other.id}/`}>Lire cet article →</a>
+                </article>
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>
