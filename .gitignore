@@ -26,3 +26,5 @@ Thumbs.db
 # Vidéos générées (npm run video:build)
 social/videos/*.mp4
 social/videos/preview-*
+social/itch/build/
+social/itch/*.zip

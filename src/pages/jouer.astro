@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FaqSection from "../components/FaqSection.astro";
+import GameApp from "../components/GameApp.astro";
+import { RULES, GAME_VERSION } from "../game/content";
+import { DEFI_ENTRIES } from "../data/defi";
+import { STUDIO } from "../data/site";
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+
+const gameSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: "Veridia 2140 : Été 1 (prototype)",
+  url: `${siteOrigin}/jouer/`,
+  description:
+    "Prototype jouable dans le navigateur de Veridia 2140, le city-builder Solarpunk de Flexarion : faites traverser l'été au Pays d'Aix en guidant l'eau par gravité.",
+  genre: ["Strategy", "City-Builder", "Simulation"],
+  gamePlatform: ["Web browser"],
+  playMode: "SinglePlayer",
+  inLanguage: "fr",
+  isAccessibleForFree: true,
+  author: { "@id": `${siteOrigin}/#organization` },
+  publisher: { "@id": `${siteOrigin}/#organization` },
+};
+
+const faqs = [
+  {
+    question: "Le prototype de Veridia 2140 est-il gratuit ?",
+    answer:
+      "Oui. Ce prototype se joue gratuitement dans le navigateur, sans inscription ni téléchargement. Flexarion est un studio fictif créé dans un projet étudiant : rien n'est vendu.",
+  },
+  {
+    question: "Ma partie est-elle sauvegardée ?",
+    answer:
+      "Oui, automatiquement, dans votre navigateur. Rien n'est envoyé à un serveur. En navigation privée, la sauvegarde disparaît à la fermeture.",
+  },
+  {
+    question: "Le jeu va-t-il évoluer ?",
+    answer:
+      "Oui : tous les deux jours, l'idée la plus aimée en commentaire sur nos réseaux est ajoutée au jeu. Suivez @flexarion sur Instagram et @flexarion_studio sur TikTok.",
+  },
+];
+---
+
+<BaseLayout
+  title="Jouer à Veridia 2140 : prototype gratuit en ligne | Flexarion"
+  description="Jouez gratuitement au prototype de Veridia 2140 par Flexarion : guidez l'eau par gravité, rafraîchissez la ville et faites traverser l'été au Pays d'Aix."
+  ogImage="/images/veridia-hero.jpg"
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Jouer", href: "/jouer/" },
+  ]}
+  schemas={[gameSchema]}
+>
+  <header class="wrap page-head" style="padding-bottom: 1.5rem;">
+    <h1>Jouer à Veridia 2140 : l'Été 1.</h1>
+    <p class="lead narrow">
+      Le premier prototype jouable de Flexarion. Reliez le réservoir aux cinq quartiers d'Aix, gardez-les
+      au frais, et tenez {RULES.days} jours d'été. L'eau ne remonte jamais.
+    </p>
+  </header>
+
+  <GameApp />
+
+  <section class="block" aria-labelledby="defi-heading">
+    <div class="wrap narrow">
+      <h2 id="defi-heading">Le défi : la ville des joueurs</h2>
+      <p class="lead">
+        Tous les deux jours, l'idée la plus aimée en commentaire sur
+        <a href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a> ou
+        <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">Instagram</a> entre dans le
+        jeu : un bâtiment, un événement, une règle. Veridia se construit avec vous.
+      </p>
+      <ul class="plain-list">
+        <li><strong>Comment participer :</strong> commentez sous la vidéo du vote. Le commentaire avec le plus de « j'aime » à la clôture l'emporte.</li>
+        <li><strong>Ce qui compte :</strong> l'idée doit rester dans l'univers de Veridia 2140. Nous gardons un droit de veto sur ce qui est offensant ou hors sujet, et prenons alors l'idée suivante.</li>
+        <li><strong>Rien à gagner :</strong> ce n'est pas un concours. Votre idée dans le jeu, c'est tout (et c'est déjà pas mal).</li>
+        <li><strong>Vos données :</strong> nous ne citons votre pseudo qu'avec votre accord.</li>
+      </ul>
+      <h3 style="margin-top: 2rem;">Les ajouts (version actuelle : {GAME_VERSION})</h3>
+      {
+        DEFI_ENTRIES.length === 0 ? (
+          <p>Le premier vote arrive bientôt. Suivez-nous pour proposer la première idée.</p>
+        ) : (
+          <ol class="timeline">
+            {DEFI_ENTRIES.map((e) => (
+              <li>
+                <span class="year">#{e.numero}</span>
+                <h3>{e.idee}</h3>
+                <p>
+                  {e.ajout} <span class="note">(version {e.version}, {new Date(e.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}{e.auteur ? `, idée de ${e.auteur}` : ""})</span>
+                </p>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="block block-chalk" aria-labelledby="how-heading">
+    <div class="wrap narrow">
+      <h2 id="how-heading">Ce que ce prototype teste</h2>
+      <p>
+        L'Été 1 met en place le cœur de <a href="/jeux/veridia-2140/">Veridia 2140</a> : un réseau d'eau
+        entièrement gravitaire, une chaleur qui monte jusqu'à la canicule, et un mycélium qui ne rafraîchit
+        la ville que s'il est relié à l'eau. Les détails de la simulation sont expliqués dans nos
+        <a href="/devlogs/">devlogs</a>.
+      </p>
+      <p class="note">
+        Prototype réalisé par Flexarion, studio fictif créé dans le cadre du BUT Informatique à l'IUT
+        d'Aix-Marseille. Gratuit, sans publicité, sans collecte de données : la sauvegarde reste dans votre
+        navigateur.
+      </p>
+    </div>
+  </section>
+
+  <FaqSection title="Questions sur le prototype" items={faqs} />
+</BaseLayout>

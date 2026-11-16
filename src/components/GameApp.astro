@@ -1,0 +1,383 @@
+---
+// Le jeu (HUD, carte, outils), partagé par /jouer/ et la version embarquée pour itch.io.
+import { BUILDINGS, GAME_VERSION } from "../game/content";
+import { STUDIO } from "../data/site";
+
+const tools = Object.values(BUILDINGS);
+---
+
+<section class="game-block" aria-label="Prototype jouable">
+  <div class="wrap game" data-game>
+    <div class="hud">
+      <div><span>Jour</span><strong data-day>0</strong></div>
+      <div><span>Air</span><strong data-ambient>29 °C</strong></div>
+      <div><span>Crédits</span><strong data-credits>0</strong></div>
+      <div class="hud-res">
+        <span>Réservoir</span><strong data-reservoir>0</strong>
+        <span class="meter"><span data-reservoir-bar></span></span>
+      </div>
+      <label class="hud-valve">
+        <span>Vanne : <b data-valve-label></b></span>
+        <input type="range" min="0" max="50" step="1" data-valve aria-label="Débit de la vanne du réservoir" />
+      </label>
+    </div>
+
+    <div class="board">
+      <div class="canvas-wrap">
+        <canvas data-canvas aria-label="Carte du district de Veridia. Utilisez les outils puis touchez une case pour construire."></canvas>
+
+        <div class="overlay" data-intro>
+          <div class="overlay-card">
+            <h2>Été 2140, Pays d'Aix</h2>
+            <ul>
+              <li><strong>Aqueducs</strong> : partez du réservoir (en haut) et descendez vers les quartiers. L'eau ne passe que vers une case <em>plus basse</em>.</li>
+              <li><strong>Bassins</strong> : ils stockent l'eau pour la canicule et rafraîchissent autour.</li>
+              <li><strong>Mycélium</strong> : posé contre l'eau, il refroidit tout le voisinage.</li>
+              <li><strong>Dômes</strong> : ils rapportent des crédits, mais chauffent.</li>
+              <li>Réglez la <strong>vanne</strong> : trop ouverte, le réservoir se vide avant la fin de l'été.</li>
+            </ul>
+            <p>Astuce : la vue <strong>Relief</strong> affiche l'altitude de chaque case.</p>
+            <button type="button" class="btn btn-sun" data-start>Commencer l'été</button>
+          </div>
+        </div>
+
+        <div class="overlay" data-end hidden>
+          <div class="overlay-card">
+            <h2 data-end-title></h2>
+            <p data-end-text></p>
+            <p>Une idée pour la suite ? Proposez-la en commentaire sur nos réseaux : la plus aimée entre dans le jeu.</p>
+            <div class="actions">
+              <button type="button" class="btn btn-sun" data-restart>Rejouer</button>
+              <a class="btn btn-ghost" href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">Instagram</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="info" data-info aria-live="polite"></p>
+    </div>
+
+    <div class="side">
+      <div class="tools" role="toolbar" aria-label="Constructions">
+        {
+          tools.map((t) => (
+            <button type="button" data-tool={t.id} aria-pressed="false" title={t.help}>
+              <span>{t.name}</span>
+              <small>{t.cost} cr · touche {t.key}</small>
+            </button>
+          ))
+        }
+        <button type="button" data-tool="demolish" aria-pressed="false">
+          <span>Démolir</span><small>touche 5</small>
+        </button>
+        <button type="button" data-tool="inspect" aria-pressed="false">
+          <span>Observer</span><small>sans construire</small>
+        </button>
+      </div>
+
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Vitesse">
+          <button type="button" data-speed="0" aria-pressed="false">Pause</button>
+          <button type="button" data-speed="1" aria-pressed="false">×1</button>
+          <button type="button" data-speed="3" aria-pressed="false">×3</button>
+        </div>
+        <div class="seg" role="group" aria-label="Vue">
+          <button type="button" data-view="normal" aria-pressed="true">Carte</button>
+          <button type="button" data-view="relief" aria-pressed="false">Relief</button>
+          <button type="button" data-view="heat" aria-pressed="false">Chaleur</button>
+        </div>
+      </div>
+
+      <h2 class="side-title">Quartiers</h2>
+      <ul class="quarters" data-quarters></ul>
+
+      <h2 class="side-title">Journal</h2>
+      <ul class="log" data-log></ul>
+
+      <button type="button" class="restart" data-restart>Recommencer l'été</button>
+      <p class="version">Prototype v{GAME_VERSION} · Été 1</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { boot } from "../game/main.ts";
+  const root = document.querySelector<HTMLElement>("[data-game]");
+  if (root) boot(root);
+</script>
+
+<style>
+  .game-block {
+    background: var(--dusk);
+    color: var(--limestone);
+    padding-block: 1.25rem 2rem;
+  }
+
+  .game {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 270px;
+    grid-template-areas: "hud hud" "board side";
+    gap: 1rem;
+  }
+
+  .hud {
+    grid-area: hud;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+
+  .hud > div,
+  .hud > label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .hud span {
+    color: #9fb0aa;
+  }
+
+  .hud strong {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+  }
+
+  .meter {
+    display: inline-block;
+    width: 90px;
+    height: 8px;
+    background: var(--dusk-2);
+    border-radius: 99px;
+    overflow: hidden;
+    align-self: center;
+  }
+
+  .meter span {
+    display: block;
+    height: 100%;
+    background: var(--water);
+  }
+
+  .hud-valve {
+    flex-wrap: wrap;
+  }
+
+  .hud-valve b {
+    color: #fff;
+  }
+
+  .hud-valve input {
+    accent-color: var(--water);
+    width: 140px;
+  }
+
+  .board {
+    grid-area: board;
+    min-width: 0;
+  }
+
+  .canvas-wrap {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  canvas {
+    display: block;
+    border-radius: var(--radius-m);
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  @media (pointer: coarse) {
+    canvas {
+      touch-action: pan-x pan-y;
+    }
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(19, 38, 46, 0.72);
+    border-radius: var(--radius-m);
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .overlay[hidden] {
+    display: none;
+  }
+
+  .overlay-card {
+    background: var(--chalk);
+    color: var(--ink);
+    border-radius: var(--radius-m);
+    padding: 1.25rem 1.4rem;
+    max-width: 460px;
+    font-size: 0.95rem;
+  }
+
+  .overlay-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .overlay-card ul {
+    padding-left: 1.1rem;
+    margin: 0 0 0.8rem;
+    color: var(--ink-soft);
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .overlay-card strong {
+    color: var(--ink);
+  }
+
+  .info {
+    min-height: 2.6em;
+    margin: 0.5rem 0 0;
+    font-size: 0.9rem;
+    color: #c9d3cf;
+  }
+
+  .side {
+    grid-area: side;
+    font-size: 0.9rem;
+  }
+
+  .tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  .tools button,
+  .seg button,
+  .restart {
+    background: var(--dusk-2);
+    color: var(--limestone);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 0.5rem 0.6rem;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .tools button span {
+    display: block;
+    font-weight: 700;
+  }
+
+  .tools button small {
+    color: #9fb0aa;
+    font-size: 0.75rem;
+  }
+
+  .tools button[aria-pressed="true"],
+  .seg button[aria-pressed="true"] {
+    border-color: var(--sun);
+    background: #24485a;
+  }
+
+  .controls {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+
+  .seg {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .seg button {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem;
+  }
+
+  .side-title {
+    font-size: 0.95rem;
+    color: #fff;
+    margin: 1rem 0 0.4rem;
+    letter-spacing: 0;
+  }
+
+  .quarters,
+  .log {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .quarters :global(li) {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr 3.6rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+  }
+
+  .quarters :global(li.lost) {
+    opacity: 0.55;
+  }
+
+  .quarters :global(.bar) {
+    height: 7px;
+    background: var(--dusk-2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .quarters :global(.bar span) {
+    display: block;
+    height: 100%;
+  }
+
+  .quarters :global(.num) {
+    text-align: right;
+    color: #c9d3cf;
+    font-size: 0.8rem;
+  }
+
+  .log :global(li) {
+    color: #aebdb7;
+    font-size: 0.82rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .version {
+    margin: 0.6rem 0 0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: #7f938c;
+  }
+
+  .restart {
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .game {
+      grid-template-columns: 1fr;
+      grid-template-areas: "hud" "board" "side";
+    }
+
+    .tools {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

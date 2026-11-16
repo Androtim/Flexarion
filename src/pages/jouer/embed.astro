@@ -1,0 +1,57 @@
+---
+// Version embarquée du prototype (itch.io, iframe) : le jeu seul, sans en-tête ni pied de page.
+// Non indexée : la page de référence pour Google est /jouer/.
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/dm-sans";
+import "../../styles/global.css";
+import GameApp from "../../components/GameApp.astro";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: "Veridia 2140 : Été 1 (prototype)",
+  url: "https://flexarion.alwaysdata.net/jouer/",
+  author: { "@type": "Organization", name: "Flexarion", url: "https://flexarion.alwaysdata.net/" },
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Veridia 2140 : Été 1, prototype jouable par Flexarion</title>
+    <meta
+      name="description"
+      content="Version embarquée du prototype de Veridia 2140 par Flexarion, studio de jeux vidéo de science-fiction à Aix-en-Provence."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <style>
+      html,
+      body {
+        background: var(--dusk);
+        min-height: 0;
+      }
+      .credit {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #9fb0aa;
+        padding: 0 1rem 1rem;
+        margin: 0;
+      }
+      .credit a {
+        color: var(--sun);
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="sr-only">Veridia 2140 : Été 1, prototype de Flexarion</h1>
+    <GameApp />
+    <p class="credit">
+      Un prototype de <a href="https://flexarion.alwaysdata.net/" target="_blank" rel="noopener">Flexarion</a>,
+      studio de jeux vidéo de science-fiction à Aix-en-Provence (projet étudiant, gratuit).
+    </p>
+  </body>
+</html>
