@@ -33,7 +33,7 @@ function caption(lines, { W, H, t, a, d, y, size, color = C.limestone, sub }) {
   let svg = "";
   const widths = lines.map((l) => textPath(fonts.display, l, { size, tracking: -size * 0.02, fill: color }).width);
   const bw = Math.max(...widths, sub ? textPath(fonts.sans, sub.text, { size: sub.size, fill: color }).width : 0);
-  svg += `<rect x="${W / 2 - bw / 2 - size * 0.6}" y="${top - size * 0.55}" width="${bw + size * 1.2}" height="${blockH + size * 0.75}" rx="${size * 0.35}" fill="${C.dusk}" opacity="${0.55 * o}"/>`;
+  svg += `<rect x="${W / 2 - bw / 2 - size * 0.6}" y="${top - size * 0.55}" width="${bw + size * 1.2}" height="${blockH + size * 0.75}" rx="${size * 0.35}" fill="${C.dusk}" opacity="${0.82 * o}"/>`;
   lines.forEach((l, i) => {
     svg += textPath(fonts.display, l, { x: W / 2, y: top + (i + 0.78) * lh, size, tracking: -size * 0.02, fill: color, anchor: "middle", opacity: o }).svg;
   });
@@ -54,7 +54,7 @@ function panoramaScene({ W, H, cx, cy, zoom, flow, heat }) {
 // ---------- Scène schéma de l'eau ----------
 function diagramScene({ W, H, t, t0 }) {
   const k = W > H ? Math.min(W / 1600, H / 900) * 0.95 : W / 1480;
-  const ox = (W - 1600 * k) / 2;
+  const ox = (W - 1600 * k) / 2 + (W > H ? 0 : W * 0.06);
   const oy = (H - 900 * k) / 2 + (W > H ? 30 : H * 0.05);
   const basins = [
     { x: 230, y: 330, rx: 110, label: "Réservoir · 410 m" },
@@ -164,7 +164,13 @@ async function render(name, W, H) {
     "-f", "image2pipe", "-framerate", String(FPS), "-i", "-",
     "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
     "-shortest",
+    // Largeur multiple de 16 (1080 → 1088, bandes de 4 px couleur fond) : pas de recadrage H.264,
+    // que certains décodeurs matériels affichent en noir sur les vidéos verticales.
+    "-vf", `pad=${Math.ceil(W / 16) * 16}:${H}:${(Math.ceil(W / 16) * 16 - W) / 2}:0:color=0x13262E,scale=out_color_matrix=bt709:out_range=tv,format=yuv420p`,
+    "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
     "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+    // Profil Main + niveau 4.1 : lecture compatible partout (VLC, téléphones, réseaux sociaux).
+    "-profile:v", "main", "-level:v", "4.1", "-r", String(FPS),
     "-c:a", "aac", "-b:a", "128k",
     "-movflags", "+faststart", file,
   ], { stdio: ["pipe", "inherit", "inherit"] });
