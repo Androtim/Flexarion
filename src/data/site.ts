@@ -6,7 +6,10 @@ export const STUDIO = {
   region: "Provence-Alpes-Côte d'Azur",
   country: "FR",
   foundedYear: "2026",
-  instagramMain: "https://instagram.com/flexarion",
+  instagramMain: "https://www.instagram.com/flexarion/",
+  youtube: "https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q",
+  x: "https://x.com/FlexarionStudio",
+  xHandle: "@FlexarionStudio",
   instagramHandle: "@flexarion",
   instagramBackupHandle: "@flexarion.official",
   githubRepo: "https://github.com/Androtim/Flexarion",
@@ -65,7 +68,7 @@ export function buildOrganizationSchema(siteOrigin: string) {
       "City-builder",
       "Simulation systémique",
     ],
-    sameAs: [STUDIO.instagramMain, STUDIO.githubRepo],
+    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.githubRepo],
   };
 }
 
