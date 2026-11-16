@@ -17,7 +17,7 @@ summaryPoints:
 
 Dans un jeu de gestion comme **Veridia 2140**, le pire ennemi de l'immersion est la « ressource abstraite » : ce moment où l'eau et l'électricité sont de simples compteurs globaux en haut de l'écran, déconnectés de la géographie de votre cité.
 
-Chez **Flexarion**, comme nous venons d'un cursus d'ingénierie logicielle à Aix-en-Provence, nous avons conçu dès le premier prototype un moteur déterministe où **chaque canal, chaque citerne et chaque racine compte physiquement**.
+Chez **Flexarion**, comme nous venons d'un cursus d'ingénierie logicielle à Aix-en-Provence, nous avons formalisé dès la phase de conception une architecture déterministe où **chaque canal, chaque citerne et chaque racine compte physiquement**.
 
 ## 1. L'aqueduc comme graphe orienté pondéré
 
@@ -53,9 +53,9 @@ La seconde couche du jeu repose sur un **réseau mycélien symbiotique** enterr�
 2. Les nœuds mycéliens redistribuent l'humidité excédentaire des bassins vers les îlots de chaleur voisins selon un algorithme de diffusion pondérée à faible coût (`O(k · |V|)` par frame).
 3. En retour, si la température dépasse un seuil critique sans apport hydrique, les filaments entrent en dormance et le joueur voit la bioluminescence s'estomper sur la carte — un retour visuel immédiat sans aucune fenêtre d'alerte intrusive.
 
-## 3. Garder le moteur fluide (60 FPS garantis)
+## 3. Concevoir un moteur fluide (cible 60 FPS)
 
-Pour éviter de recalculer tout le graphe à chaque image affichée :
+Pour éviter de recalculer tout le graphe à chaque image affichée dans notre architecture cible :
 - La topologie n'est ré-indexée (tri topologique + détection de boucles de pompage) que lorsqu'un joueur construit ou détruit un tronçon.
 - La résolution des flux tourne sur un pas de temps fixe découplé du rendu graphique.
 - Toute la simulation est **déterministe** : deux parties lancées avec la même graine (*seed*) et les mêmes actions produisent exactement le même bilan hydrique, ce qui facilite grandement nos tests automatisés.

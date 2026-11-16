@@ -70,7 +70,7 @@ Votre mission ?
 💧 Tracer des aqueducs intelligents pour chaque goutte d'eau
 🍄 Connecter des réseaux mycéliens pour réguler la chaleur des quartiers
 
-Démo Prologue en préparation sur PC. Vous préférez commencer par l'urbanisme ou l'ingénierie hydrique ? 👇
+Prototype conceptuel imaginé depuis Aix-en-Provence (projet étudiant BUT Info). Vous préférez commencer par l'urbanisme ou l'ingénierie hydrique ? 👇
 
 #Veridia2140 #Flexarion #CityBuilder #SolarpunkGame #MadeInFrance #JeuxVideoIndependants
 ```
