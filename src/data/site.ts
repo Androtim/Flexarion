@@ -6,9 +6,14 @@ export const STUDIO = {
   region: "Provence-Alpes-Côte d'Azur",
   country: "FR",
   foundedYear: "2026",
-  instagramMain: "https://instagram.com/flexarion",
+  instagramMain: "https://www.instagram.com/flexarion/",
+  youtube: "https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q",
+  x: "https://x.com/FlexarionStudio",
+  itch: "https://flexarion-studio.itch.io/",
+  tiktok: "https://www.tiktok.com/@flexarion_studio",
+  xHandle: "@FlexarionStudio",
   instagramHandle: "@flexarion",
-  instagramBackupHandle: "@flexarion_official",
+  instagramBackupHandle: "@flexarion.official",
   githubRepo: "https://github.com/Androtim/Flexarion",
   flagshipGame: {
     title: "VERIDIA 2140",
@@ -65,7 +70,7 @@ export function buildOrganizationSchema(siteOrigin: string) {
       "City-builder",
       "Simulation systémique",
     ],
-    sameAs: [STUDIO.instagramMain, STUDIO.githubRepo],
+    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.tiktok, STUDIO.itch, STUDIO.githubRepo],
   };
 }
 

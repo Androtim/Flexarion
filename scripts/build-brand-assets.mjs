@@ -1,6 +1,6 @@
 // Génère l'identité visuelle Flexarion (logo, favicon, icônes, image de partage)
 // en SVG vectoriel pur, avec le texte converti en tracés à partir des polices
-// du site (Fraunces + IBM Plex Mono). Aucune image générée par IA.
+// du site (Bricolage Grotesque + IBM Plex Mono). Aucune image générée par IA.
 //
 // Usage : npm run brand:build
 import fs from "node:fs";
@@ -12,13 +12,15 @@ const root = process.cwd();
 const pub = (p) => path.join(root, "public", p);
 const font = (pkg, file) => create(fs.readFileSync(path.join(root, "node_modules", pkg, "files", file)));
 
-const serif = font("@fontsource-variable/fraunces", "fraunces-latin-wght-normal.woff2");
+// Bricolage Grotesque : graisse par défaut 800 dans le fichier variable, celle des titres du site.
+const serif = font("@fontsource-variable/bricolage-grotesque", "bricolage-grotesque-latin-wght-normal.woff2");
+const sans = font("@fontsource-variable/dm-sans", "dm-sans-latin-wght-normal.woff2");
 const mono = font("@fontsource/ibm-plex-mono", "ibm-plex-mono-latin-600-normal.woff2");
 
 const C = {
-  paper: "#F5F0E6",
+  paper: "#EFE6D2",
   stone: "#EBE3D3",
-  ink: "#121917",
+  ink: "#13262E",
   pine: "#155E44",
   pineLight: "#3E9B74",
   ochre: "#A95A22",
@@ -69,7 +71,7 @@ const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" 
 write("favicon.svg", faviconSvg);
 
 // 2. Logo horizontal (fond transparent, pour fond clair)
-const word = textPath(serif, "FLEXARION", { x: 78, y: 41, size: 34, tracking: 2.2, fill: C.ink });
+const word = textPath(serif, "Flexarion", { x: 78, y: 42, size: 40, tracking: -0.6, fill: C.ink });
 const sub = textPath(mono, "STUDIO · AIX-EN-PROVENCE", { x: 79, y: 60, size: 10.5, tracking: 1.6, fill: C.pine });
 const logoW = Math.ceil(Math.max(78 + word.width, 79 + sub.width) + 6);
 const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${logoW} 68" width="${logoW}" height="68" role="img" aria-label="Flexarion Studio, Aix-en-Provence">
@@ -79,17 +81,16 @@ const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${logoW} 6
 </svg>`;
 write("images/flexarion-logo.svg", logoSvg);
 
-// 3. Image de partage par défaut (Open Graph 1200×630)
-const ogTitle = textPath(serif, "FLEXARION", { x: 96, y: 330, size: 112, tracking: 7, fill: C.ink });
-const ogLine1 = textPath(mono, "STUDIO DE JEUX VIDÉO DE SCIENCE-FICTION", { x: 100, y: 400, size: 24, tracking: 2, fill: C.pine });
-const ogLine2 = textPath(mono, "AIX-EN-PROVENCE · VERIDIA 2140", { x: 100, y: 440, size: 24, tracking: 2, fill: C.ochre });
+// 3. Image de partage par défaut (Open Graph 1200×630) : fond crépuscule, emblème, nom
+const ogTitle = textPath(serif, "Flexarion", { x: 90, y: 300, size: 168, tracking: -3, fill: C.paper });
+const ogLine1 = textPath(sans, "Studio de jeux vidéo de science-fiction", { x: 96, y: 380, size: 40, fill: C.sun });
+const ogLine2 = textPath(sans, "Aix-en-Provence · Veridia 2140", { x: 96, y: 432, size: 40, fill: "#C9D3CF" });
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <rect width="1200" height="630" fill="${C.paper}"/>
-  <rect x="40" y="40" width="1120" height="550" fill="none" stroke="${C.ink}" stroke-opacity="0.34" stroke-width="2"/>
-  <line x1="100" y1="370" x2="${100 + ogTitle.width}" y2="370" stroke="${C.ink}" stroke-opacity="0.16" stroke-width="2"/>
-  <g transform="translate(980 78) scale(2.5)">${emblem()}</g>
+  <rect width="1200" height="630" fill="${C.ink}"/>
+  <path d="M0 630 L0 560 L230 540 L420 500 L520 450 L560 420 L590 432 L630 414 L700 450 L860 500 L1050 530 L1200 545 L1200 630 Z" fill="#1C3A44"/>
+  <path d="M0 630 L0 590 L1200 590 L1200 630 Z" fill="${C.pineLight}" opacity="0.9"/>
+  <g transform="translate(900 120) scale(3.6)">${emblem()}</g>
   ${ogTitle.svg}${ogLine1.svg}${ogLine2.svg}
-  ${textPath(mono, "43.5297° N · 5.4474° E", { x: 100, y: 548, size: 18, tracking: 1.5, fill: C.ink }).svg}
 </svg>`;
 write("images/og-flexarion.svg", ogSvg);
 
@@ -117,3 +118,54 @@ await sharp(Buffer.from(avatarSvg), { density: 72 }).resize(1080, 1080).jpeg({ q
   .toFile(path.join(root, "social/instagram/assets/flexarion-avatar.jpg"));
 console.log("✓ social/instagram/assets/flexarion-avatar.jpg");
 console.log(`Logo : ${logoW}×68 (PNG ${logoW * 4}×272)`);
+
+// 6. Bannières réseaux sociaux : YouTube 2560×1440 (zone sûre centrale 1546×423) et X 1500×500
+function banner(w, h, safeW, safeH, out, withEmblem = true) {
+  const cx = w / 2, cy = h / 2;
+  const size = Math.round(safeH * 0.42);
+  const title = textPath(serif, "Flexarion", { x: 0, y: 0, size, tracking: -size * 0.02, fill: C.paper });
+  const subSize = Math.round(size * 0.24);
+  const sub = textPath(sans, "Studio de jeux vidéo de science-fiction · Aix-en-Provence", { x: 0, y: 0, size: subSize, fill: C.sun });
+  const emb = withEmblem ? Math.round(safeH * 0.62) : 0;
+  const gap = withEmblem ? Math.round(emb * 0.25) : 0;
+  const blockW = emb + gap + Math.max(title.width, sub.width);
+  const x0 = cx - blockW / 2;
+  const tx = x0 + emb + gap;
+  const ty = cy + size * 0.12;
+  const ridge = (k) => `M0 ${h} L0 ${h - 120 * k} L${w * 0.18} ${h - 140 * k} L${w * 0.33} ${h - 200 * k} L${w * 0.42} ${h - 290 * k} L${w * 0.46} ${h - 340 * k} L${w * 0.49} ${h - 325 * k} L${w * 0.53} ${h - 345 * k} L${w * 0.6} ${h - 280 * k} L${w * 0.78} ${h - 190 * k} L${w} ${h - 150 * k} L${w} ${h} Z`;
+  const k = h / 1440;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+    <defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#13262E"/><stop offset="0.7" stop-color="#2B4A52"/><stop offset="1" stop-color="#B9714A"/></linearGradient></defs>
+    <rect width="${w}" height="${h}" fill="url(#s)"/>
+    <path d="${ridge(k * 2.2)}" fill="#1C3A44" opacity="0.9"/>
+    <rect x="0" y="${h - 60 * k * 2.2}" width="${w}" height="${60 * k * 2.2}" fill="${C.pineLight}"/>
+    ${withEmblem ? `<g transform="translate(${x0} ${cy - emb / 2}) scale(${emb / 64})">${emblem()}</g>` : ""}
+    <g transform="translate(${tx} ${ty})">${title.svg}</g>
+    <g transform="translate(${tx + size * 0.04} ${ty + subSize * 1.9})">${sub.svg}</g>
+  </svg>`;
+  return sharp(Buffer.from(svg)).resize(w, h).jpeg({ quality: 90, mozjpeg: true })
+    .toFile(path.join(root, "social", out)).then(() => console.log("✓ social/" + out));
+}
+fs.mkdirSync(path.join(root, "social/youtube"), { recursive: true });
+fs.mkdirSync(path.join(root, "social/x"), { recursive: true });
+await banner(2560, 1440, 1546, 423, "youtube/banniere-youtube.jpg");
+// Sur X, l'avatar recouvre le coin inférieur gauche : pas d'emblème, texte centré.
+await banner(1500, 500, 1300, 400, "x/banniere-x.jpg", false);
+
+// 7. itch.io : image de couverture 630×500 (vignette du jeu)
+{
+  const W = 630, H = 500;
+  const title = textPath(serif, "Veridia 2140", { x: 0, y: 0, size: 72, tracking: -1.5, fill: C.paper });
+  const sub = textPath(sans, "Un city-builder Solarpunk · Flexarion", { x: 0, y: 0, size: 24, fill: C.sun });
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+    <rect width="${W}" height="${H}" fill="${C.ink}"/>
+    <g transform="translate(${W / 2 - 110} 40) scale(${220 / 64})">${emblem()}</g>
+    <g transform="translate(${(W - title.width) / 2} 370)">${title.svg}</g>
+    <g transform="translate(${(W - sub.width) / 2} 420)">${sub.svg}</g>
+    <rect x="0" y="${H - 22}" width="${W}" height="22" fill="${C.pineLight}"/>
+  </svg>`;
+  fs.mkdirSync(path.join(root, "social/itch"), { recursive: true });
+  await sharp(Buffer.from(svg)).resize(W, H).png().toFile(path.join(root, "social/itch/couverture-itch.png"));
+  console.log("✓ social/itch/couverture-itch.png");
+}
+

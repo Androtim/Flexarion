@@ -50,6 +50,27 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-16 16:40] · Claude Opus 5.5 via Claude Code (refonte v2)
+- **Branche / Issue / PR :** `design/map-first-revamp` (basée sur `feat/seo-brand-signals-and-lore`, PR #23)
+- **Objectif de la session :** Refondre tout le site pour qu'il ne ressemble plus à un site généré par IA (demande de l'utilisateur).
+- **Constat de départ :** recherche web (Capital & Compute, 21st.dev, etc.) : la v1 « papier calcaire + serif + étiquettes monospace + filets + `→` » correspond au style « warm editorial », désormais identifié comme un marqueur de site généré par IA.
+- **Ce qui a été fait :**
+  - `src/components/Panorama.astro` : **panorama SVG interactif** de Veridia (Sainte-Victoire, planète à anneau, dômes, aqueduc avec eau animée, restanques, bassin du Réaltor) avec 4 districts cliquables ; défilement horizontal sur mobile.
+  - `src/components/MechanicDiagram.astro` : 3 schémas dessinés (eau gravitaire, mycélium, course du soleil sur un dôme).
+  - `src/styles/global.css` : réécriture complète (palette tirée des illustrations, Bricolage Grotesque + DM Sans, coins arrondis variés, boutons pleins, plus de sur-titres/filets/flèches, `prefers-reduced-motion`).
+  - Toutes les pages réécrites (accueil, studio, jeu, univers, devlogs, article, contact, 404) avec des textes plus concrets ; en-tête/pied de page refaits (crête de la Sainte-Victoire en pied de page).
+  - Logo, image Open Graph et avatar Instagram regénérés en Bricolage Grotesque sur fond crépuscule (`npm run brand:build`) ; Fraunces désinstallée.
+  - Pseudo Instagram secondaire corrigé : `@flexarion.official`.
+  - `CLAUDE.md`, `AGENTS.md`, `docs/brand-guidelines.md` : nouvelle direction artistique documentée.
+- **Vérifications :** `npm run build` (9 pages), `npm run audit:seo` (0 erreur, 0 avertissement), captures headless 1280 px et 390 px de chaque gabarit.
+- **À faire / Attention :**
+  - Déployer après validation visuelle de l'utilisateur (`rsync`, voir l'entrée précédente). Ne jamais supprimer `public/google5a4bf04ecd7e8477.html` (vérification Search Console).
+  - Ajouter les URL YouTube/Instagram dans `STUDIO` (`sameAs`) dès que l'utilisateur les donne.
+  - Vidéos YouTube/Reels générées en code : à lancer (première vidéo test « les aqueducs »).
+  - Équipe : remplacer « Présentation à venir » dans `src/pages/studio.astro` quand le groupe est constitué.
+
+---
+
 ### [2026-11-16 16:10] · Claude Opus 5.5 via Claude Code
 - **Branche / Issue / PR :** `feat/seo-brand-signals-and-lore` (depuis `develop`)
 - **Objectif de la session :** Mettre le site en ligne au plus tôt sur alwaysdata, maximiser le classement sur la requête « Flexarion » et remplacer le logo généré par IA par une identité vectorielle cohérente.

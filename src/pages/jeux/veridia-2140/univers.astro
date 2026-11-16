@@ -128,70 +128,58 @@ const pageSchema = {
   ogImageAlt="Panorama de Veridia 2140 : dômes solaires au pied de la Sainte-Victoire"
   schemas={[pageSchema]}
 >
-  <section class="section">
-    <div class="container hero-editorial">
-      <div>
-        <span class="kicker">Silo 02 / Univers du jeu</span>
-        <h1>L'univers de Veridia 2140, la cité de Flexarion.</h1>
-        <p class="lead">
-          Un siècle après les premiers étés sans pluie, le Pays d'Aix a survécu en apprenant à guider
-          chaque goutte d'eau. Voici la chronologie, les quartiers et les factions que le joueur
-          rencontre dans <strong>Veridia 2140</strong>, le jeu de science-fiction de
-          <strong>Flexarion</strong>.
-        </p>
-        <div class="actions">
-          <a href="/jeux/veridia-2140/" class="btn btn-primary">Fiche du jeu</a>
-          <a href="/devlogs/genese-veridia-2140-solarpunk-aix/" class="link-editorial">
-            Lire la genèse du projet
-          </a>
-        </div>
+  <header class="wrap page-head split">
+    <div>
+      <h1>L'univers de Veridia 2140, imaginé par Flexarion.</h1>
+      <p class="lead">
+        Un siècle après les premiers étés sans pluie, le Pays d'Aix a survécu en apprenant à guider chaque
+        goutte d'eau. Voici l'histoire, les quartiers et les gens que vous rencontrerez dans
+        <strong>Veridia 2140</strong>.
+      </p>
+      <div class="actions">
+        <a href="/jeux/veridia-2140/" class="btn btn-water">La fiche du jeu</a>
+        <a href="/devlogs/genese-veridia-2140-solarpunk-aix/" class="btn btn-ghost">Comment l'idée est née</a>
       </div>
-
-      <figure class="plate-frame">
-        <ResponsivePicture
-          src="/images/veridia-hero.jpg"
-          alt="Panorama de Veridia 2140 : dômes solaires au pied de la montagne Sainte-Victoire"
-          width={1280}
-          height={720}
-          eager={true}
-        />
-        <figcaption class="plate-caption">
-          <span>Veridia vue depuis l'Arbois · Fin d'après-midi, juillet 2140</span>
-          <span>Planche 01</span>
-        </figcaption>
-      </figure>
     </div>
-  </section>
+    <figure class="photo">
+      <ResponsivePicture
+        src="/images/veridia-hero.jpg"
+        alt="Panorama de Veridia 2140 : dômes solaires au pied de la montagne Sainte-Victoire"
+        width={1280}
+        height={720}
+        eager={true}
+      />
+      <figcaption>Veridia vue depuis l'Arbois, fin d'après-midi, juillet 2140.</figcaption>
+    </figure>
+  </header>
 
-  <section class="section-tight section-ruled" aria-labelledby="timeline-heading">
-    <div class="container">
-      <span class="kicker kicker-pine">01 / Chronologie</span>
+  <section class="block block-chalk" aria-labelledby="timeline-heading">
+    <div class="wrap narrow">
       <h2 id="timeline-heading">De la Grande Soif à 2140</h2>
-      <div class="archival-list">
+      <ol class="timeline">
         {
           timeline.map((entry) => (
-            <article class="archival-row">
-              <span class="archival-num">{entry.year}</span>
+            <li>
+              <span class="year">{entry.year}</span>
               <h3>{entry.title}</h3>
               <p>{entry.text}</p>
-            </article>
+            </li>
           ))
         }
-      </div>
+      </ol>
     </div>
   </section>
 
-  <section class="section-tight section-ruled" aria-labelledby="districts-heading">
-    <div class="container">
-      <span class="kicker">02 / Les districts</span>
+  <section class="block" aria-labelledby="districts-heading">
+    <div class="wrap">
       <h2 id="districts-heading">Quatre quartiers, quatre contraintes</h2>
-      <div class="grid-2 grid-districts" style="margin-top: 1.5rem;">
+      <div class="cards grid-districts">
         {
           districts.map((district) => (
-            <article class="panel">
-              <span class="kicker kicker-pine" style="margin-bottom: 0.4rem;">{district.role}</span>
+            <article class="card">
+              <span class="card-role">{district.role}</span>
               <h3>{district.name}</h3>
-              <p style="margin: 0;">{district.text}</p>
+              <p>{district.text}</p>
             </article>
           ))
         }
@@ -199,19 +187,19 @@ const pageSchema = {
     </div>
   </section>
 
-  <section class="section-tight section-ruled" aria-labelledby="factions-heading">
-    <div class="container">
-      <span class="kicker kicker-pine">03 / Les factions</span>
-      <h2 id="factions-heading">Qui décide de l'eau ?</h2>
-      <p style="max-width: 68ch;">
-        Dans Veridia 2140, il n'y a pas d'ennemi armé. Les tensions viennent de trois groupes qui ont
-        chacun raison, et que le joueur doit arbitrer à chaque été.
-      </p>
-      <div class="archival-list">
+  <section class="block block-dusk" aria-labelledby="factions-heading">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="factions-heading">Qui décide de l'eau ?</h2>
+        <p class="lead">
+          Il n'y a pas d'ennemi armé dans Veridia 2140. Les tensions viennent de trois groupes qui ont chacun
+          raison, et que vous devez arbitrer à chaque été.
+        </p>
+      </div>
+      <div class="cards">
         {
-          factions.map((faction, idx) => (
-            <article class="archival-row">
-              <span class="archival-num">{String(idx + 1).padStart(2, "0")}</span>
+          factions.map((faction) => (
+            <article class="card" style="background: var(--dusk-2); color: var(--limestone);">
               <h3>{faction.name}</h3>
               <p>{faction.text}</p>
             </article>
@@ -221,30 +209,28 @@ const pageSchema = {
     </div>
   </section>
 
-  <section class="section-tight section-ruled" aria-labelledby="glossary-heading">
-    <div class="container">
-      <span class="kicker">04 / Lexique</span>
+  <section class="block" aria-labelledby="glossary-heading">
+    <div class="wrap narrow">
       <h2 id="glossary-heading">Petit lexique de Veridia</h2>
-      <dl class="panel-muted" style="max-width: 72ch;">
+      <dl class="glossary">
         {
           glossary.map(([term, definition]) => (
-            <>
-              <dt style="font-weight: 600; color: var(--ink); margin-top: 0.75rem;">{term}</dt>
-              <dd style="margin: 0.2rem 0 0; color: var(--ink-soft);">{definition}</dd>
-            </>
+            <div>
+              <dt>{term}</dt>
+              <dd>{definition}</dd>
+            </div>
           ))
         }
       </dl>
-      <p style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--ink-faint);">
-        <strong>Note de transparence :</strong> {STUDIO.flagshipGame.status}. Les lieux cités existent,
-        les événements futurs sont fictifs.
+      <p class="note">
+        {STUDIO.flagshipGame.status}. Les lieux cités existent, les événements futurs sont fictifs.
       </p>
     </div>
   </section>
 
   <FaqSection
     title="Questions sur l'univers de Veridia 2140"
-    subtitle="Ce qu'il faut savoir sur le monde imaginé par Flexarion."
     items={universeFaqs}
+    tone="chalk"
   />
 </BaseLayout>
