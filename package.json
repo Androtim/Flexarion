@@ -9,10 +9,14 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "audit:seo": "node scripts/audit-seo.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
     "astro": "^6.4.8"
   }
 }

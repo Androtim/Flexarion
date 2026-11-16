@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ResponsivePicture from "../components/ResponsivePicture.astro";
 import { STUDIO } from "../data/site";
 
 const teamMembers = [
@@ -33,6 +34,7 @@ const teamMembers = [
 <BaseLayout
   title="Le Studio Flexarion : Équipe et Histoire à Aix-en-Provence"
   description="Découvrez l'histoire de Flexarion Studio à Aix-en-Provence, notre manifeste Solarpunk méditerranéen et notre politique de transparence sur l'IA."
+  preloadHeroBase="/images/veridia-hero"
   breadcrumbs={[
     { name: "Accueil", href: "/" },
     { name: "Le Studio", href: "/studio/" },
@@ -60,11 +62,12 @@ const teamMembers = [
       </div>
 
       <figure class="plate-frame">
-        <img
+        <ResponsivePicture
           src="/images/veridia-hero.jpg"
           alt="Territoire provençal futuriste imaginé par Flexarion Studio à Aix-en-Provence"
-          width="1280"
-          height="720"
+          width={1280}
+          height={720}
+          eager={true}
         />
         <figcaption class="plate-caption">
           <span>Inspiration territoriale : Aix-en-Provence et plateau de l'Arbois</span>
