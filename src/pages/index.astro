@@ -2,157 +2,135 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FaqSection from "../components/FaqSection.astro";
+import Panorama from "../components/Panorama.astro";
+import MechanicDiagram from "../components/MechanicDiagram.astro";
 import ResponsivePicture from "../components/ResponsivePicture.astro";
-import { STUDIO } from "../data/site";
 
-const allDevlogs = await getCollection("devlogs");
-const recentDevlogs = allDevlogs.sort(
+const devlogs = (await getCollection("devlogs")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
+const dateFr = (d: Date) => d.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" });
+
 const homeFaqs = [
   {
-    question: "Qu'est-ce que Flexarion Studio ?",
+    question: "Qu'est-ce que Flexarion ?",
     answer:
-      "Flexarion est un concept de studio de développement de jeux vidéo indépendant basé à Aix-en-Provence (France), créé dans le cadre du BUT Informatique à l'IUT d'Aix-Marseille et spécialisé dans la science-fiction Solarpunk.",
+      "Flexarion est un studio indépendant de jeux vidéo de science-fiction basé à Aix-en-Provence. C'est un studio fictif, créé par des étudiants en BUT Informatique à l'IUT d'Aix-Marseille dans le cadre d'un projet de communication.",
   },
   {
-    question: "Quel est le premier jeu imaginé par Flexarion ?",
+    question: "Sur quel jeu travaille Flexarion ?",
     answer:
-      "Le projet phare de Flexarion est Veridia 2140, un city-builder et jeu de stratégie éco-futuriste situé en Provence en 2140, autour de dômes géodésiques en calcaire solaire et de réseaux hydriques mycéliens.",
+      "Flexarion conçoit Veridia 2140, un city-builder Solarpunk qui se déroule dans le Pays d'Aix en 2140. Le joueur gère l'eau d'une cité de sept dômes reliés par des aqueducs, sans pompe, uniquement par gravité.",
   },
   {
-    question: "Où suivre les actualités et carnets techniques de Flexarion ?",
+    question: "Où suivre l'actualité de Flexarion ?",
     answer:
-      "Les carnets de développement sont publiés sur ce site dans la section Devlogs et relayés sur notre compte Instagram principal @flexarion (le compte @flexarion_official sert uniquement de redirection).",
+      "Les devlogs sont publiés sur ce site, et les coulisses sur Instagram (@flexarion). Le compte @flexarion.official redirige vers le compte principal.",
   },
 ];
 ---
 
 <BaseLayout
   title="Flexarion : jeux vidéo de science-fiction à Aix-en-Provence"
-  description="Flexarion est un studio indépendant de jeux vidéo basé à Aix-en-Provence, créateur de Veridia 2140 : stratégie Solarpunk et simulation systémique."
-  preloadHeroBase="/images/veridia-hero"
+  description="Flexarion est un studio indépendant de jeux vidéo de science-fiction à Aix-en-Provence. Nous créons Veridia 2140, un city-builder Solarpunk en Provence."
 >
-  <section class="section">
-    <div class="container hero-editorial">
-      <div>
-        <span class="kicker">00 / Studio Indépendant, Aix-en-Provence</span>
-        <h1>Flexarion : une science-fiction lumineuse imaginée en Provence.</h1>
-        <p class="lead">
-          Fondé à <strong>Aix-en-Provence</strong> par des étudiants en informatique,{" "}
-          <strong>Flexarion</strong> explore des jeux de stratégie où la rigueur des systèmes hydrauliques
-          et thermiques nourrit un futur méditerranéen habitable.
-        </p>
-
-        <div class="actions">
-          <a href="/jeux/veridia-2140/" class="btn btn-primary">Explorer Veridia 2140</a>
-          <a href="/studio/" class="link-editorial">Découvrir le studio</a>
-        </div>
-
-        <div class="specs-strip" aria-label="Repères clés du studio Flexarion">
-          <div class="spec-cell">
-            <span class="spec-label">Ancrage</span>
-            <span class="spec-value">Aix-en-Provence</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-label">Genre</span>
-            <span class="spec-value">SF Solarpunk</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-label">Projet phare</span>
-            <span class="spec-value">Veridia 2140</span>
-          </div>
-        </div>
-      </div>
-
-      <figure class="plate-frame">
-        <ResponsivePicture
-          src="/images/veridia-hero.jpg"
-          alt="Illustration de Veridia 2140 par Flexarion Studio : dômes solaires méditerranéens et montagne Sainte-Victoire"
-          width={1280}
-          height={720}
-          eager={true}
-        />
-        <figcaption class="plate-caption">
-          <span>Planche 01 · Bassin aixois et Sainte-Victoire (2140)</span>
-          <span>Flexarion Studio</span>
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="section-tight section-ruled" aria-labelledby="pillars-heading">
-    <div class="container">
-      <span class="kicker kicker-pine">01 / Architecture éditoriale</span>
-      <h2 id="pillars-heading">Trois dossiers pour explorer Flexarion</h2>
+  <section class="hero">
+    <div class="wrap hero-text">
+      <h1>Flexarion fait des jeux où l'eau coule vers le bas.</h1>
       <p class="lead">
-        Notre site suit une structure claire : le studio aixois, le dossier du jeu phare Veridia 2140 et
-        nos carnets de recherche technique.
+        Studio de science-fiction à Aix-en-Provence. Notre premier jeu, <strong>Veridia 2140</strong>,
+        vous confie une cité de sept dômes au pied de la Sainte-Victoire, un été record, et pas une seule
+        pompe.
       </p>
+      <div class="actions">
+        <a href="/jeux/veridia-2140/" class="btn btn-sun">Découvrir Veridia 2140</a>
+        <a href="/studio/" class="btn btn-ghost">Qui sommes-nous ?</a>
+      </div>
+    </div>
+    <Panorama />
+  </section>
 
-      <div class="archival-list">
-        <article class="archival-row">
-          <span class="archival-num">01</span>
-          <h3>Le Studio à Aix-en-Provence</h3>
-          <p>
-            Histoire du collectif, quatre pôles de compétences complémentaires, manifeste Solarpunk et
-            politique de transparence sur nos outils.
-          </p>
-          <a href="/studio/" class="link-editorial">Ouvrir le dossier →</a>
+  <section class="block" aria-labelledby="play-heading">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="play-heading">Comment on joue</h2>
+        <p class="lead">
+          Veridia 2140 n'a ni ennemis ni armée. Votre adversaire, c'est l'été. Trois systèmes physiques
+          décident si vos quartiers tiennent jusqu'à septembre.
+        </p>
+      </div>
+
+      <div>
+        <article class="mechanic">
+          <div>
+            <span class="tag">L'eau</span>
+            <h3>Tout descend par gravité</h3>
+            <p>
+              Le réservoir est en haut, la ville en bas. Chaque aqueduc que vous tracez doit garder sa pente :
+              un mètre de trop et l'eau stagne, un mètre de moins et le quartier suivant a soif.
+            </p>
+          </div>
+          <MechanicDiagram type="water" label="Schéma : l'eau descend du réservoir vers l'Arbois puis vers la ville, par gravité." />
         </article>
 
-        <article class="archival-row">
-          <span class="archival-num">02</span>
-          <h3>Veridia 2140 (Jeu Phare)</h3>
-          <p>
-            City-builder tactique en restanques calcaires : gravité hydraulique, pergolas photovoltaïques et
-            thermorégulation par réseau mycélien.
-          </p>
-          <a href="/jeux/veridia-2140/" class="link-editorial">Voir la fiche →</a>
+        <article class="mechanic">
+          <div>
+            <span class="tag">Le réseau</span>
+            <h3>Le sol qui rafraîchit la ville</h3>
+            <p>
+              Sous les restanques, un mycélium cultivé transporte l'humidité des bassins frais vers les rues
+              surchauffées. S'il manque d'eau, il s'endort, et sa lumière s'éteint sur la carte.
+            </p>
+          </div>
+          <MechanicDiagram type="mycelium" label="Schéma : le réseau mycélien transporte l'humidité d'un bassin frais vers les rues à 41 °C." />
         </article>
 
-        <article class="archival-row">
-          <span class="archival-num">03</span>
-          <h3>Carnets de Développement</h3>
-          <p>
-            Deux articles détaillés sur nos choix visuels provençaux et la modélisation des aqueducs par
-            graphes orientés pondérés.
-          </p>
-          <a href="/devlogs/" class="link-editorial">Lire les carnets →</a>
+        <article class="mechanic">
+          <div>
+            <span class="tag">Le verre</span>
+            <h3>Des dômes qui suivent le soleil</h3>
+            <p>
+              Orientez les panneaux d'un dôme plein sud et il produit beaucoup d'énergie, mais chauffe le
+              quartier. Ouvrez-le à l'est et il respire mieux le soir. Chaque choix a un coût.
+            </p>
+          </div>
+          <MechanicDiagram type="dome" label="Schéma : course du soleil de 8 h à 18 h au-dessus d'un dôme de verre solaire." />
         </article>
+      </div>
+
+      <div class="actions">
+        <a href="/jeux/veridia-2140/" class="btn btn-water">La fiche complète du jeu</a>
       </div>
     </div>
   </section>
 
-  <section class="section-tight section-ruled" aria-labelledby="devlogs-heading">
-    <div class="container">
-      <span class="kicker">02 / Publications récentes</span>
-      <h2 id="devlogs-heading">Derniers carnets techniques</h2>
-      <div class="grid-2" style="margin-top: 1.75rem;">
+  <section class="block block-chalk" aria-labelledby="devlogs-heading">
+    <div class="wrap">
+      <h2 id="devlogs-heading">Derniers devlogs</h2>
+      <div class="post-list">
         {
-          recentDevlogs.map((post, idx) => (
-            <article class="dispatch-item">
-              <ResponsivePicture
-                src={post.data.image}
-                alt={post.data.imageAlt}
-                width={1280}
-                height={720}
-                sizes="(max-width: 760px) 100vw, 560px"
-                eager={false}
-              />
-              <span class="kicker kicker-pine" style="margin-bottom: 0.45rem;">
-                Carnet 0{idx + 1} · {post.data.tag} · {post.data.readingTime}
-              </span>
-              <h3>
-                <a href={`/devlogs/${post.id}/`} style="color: var(--ink);">
-                  {post.data.title}
-                </a>
-              </h3>
-              <p>{post.data.description}</p>
-              <a href={`/devlogs/${post.id}/`} class="link-editorial">
-                Lire le carnet →
+          devlogs.map((post) => (
+            <article class="post">
+              <a href={`/devlogs/${post.id}/`} tabindex="-1" aria-hidden="true">
+                <ResponsivePicture
+                  src={post.data.image}
+                  alt={post.data.imageAlt}
+                  width={1280}
+                  height={720}
+                  sizes="(max-width: 720px) 100vw, 520px"
+                />
               </a>
+              <div>
+                <p class="post-meta">
+                  <time datetime={post.data.pubDate.toISOString()}>{dateFr(post.data.pubDate)}</time> ·{" "}
+                  {post.data.readingTime}
+                </p>
+                <h3>
+                  <a href={`/devlogs/${post.id}/`}>{post.data.title}</a>
+                </h3>
+                <p>{post.data.description}</p>
+              </div>
             </article>
           ))
         }
@@ -160,30 +138,35 @@ const homeFaqs = [
     </div>
   </section>
 
-  <FaqSection
-    title="Tout comprendre sur Flexarion en 3 réponses"
-    subtitle="Les repères factuels sur notre collectif aixois et le concept Veridia 2140."
-    items={homeFaqs}
-  />
-
-  <section class="section-tight section-ruled">
-    <div class="container">
-      <div class="panel" style="display: flex; justify-content: space-between; align-items: center; gap: 1.75rem; flex-wrap: wrap;">
-        <div style="max-width: 58ch;">
-          <span class="kicker" style="margin-bottom: 0.4rem;">04 / Suivre l'avancée du projet</span>
-          <h2 style="margin-bottom: 0.45rem;">Retrouvez Flexarion sur Instagram</h2>
-          <p style="margin: 0;">
-            Concept arts inédits, coulisses de développement et échanges directs sur{" "}
-            <strong>{STUDIO.instagramHandle}</strong>, ou consultez notre kit presse.
-          </p>
-        </div>
-        <div class="actions" style="margin-top: 0;">
-          <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-            Instagram @flexarion
-          </a>
-          <a href="/contact/" class="btn btn-secondary">Contact &amp; Presse</a>
+  <section class="block block-dusk" aria-labelledby="studio-heading">
+    <div class="wrap split">
+      <div>
+        <h2 id="studio-heading">Un petit studio, à Aix</h2>
+        <p class="lead">
+          Flexarion, ce sont des étudiants en informatique de l'IUT d'Aix-Marseille qui ont eu envie d'une
+          science-fiction qui se passe ici, sous ce soleil-là, avec ces problèmes d'eau-là.
+        </p>
+        <p>
+          Le studio est fictif et rien n'est vendu sur ce site. Le travail, lui, est réel : le site, le code
+          et les devlogs sont publics.
+        </p>
+        <div class="actions">
+          <a href="/studio/" class="btn btn-sun">Le studio</a>
+          <a href="/contact/" class="btn btn-ghost">Nous écrire</a>
         </div>
       </div>
+      <figure class="photo">
+        <ResponsivePicture
+          src="/images/veridia-hero.jpg"
+          alt="Illustration de Veridia 2140 : dômes solaires, aqueduc et montagne Sainte-Victoire au coucher du soleil"
+          width={1280}
+          height={720}
+          sizes="(max-width: 860px) 100vw, 540px"
+        />
+        <figcaption>Recherche visuelle pour Veridia 2140, le bassin aixois au crépuscule.</figcaption>
+      </figure>
     </div>
   </section>
+
+  <FaqSection title="Questions fréquentes sur Flexarion" items={homeFaqs} />
 </BaseLayout>

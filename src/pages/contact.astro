@@ -11,59 +11,46 @@ import { STUDIO } from "../data/site";
     { name: "Contact & Presse", href: "/contact/" },
   ]}
 >
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Relations Presse · Partenaires · Communauté</span>
-      <h1>Contacter Flexarion Studio.</h1>
-      <p class="lead">
-        Vous suivez la scène indépendante, étudiez à Aix-Marseille ou souhaitez récupérer les visuels de
-        <strong>Veridia 2140</strong> ? Retrouvez ci-dessous nos canaux officiels et les éléments vérifiés du
-        dossier média.
-      </p>
+  <header class="wrap page-head">
+    <h1>Contacter Flexarion.</h1>
+    <p class="lead narrow">
+      Journaliste, étudiant, curieux ou joueur : voici où nous trouver, et tout ce qu'il faut pour parler de
+      <strong>Veridia 2140</strong>.
+    </p>
+  </header>
 
-      <div class="grid-2" style="margin-top: 2.25rem;">
-        <article class="panel">
-          <span class="kicker kicker-pine">Canaux officiels</span>
-          <h2>Réseaux &amp; Coordonnées</h2>
-          <ul style="padding-left: 1.2rem; color: var(--ink-soft); display: grid; gap: 0.65rem;">
-            <li>
-              <strong>Localisation :</strong> Aix-en-Provence, Provence-Alpes-Côte d'Azur, France
-            </li>
-            <li>
-              <strong>Cadre du projet :</strong> Studio conceptuel fictif créé en BUT Informatique (IUT d'Aix-Marseille)
-            </li>
-            <li>
-              <strong>Instagram principal :</strong>{" "}
-              <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">
-                {STUDIO.instagramHandle}
-              </a>{" "}
-              (redirection depuis <code>{STUDIO.instagramBackupHandle}</code>)
-            </li>
-            <li>
-              <strong>Dépôt technique &amp; documentation :</strong>{" "}
-              <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">
-                github.com/Androtim/Flexarion
-              </a>
-            </li>
-          </ul>
-        </article>
-
-        <article class="panel-muted">
-          <span class="kicker">Kit Presse (Fact Sheet)</span>
-          <h2>L'essentiel pour citer Flexarion</h2>
-          <ul style="padding-left: 1.2rem; color: var(--ink-soft); display: grid; gap: 0.65rem;">
-            <li><strong>Studio :</strong> Flexarion Studio (concept étudiant fondé en 2026 à Aix-en-Provence)</li>
-            <li><strong>Jeu phare :</strong> Veridia 2140 (City-builder &amp; Stratégie Solarpunk)</li>
-            <li><strong>Modèle économique envisagé :</strong> Jeu indépendant PC payant (zéro microtransaction, projet non commercialisé)</li>
-            <li>
-              <strong>Visuels HD disponibles :</strong>{" "}
-              <a href="/images/veridia-hero.jpg" target="_blank">Key Art Veridia 2140</a> ·{" "}
-              <a href="/images/devlog-hydrology.jpg" target="_blank">Réseau Hydrique</a> ·{" "}
-              <a href="/images/flexarion-logo.svg" target="_blank">Logo Vectoriel SVG</a>
-            </li>
-          </ul>
-        </article>
-      </div>
+  <section class="block block-chalk" style="padding-top: 3rem;">
+    <div class="wrap cards" style="margin-top: 0;">
+      <article class="card">
+        <h2 style="font-size: 1.6rem;">Nous trouver</h2>
+        <ul class="plain-list">
+          <li><strong>Où :</strong> Aix-en-Provence, Bouches-du-Rhône</li>
+          <li>
+            <strong>Instagram :</strong>{" "}
+            <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">{STUDIO.instagramHandle}</a>
+            {" "}(et {STUDIO.instagramBackupHandle}, qui redirige vers le compte principal)
+          </li>
+          <li>
+            <strong>Code et documentation :</strong>{" "}
+            <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">GitHub</a>
+          </li>
+          <li><strong>Cadre :</strong> studio fictif, projet de BUT Informatique à l'IUT d'Aix-Marseille</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h2 style="font-size: 1.6rem;">Dossier de presse</h2>
+        <ul class="plain-list">
+          <li><strong>Studio :</strong> Flexarion, Aix-en-Provence, fondé en 2026</li>
+          <li><strong>Jeu :</strong> Veridia 2140, city-builder Solarpunk</li>
+          <li><strong>Modèle imaginé :</strong> achat unique sur PC, sans microtransaction (non commercialisé)</li>
+        </ul>
+        <p style="margin: 1rem 0 0.5rem;"><strong>Visuels à télécharger</strong></p>
+        <ul class="plain-list">
+          <li><a href="/images/flexarion-logo.svg" download>Logo Flexarion (SVG)</a> · <a href="/images/flexarion-logo.png" download>PNG</a></li>
+          <li><a href="/images/veridia-hero.jpg" download>Illustration principale de Veridia 2140</a></li>
+          <li><a href="/images/devlog-hydrology.jpg" download>Illustration : canaux sous un dôme</a></li>
+        </ul>
+      </article>
     </div>
   </section>
 </BaseLayout>

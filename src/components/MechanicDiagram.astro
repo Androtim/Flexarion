@@ -1,0 +1,114 @@
+---
+// Schémas des trois systèmes de Veridia 2140, dessinés à la main en SVG.
+interface Props {
+  type: "water" | "mycelium" | "dome";
+  label: string;
+}
+const { type, label } = Astro.props;
+---
+
+<div class="diagram">
+  {
+    type === "water" && (
+      <svg viewBox="0 0 400 300" role="img" aria-label={label}>
+        <path d="M0 70 L120 95 L240 150 L400 205 L400 300 L0 300 Z" fill="#1c3a44" />
+        <path d="M0 70 L120 95 L240 150 L400 205" fill="none" stroke="#2f5560" stroke-width="2" />
+        <g fill="none" stroke="#1fb5a8" stroke-width="5" stroke-linecap="round">
+          <path class="flow" d="M58 98 Q110 104 150 130" />
+          <path class="flow" d="M170 140 Q220 150 262 178" />
+          <path class="flow" d="M170 140 Q190 190 200 236" />
+          <path class="flow" d="M282 186 Q320 196 350 222" />
+        </g>
+        <g fill="#efe6d2">
+          <ellipse cx="48" cy="94" rx="24" ry="9" />
+          <ellipse cx="160" cy="136" rx="24" ry="9" />
+          <ellipse cx="272" cy="182" rx="24" ry="9" />
+          <ellipse cx="204" cy="244" rx="20" ry="8" />
+          <ellipse cx="358" cy="228" rx="20" ry="8" />
+        </g>
+        <g fill="#1fb5a8">
+          <ellipse cx="48" cy="93" rx="18" ry="6" />
+          <ellipse cx="160" cy="135" rx="15" ry="5" />
+          <ellipse cx="272" cy="181" rx="12" ry="4" />
+          <ellipse cx="204" cy="243" rx="9" ry="3" />
+          <ellipse cx="358" cy="227" rx="8" ry="3" />
+        </g>
+        <g fill="#f0a43a" font-family="DM Sans, sans-serif" font-size="13" font-weight="600">
+          <text x="22" y="72">Réservoir 410 m</text>
+          <text x="232" y="166">Arbois 260 m</text>
+          <text x="300" y="258">Ville 180 m</text>
+        </g>
+        <g stroke="#f0a43a" stroke-width="2" fill="none" opacity="0.8">
+          <path d="M210 60 h70" />
+          <path d="M272 54 l10 6 l-10 6" />
+        </g>
+        <text x="208" y="48" fill="#c9d3cf" font-family="DM Sans, sans-serif" font-size="12">la pente fait tout le travail</text>
+      </svg>
+    )
+  }
+  {
+    type === "mycelium" && (
+      <svg viewBox="0 0 400 300" role="img" aria-label={label}>
+        <rect x="0" y="0" width="400" height="110" fill="#1c3a44" />
+        <g>
+          <rect x="20" y="70" width="80" height="40" fill="#c4532f" opacity="0.85" />
+          <rect x="110" y="78" width="80" height="32" fill="#f0a43a" opacity="0.7" />
+          <rect x="200" y="74" width="80" height="36" fill="#c4532f" opacity="0.55" />
+          <rect x="290" y="82" width="90" height="28" fill="#5e6e2f" />
+        </g>
+        <g fill="#efe6d2" font-family="DM Sans, sans-serif" font-size="12" font-weight="600">
+          <text x="26" y="62">41 °C</text>
+          <text x="116" y="70">36 °C</text>
+          <text x="206" y="66">33 °C</text>
+          <text x="296" y="74">27 °C</text>
+        </g>
+        <rect x="0" y="110" width="400" height="190" fill="#2a2016" />
+        <g fill="none" stroke="#1fb5a8" stroke-width="2" stroke-linecap="round" opacity="0.9">
+          <path class="flow" d="M340 250 C300 230 280 200 240 190 C200 180 170 160 120 150 C90 144 70 130 60 120" />
+          <path d="M240 190 C230 220 200 240 160 250" />
+          <path d="M120 150 C110 180 90 200 50 210" />
+          <path d="M300 230 C320 200 330 170 330 130" />
+          <path d="M170 160 C175 140 165 128 150 118" />
+          <path d="M200 240 C220 260 250 270 280 268" />
+        </g>
+        <g fill="#1fb5a8">
+          <circle cx="340" cy="250" r="9" />
+          <circle cx="240" cy="190" r="5" />
+          <circle cx="120" cy="150" r="5" />
+          <circle cx="60" cy="120" r="5" />
+          <circle cx="160" cy="250" r="4" />
+          <circle cx="50" cy="210" r="4" />
+        </g>
+        <text x="236" y="288" fill="#c9d3cf" font-family="DM Sans, sans-serif" font-size="12">bassin frais → îlot de chaleur</text>
+      </svg>
+    )
+  }
+  {
+    type === "dome" && (
+      <svg viewBox="0 0 400 300" role="img" aria-label={label}>
+        <path d="M40 230 A160 160 0 0 1 360 230" fill="none" stroke="#f0a43a" stroke-width="2" stroke-dasharray="4 8" />
+        <circle cx="86" cy="128" r="12" fill="#f0a43a" opacity="0.55" />
+        <circle cx="200" cy="72" r="16" fill="#f0a43a" />
+        <circle cx="314" cy="128" r="12" fill="#f0a43a" opacity="0.55" />
+        <g fill="#c9d3cf" font-family="DM Sans, sans-serif" font-size="12">
+          <text x="54" y="108">8 h</text>
+          <text x="186" y="46">midi</text>
+          <text x="318" y="108">18 h</text>
+        </g>
+        <path d="M110 250 A90 78 0 0 1 290 250 Z" fill="#1fb5a8" opacity="0.18" />
+        <path d="M110 250 A90 78 0 0 1 290 250" fill="none" stroke="#efe6d2" stroke-width="3" />
+        <g stroke="#efe6d2" stroke-width="1.5" opacity="0.6" fill="none">
+          <path d="M140 205 L200 172 L260 205" />
+          <path d="M200 172 L200 250" />
+          <path d="M122 232 L160 250 M278 232 L240 250" />
+        </g>
+        <g fill="#f0a43a" opacity="0.9">
+          <path d="M200 172 L236 180 L222 214 Z" />
+          <path d="M236 180 L268 210 L240 222 Z" />
+        </g>
+        <rect x="80" y="250" width="240" height="14" fill="#d9c9a8" />
+        <text x="104" y="288" fill="#c9d3cf" font-family="DM Sans, sans-serif" font-size="12">panneaux plein sud : énergie le matin, ombre l'après-midi</text>
+      </svg>
+    )
+  }
+</div>

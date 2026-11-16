@@ -3,30 +3,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ResponsivePicture from "../components/ResponsivePicture.astro";
 import { STUDIO } from "../data/site";
 
-const teamMembers = [
+const roles = [
   {
-    code: "Pôle 01",
-    name: "Timothée B. (Androtim)",
-    role: "Architecture Logicielle, Simulation & SEO Technique",
-    bio: "Conception du modèle de flux par graphes, gouvernance Git/CI et optimisation Core Web Vitals.",
+    role: "Programmation et simulation",
+    who: "Timothée B. (Androtim)",
+    text: "Le moteur de simulation de l'eau et de la chaleur, le site et les outils de test.",
   },
   {
-    code: "Pôle 02",
-    name: "Membre 2 (À compléter)",
-    role: "Game Design & Équilibrage Systémique",
-    bio: "Modélisation des courbes climatiques, ergonomie des restanques et scénarios de crise hydrique.",
+    role: "Game design",
+    who: "Présentation à venir",
+    text: "L'équilibrage des étés, la progression du joueur, les scénarios de crise.",
   },
   {
-    code: "Pôle 03",
-    name: "Membre 3 (À compléter)",
-    role: "Direction Artistique Solarpunk & UI/UX",
-    bio: "Identité visuelle papier calcaire, encre profonde, pin et terre cuite ; recherche iconographique provençale.",
+    role: "Direction artistique",
+    who: "Présentation à venir",
+    text: "Le style visuel de Veridia, le logo, les planches de recherche.",
   },
   {
-    code: "Pôle 04",
-    name: "Membre 4 (À compléter)",
-    role: "Narration, Devlogs & Community Management",
-    bio: "Écriture de l'univers 2140, animation éditoriale de @flexarion et relations presse jeux indépendants.",
+    role: "Écriture et communauté",
+    who: "Présentation à venir",
+    text: "L'univers de 2140, les devlogs, Instagram et les échanges avec la presse.",
   },
 ];
 ---
@@ -40,67 +36,51 @@ const teamMembers = [
     { name: "Le Studio", href: "/studio/" },
   ]}
 >
-  <section class="section">
-    <div class="container hero-editorial">
-      <div>
-        <span class="kicker">Silo 01 / Le Studio à Aix-en-Provence</span>
-        <h1>Le studio Flexarion, né au pied de la Sainte-Victoire.</h1>
-        <p class="lead">
-          Imaginé en 2026 par des étudiants de l'IUT d'Aix-Marseille, <strong>Flexarion Studio</strong>
-          développe une approche singulière du jeu vidéo de science-fiction : relier l'ingénierie
-          informatique à des récits écologiques méditerranéens.
-        </p>
+  <header class="wrap page-head split">
+    <div>
+      <h1>Le studio Flexarion, à Aix-en-Provence.</h1>
+      <p class="lead">
+        Flexarion est né en 2026 sur les bancs de l'IUT d'Aix-Marseille. Nous sommes étudiants en
+        informatique, et nous voulions une science-fiction qui se passe chez nous.
+      </p>
+      <p>
+        Pas de mégapole sous la pluie néon : la Provence a ses propres questions d'avenir, à commencer par
+        l'eau. Le calcaire, les restanques, les canaux et les étés de plus en plus longs nous donnent assez
+        de matière pour un jeu entier.
+      </p>
+      <p class="note">
+        Flexarion est un studio fictif, créé pour le module « Plan de communication et webmarketing à l'ère
+        de l'IA » du BUT Informatique. Rien n'est vendu sur ce site.
+      </p>
+    </div>
+    <figure class="photo">
+      <ResponsivePicture
+        src="/images/veridia-hero.jpg"
+        alt="Le Pays d'Aix imaginé en 2140 par Flexarion, avec la montagne Sainte-Victoire"
+        width={1280}
+        height={720}
+        eager={true}
+      />
+      <figcaption>Notre terrain de jeu : le Pays d'Aix, de l'Arbois à la Sainte-Victoire.</figcaption>
+    </figure>
+  </header>
+
+  <section class="block block-chalk" aria-labelledby="team-heading">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="team-heading">Qui fait quoi</h2>
         <p>
-          Plutôt que de reproduire des mégapoles dystopiques interchangeables, nous observons la pierre
-          calcaire locale, les restanques et la question de l'eau en Provence pour concevoir un univers
-          cohérent et documenté.
-        </p>
-        <p style="font-size: 0.9rem; color: var(--ink-faint);">
-          <strong>Transparence académique :</strong> Flexarion est un studio fictif imaginé dans le cadre du
-          module <em>Plan de communication et webmarketing à l'ère de l'IA</em> (BUT Informatique, IUT d'Aix-Marseille).
+          Une petite équipe, organisée comme un vrai studio indépendant. Les présentations individuelles
+          arrivent avec la composition définitive du groupe.
         </p>
       </div>
-
-      <figure class="plate-frame">
-        <ResponsivePicture
-          src="/images/veridia-hero.jpg"
-          alt="Territoire provençal futuriste imaginé par Flexarion Studio à Aix-en-Provence"
-          width={1280}
-          height={720}
-          eager={true}
-        />
-        <figcaption class="plate-caption">
-          <span>Inspiration territoriale : Aix-en-Provence et plateau de l'Arbois</span>
-          <span>2026</span>
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="section-tight section-ruled" aria-labelledby="team-heading">
-    <div class="container">
-      <span class="kicker kicker-pine">02 / L'équipe fondatrice</span>
-      <h2 id="team-heading">Quatre pôles complémentaires basés en Provence</h2>
-      <p class="lead">
-        Une organisation inspirée d'un vrai studio indépendant où programmation, design et communication
-        travaillent main dans la main.
-      </p>
-
-      <div class="archival-list">
+      <div class="cards grid-districts">
         {
-          teamMembers.map((member) => (
-            <article class="archival-row">
-              <span class="archival-num">{member.code}</span>
-              <div>
-                <h3 style="margin-bottom: 0.25rem;">{member.name}</h3>
-                <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--pine);">
-                  {member.role}
-                </span>
-              </div>
-              <p>{member.bio}</p>
-              <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint);">
-                Aix-en-Provence
-              </span>
+          roles.map((r) => (
+            <article class="card">
+              <span class="card-role">{r.role}</span>
+              <h3>{r.who}</h3>
+              <p>{r.text}</p>
             </article>
           ))
         }
@@ -108,30 +88,25 @@ const teamMembers = [
     </div>
   </section>
 
-  <section class="section-tight section-ruled" aria-labelledby="manifesto-heading">
-    <div class="container grid-2">
-      <article class="panel">
-        <span class="kicker">Manifeste Solarpunk</span>
-        <h2 id="manifesto-heading">Notre philosophie de création</h2>
+  <section class="block" aria-labelledby="values-heading">
+    <div class="wrap split" style="align-items: start;">
+      <div>
+        <h2 id="values-heading">Ce à quoi nous tenons</h2>
         <p>
-          Nous défendons des jeux de gestion respectueux du joueur : zéro monétisation intrusive, des
-          systèmes lisibles fondés sur la physique des ressources et une écriture relue par des humains.
+          Des jeux de gestion qui respectent le joueur : pas de monétisation agressive, des systèmes que l'on
+          peut comprendre en les regardant, et des textes écrits et relus par des humains.
         </p>
-        <a href="/jeux/veridia-2140/" class="link-editorial">Consulter le dossier Veridia 2140 →</a>
-      </article>
-
-      <article class="panel-muted">
-        <span class="kicker kicker-pine">Éthique &amp; Transparence IA</span>
-        <h2>Usage encadré de l'intelligence artificielle</h2>
+        <a href="/jeux/veridia-2140/" class="btn btn-water">Voir Veridia 2140</a>
+      </div>
+      <div>
+        <h2>Et l'IA, dans tout ça ?</h2>
         <p>
-          Flexarion recourt à l'IA pour explorer des visuels conceptuels, structurer son code et automatiser
-          les contrôles SEO techniques. La direction artistique, l'esprit critique et la voix éditoriale
-          restent sous contrôle humain.
+          Nous utilisons l'IA comme un outil : pour explorer des pistes visuelles, écrire du code plus vite et
+          vérifier le référencement du site. Les choix, eux, restent les nôtres. Le journal détaillé de nos
+          usages est public.
         </p>
-        <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer" class="link-editorial">
-          Consulter le journal technique sur GitHub →
-        </a>
-      </article>
+        <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">Lire le journal sur GitHub</a>
+      </div>
     </div>
   </section>
 </BaseLayout>

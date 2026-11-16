@@ -8,7 +8,7 @@ export const STUDIO = {
   foundedYear: "2026",
   instagramMain: "https://instagram.com/flexarion",
   instagramHandle: "@flexarion",
-  instagramBackupHandle: "@flexarion_official",
+  instagramBackupHandle: "@flexarion.official",
   githubRepo: "https://github.com/Androtim/Flexarion",
   flagshipGame: {
     title: "VERIDIA 2140",

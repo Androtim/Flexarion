@@ -16,53 +16,44 @@ const devlogs = (await getCollection("devlogs")).sort(
     { name: "Devlogs", href: "/devlogs/" },
   ]}
 >
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Silo 03 / Carnets de développement</span>
-      <h1>Devlogs Flexarion : le journal technique du studio.</h1>
-      <p class="lead">
-        Chaque carnet documente un aspect concret de la conception de <strong>Veridia 2140</strong> :
-        ancrage provençal à Aix-en-Provence, algorithmes de simulation et choix graphiques.
-      </p>
+  <header class="wrap page-head">
+    <h1>Devlogs Flexarion : le journal du studio.</h1>
+    <p class="lead narrow">
+      Ce que nous essayons, ce qui marche, ce qui ne marche pas. Chaque devlog raconte une étape de la
+      conception de <strong>Veridia 2140</strong>.
+    </p>
+  </header>
 
-      <div class="grid-2" style="margin-top: 2.25rem;">
-        {
-          devlogs.map((post, idx) => (
-            <article class="dispatch-item">
+  <section class="block block-chalk" style="padding-top: 3rem;">
+    <div class="wrap post-list" style="margin-top: 0;">
+      {
+        devlogs.map((post, idx) => (
+          <article class="post">
+            <a href={`/devlogs/${post.id}/`} tabindex="-1" aria-hidden="true">
               <ResponsivePicture
                 src={post.data.image}
                 alt={post.data.imageAlt}
                 width={1280}
                 height={720}
-                sizes="(max-width: 760px) 100vw, 560px"
+                sizes="(max-width: 720px) 100vw, 520px"
                 eager={idx === 0}
               />
-              <span class="kicker kicker-pine" style="margin-bottom: 0.45rem;">
-                Carnet 0{idx + 1} · {post.data.tag} · {post.data.readingTime}
-              </span>
+            </a>
+            <div>
+              <p class="post-meta">
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" })}
+                </time>{" "}
+                · {post.data.tag} · {post.data.readingTime}
+              </p>
               <h2>
-                <a href={`/devlogs/${post.id}/`} style="color: var(--ink);">
-                  {post.data.title}
-                </a>
+                <a href={`/devlogs/${post.id}/`}>{post.data.title}</a>
               </h2>
               <p>{post.data.description}</p>
-              <p style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint); margin-bottom: 1rem;">
-                {post.data.author} ·{" "}
-                <time datetime={post.data.pubDate.toISOString()}>
-                  {post.data.pubDate.toLocaleDateString("fr-FR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              </p>
-              <a href={`/devlogs/${post.id}/`} class="link-editorial">
-                Lire l'article complet →
-              </a>
-            </article>
-          ))
-        }
-      </div>
+            </div>
+          </article>
+        ))
+      }
     </div>
   </section>
 </BaseLayout>

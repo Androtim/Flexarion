@@ -1,6 +1,6 @@
 // Génère l'identité visuelle Flexarion (logo, favicon, icônes, image de partage)
 // en SVG vectoriel pur, avec le texte converti en tracés à partir des polices
-// du site (Fraunces + IBM Plex Mono). Aucune image générée par IA.
+// du site (Bricolage Grotesque + IBM Plex Mono). Aucune image générée par IA.
 //
 // Usage : npm run brand:build
 import fs from "node:fs";
@@ -12,13 +12,15 @@ const root = process.cwd();
 const pub = (p) => path.join(root, "public", p);
 const font = (pkg, file) => create(fs.readFileSync(path.join(root, "node_modules", pkg, "files", file)));
 
-const serif = font("@fontsource-variable/fraunces", "fraunces-latin-wght-normal.woff2");
+// Bricolage Grotesque : graisse par défaut 800 dans le fichier variable, celle des titres du site.
+const serif = font("@fontsource-variable/bricolage-grotesque", "bricolage-grotesque-latin-wght-normal.woff2");
+const sans = font("@fontsource-variable/dm-sans", "dm-sans-latin-wght-normal.woff2");
 const mono = font("@fontsource/ibm-plex-mono", "ibm-plex-mono-latin-600-normal.woff2");
 
 const C = {
-  paper: "#F5F0E6",
+  paper: "#EFE6D2",
   stone: "#EBE3D3",
-  ink: "#121917",
+  ink: "#13262E",
   pine: "#155E44",
   pineLight: "#3E9B74",
   ochre: "#A95A22",
@@ -69,7 +71,7 @@ const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" 
 write("favicon.svg", faviconSvg);
 
 // 2. Logo horizontal (fond transparent, pour fond clair)
-const word = textPath(serif, "FLEXARION", { x: 78, y: 41, size: 34, tracking: 2.2, fill: C.ink });
+const word = textPath(serif, "Flexarion", { x: 78, y: 42, size: 40, tracking: -0.6, fill: C.ink });
 const sub = textPath(mono, "STUDIO · AIX-EN-PROVENCE", { x: 79, y: 60, size: 10.5, tracking: 1.6, fill: C.pine });
 const logoW = Math.ceil(Math.max(78 + word.width, 79 + sub.width) + 6);
 const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${logoW} 68" width="${logoW}" height="68" role="img" aria-label="Flexarion Studio, Aix-en-Provence">
@@ -79,17 +81,16 @@ const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${logoW} 6
 </svg>`;
 write("images/flexarion-logo.svg", logoSvg);
 
-// 3. Image de partage par défaut (Open Graph 1200×630)
-const ogTitle = textPath(serif, "FLEXARION", { x: 96, y: 330, size: 112, tracking: 7, fill: C.ink });
-const ogLine1 = textPath(mono, "STUDIO DE JEUX VIDÉO DE SCIENCE-FICTION", { x: 100, y: 400, size: 24, tracking: 2, fill: C.pine });
-const ogLine2 = textPath(mono, "AIX-EN-PROVENCE · VERIDIA 2140", { x: 100, y: 440, size: 24, tracking: 2, fill: C.ochre });
+// 3. Image de partage par défaut (Open Graph 1200×630) : fond crépuscule, emblème, nom
+const ogTitle = textPath(serif, "Flexarion", { x: 90, y: 300, size: 168, tracking: -3, fill: C.paper });
+const ogLine1 = textPath(sans, "Studio de jeux vidéo de science-fiction", { x: 96, y: 380, size: 40, fill: C.sun });
+const ogLine2 = textPath(sans, "Aix-en-Provence · Veridia 2140", { x: 96, y: 432, size: 40, fill: "#C9D3CF" });
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <rect width="1200" height="630" fill="${C.paper}"/>
-  <rect x="40" y="40" width="1120" height="550" fill="none" stroke="${C.ink}" stroke-opacity="0.34" stroke-width="2"/>
-  <line x1="100" y1="370" x2="${100 + ogTitle.width}" y2="370" stroke="${C.ink}" stroke-opacity="0.16" stroke-width="2"/>
-  <g transform="translate(980 78) scale(2.5)">${emblem()}</g>
+  <rect width="1200" height="630" fill="${C.ink}"/>
+  <path d="M0 630 L0 560 L230 540 L420 500 L520 450 L560 420 L590 432 L630 414 L700 450 L860 500 L1050 530 L1200 545 L1200 630 Z" fill="#1C3A44"/>
+  <path d="M0 630 L0 590 L1200 590 L1200 630 Z" fill="${C.pineLight}" opacity="0.9"/>
+  <g transform="translate(900 120) scale(3.6)">${emblem()}</g>
   ${ogTitle.svg}${ogLine1.svg}${ogLine2.svg}
-  ${textPath(mono, "43.5297° N · 5.4474° E", { x: 100, y: 548, size: 18, tracking: 1.5, fill: C.ink }).svg}
 </svg>`;
 write("images/og-flexarion.svg", ogSvg);
 

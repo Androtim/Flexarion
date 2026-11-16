@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FaqSection from "../../components/FaqSection.astro";
 import ResponsivePicture from "../../components/ResponsivePicture.astro";
+import MechanicDiagram from "../../components/MechanicDiagram.astro";
 import { STUDIO } from "../../data/site";
 
 const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
@@ -61,133 +62,117 @@ const gameFaqs = [
   ]}
   schemas={[videoGameSchema]}
 >
-  <section class="section">
-    <div class="container hero-editorial">
-      <div>
-        <span class="kicker">Silo 02 / Dossier Jeu Phare</span>
-        <h1>Veridia 2140 : bâtir les oasis solaires de Provence.</h1>
+  <header class="wrap page-head split">
+    <div>
+      <h1>Veridia 2140 : faire passer l'été à une ville entière.</h1>
+      <p class="lead">
+        Un city-builder Solarpunk dans le Pays d'Aix en 2140. Vous héritez d'un district de Veridia, une
+        cité de sept dômes reliés par des aqueducs, et vous devez lui faire traverser l'été le plus chaud
+        jamais mesuré.
+      </p>
+      <dl class="facts">
+        <div><dt>Genre</dt><dd>City-builder, stratégie</dd></div>
+        <div><dt>Plateforme visée</dt><dd>PC (Windows, Linux)</dd></div>
+        <div><dt>Modèle imaginé</dt><dd>Achat unique, sans microtransaction</dd></div>
+        <div><dt>État</dt><dd>Concept en pré-production</dd></div>
+      </dl>
+    </div>
+    <figure class="photo">
+      <ResponsivePicture
+        src="/images/veridia-hero.jpg"
+        alt="Illustration principale de Veridia 2140 : dômes géodésiques, aqueduc et Sainte-Victoire"
+        width={1280}
+        height={720}
+        eager={true}
+      />
+      <figcaption>Recherche visuelle : le bassin aixois au crépuscule, été 2140.</figcaption>
+    </figure>
+  </header>
+
+  <section class="block block-chalk" aria-labelledby="mechanics-heading">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="mechanics-heading">Trois systèmes, un seul adversaire : la chaleur</h2>
         <p class="lead">
-          En 2140, le bassin aixois affronte des étés extrêmes. Aux commandes de dômes autonomes autour
-          d'<strong>Aix-en-Provence</strong>, tracez des aqueducs en calcaire, ombragez les cultures en
-          restanques et refroidissez la ville par un réseau mycélien vivant.
-        </p>
-
-        <div class="specs-strip" aria-label="Fiche technique de Veridia 2140">
-          <div class="spec-cell">
-            <span class="spec-label">Genre</span>
-            <span class="spec-value">City-Builder Tactique</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-label">Modèle envisagé</span>
-            <span class="spec-value">Indé payant (0 pub)</span>
-          </div>
-          <div class="spec-cell">
-            <span class="spec-label">Statut du projet</span>
-            <span class="spec-value">Concept académique (AMU)</span>
-          </div>
-        </div>
-
-        <p style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--ink-faint);">
-          <strong>Note de transparence :</strong> {STUDIO.flagshipGame.status}. Aucune vente ni précommande
-          réelle n'est proposée sur ce site.
+          Pas de combat dans Veridia 2140. Chaque été, la température monte et vos trois systèmes doivent
+          tenir ensemble. Si l'un lâche, les deux autres suivent.
         </p>
       </div>
+      <article class="mechanic">
+        <div>
+          <span class="tag">Hydrologie</span>
+          <h3>L'eau ne remonte jamais</h3>
+          <p>
+            Les bassins et les aqueducs forment un réseau orienté : l'eau va du plus haut au plus bas. Le
+            relief réel du Pays d'Aix décide donc où vous pouvez construire. Couvrir un canal d'une pergola
+            solaire réduit l'évaporation, mais coûte cher.
+          </p>
+        </div>
+        <MechanicDiagram type="water" label="Schéma : réseau d'eau gravitaire du réservoir jusqu'à la ville." />
+      </article>
+      <article class="mechanic">
+        <div>
+          <span class="tag">Mycélium</span>
+          <h3>Un réseau vivant sous la ville</h3>
+          <p>
+            Le mycélium cultivé sous les restanques déplace l'humidité vers les îlots de chaleur. Il est
+            efficace et gratuit, mais il meurt s'il reste sec trop longtemps. Sa lumière sur la carte vous
+            dit où il souffre, sans aucune fenêtre d'alerte.
+          </p>
+        </div>
+        <MechanicDiagram type="mycelium" label="Schéma : transfert d'humidité par le mycélium vers les rues chaudes." />
+      </article>
+      <article class="mechanic">
+        <div>
+          <span class="tag">Architecture</span>
+          <h3>Calcaire et verre solaire</h3>
+          <p>
+            Le calcaire garde la fraîcheur de la nuit, le verre produit l'énergie du jour. L'orientation de
+            chaque dôme est un arbitrage entre électricité et confort, à refaire quand l'été avance.
+          </p>
+        </div>
+        <MechanicDiagram type="dome" label="Schéma : course du soleil au-dessus d'un dôme et orientation des panneaux." />
+      </article>
+    </div>
+  </section>
 
-      <figure class="plate-frame">
+  <section class="block" aria-labelledby="dev-heading">
+    <div class="wrap split">
+      <figure class="photo">
         <ResponsivePicture
-          src="/images/veridia-hero.jpg"
-          alt="Illustration principale de Veridia 2140 avec ses dômes géodésiques en Provence"
+          src="/images/devlog-hydrology.jpg"
+          alt="Vue isométrique de canaux turquoise et de restanques cultivées sous un dôme dans Veridia 2140"
           width={1280}
           height={720}
-          eager={true}
+          sizes="(max-width: 860px) 100vw, 540px"
         />
-        <figcaption class="plate-caption">
-          <span>Secteur Sainte-Victoire · Dôme calcaire &amp; aqueducs</span>
-          <span>Pré-production</span>
-        </figcaption>
+        <figcaption>Recherche visuelle : canaux et restanques sous un dôme.</figcaption>
       </figure>
-    </div>
-  </section>
-
-  <section class="section-tight section-ruled" aria-labelledby="mechanics-heading">
-    <div class="container">
-      <span class="kicker kicker-pine">02 / Mécaniques de jeu</span>
-      <h2 id="mechanics-heading">Trois systèmes physiques imbriqués</h2>
-      <div class="archival-list">
-        <article class="archival-row">
-          <span class="archival-num">01</span>
-          <h3>Hydrologie gravitaire</h3>
-          <p>
-            Chaque bassin et aqueduc forme un graphe orienté : le relief provençal dicte la pression de
-            l'eau, tandis que les pergolas solaires freinent l'évaporation pendant les canicules.
-          </p>
-          <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--pine);">Graphes</span>
-        </article>
-
-        <article class="archival-row">
-          <span class="archival-num">02</span>
-          <h3>Symbiose mycélienne</h3>
-          <p>
-            Sous les terrasses d'oliviers et de lavande, un réseau de mycélium bioluminescent transfère
-            l'humidité des bassins frais vers les îlots de chaleur urbains.
-          </p>
-          <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--pine);">Thermique</span>
-        </article>
-
-        <article class="archival-row">
-          <span class="archival-num">03</span>
-          <h3>Calcaire &amp; verre solaire</h3>
-          <p>
-            L'orientation de chaque verrière géodésique arbitre entre captation photovoltaïque matinale et
-            inertie thermique nocturne du bâti provençal.
-          </p>
-          <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--pine);">Urbanisme</span>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-tight section-ruled" aria-labelledby="gallery-heading">
-    <div class="container">
-      <span class="kicker">03 / Étude visuelle &amp; architecture</span>
-      <h2 id="gallery-heading">Aperçu du moteur et carnet d'ingénierie</h2>
-      <div class="grid-2" style="margin-top: 1.5rem;">
-        <figure class="plate-frame">
-          <ResponsivePicture
-            src="/images/devlog-hydrology.jpg"
-            alt="Vue isométrique des canaux d'eau turquoise et des capteurs solaires dans Veridia 2140"
-            width={1280}
-            height={720}
-            sizes="(max-width: 760px) 100vw, 560px"
-            eager={false}
-          />
-          <figcaption class="plate-caption">
-            <span>Planche 02 · Canaux turquoise et nœuds mycéliens sous dôme</span>
-            <span>Isométrie</span>
-          </figcaption>
-        </figure>
-
-        <div class="panel" style="display: flex; flex-direction: column; justify-content: center;">
-          <span class="kicker kicker-pine">Côté ingénierie</span>
-          <h3>Comment est modélisée la simulation ?</h3>
-          <p>
-            Nous détaillons notre modèle de simulation (graphes orientés de flux, automates cellulaires
-            thermiques et architecture déterministe ciblant 60 FPS) dans nos carnets ouverts.
-          </p>
-          <div class="actions">
-            <a href="/devlogs/simulation-flux-hydriques-graphes/" class="btn btn-primary">
-              Lire le Carnet Technique #2
-            </a>
-            <a href="/contact/" class="link-editorial">Dossier Presse</a>
-          </div>
+      <div>
+        <h2 id="dev-heading">Comment on le construit</h2>
+        <p>
+          La simulation repose sur des graphes orientés pour l'eau et une grille thermique pour la chaleur.
+          Elle est déterministe : la même partie rejouée donne exactement le même résultat, ce qui nous permet
+          de la tester automatiquement.
+        </p>
+        <p>
+          Nous détaillons ces choix dans nos devlogs, et l'univers complet (chronologie, districts, factions)
+          a sa propre page.
+        </p>
+        <div class="actions">
+          <a href="/devlogs/simulation-flux-hydriques-graphes/" class="btn btn-water">Lire le devlog technique</a>
+          <a href="/jeux/veridia-2140/univers/" class="btn btn-ghost">L'univers du jeu</a>
         </div>
+        <p class="note" style="margin-top: 1.5rem;">
+          {STUDIO.flagshipGame.status}. Aucune vente ni précommande n'est proposée.
+        </p>
       </div>
     </div>
   </section>
 
   <FaqSection
-    title="FAQ sur Veridia 2140"
-    subtitle="Les informations vérifiables sur le gameplay, les plateformes et le cadre du projet."
+    title="Questions sur Veridia 2140"
     items={gameFaqs}
+    tone="chalk"
   />
 </BaseLayout>
