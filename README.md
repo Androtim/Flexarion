@@ -33,6 +33,9 @@ Le site est conçu avec **Astro** en architecture modulaire prête pour la produ
 
 ```text
 Flexarion/
+├── AGENTS.md                 # Règles projet & protocole obligatoire pour agents IA
+├── CLAUDE.md                 # Point d'entrée natif pour Claude / Claude Code
+├── AI_HANDOFF.md             # Journal de passation inter-agents (quoi, pourquoi, suite)
 ├── .github/                  # Templates d'Issues/PR & workflow CI SEO automatisé
 ├── docs/
 │   ├── plan-communication.md # SWOT, Personas, SMART, Positionnement, Silo, SMO
