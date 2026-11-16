@@ -9,9 +9,10 @@ interface Props {
   subtitle?: string;
   items: FaqEntry[];
   emitSchema?: boolean;
+  tone?: "limestone" | "chalk";
 }
 
-const { title, subtitle, items, emitSchema = true } = Astro.props;
+const { title, subtitle, items, emitSchema = true, tone = "limestone" } = Astro.props;
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -27,32 +28,20 @@ const faqSchema = {
 };
 ---
 
-<section class="section-tight section-ruled" aria-labelledby="faq-heading">
-  <div class="container">
-    <span class="kicker kicker-pine">Questions fréquentes</span>
+<section class:list={["block", tone === "chalk" && "block-chalk"]} aria-labelledby="faq-heading">
+  <div class="wrap narrow">
     <h2 id="faq-heading">{title}</h2>
-    {subtitle && <p class="lead">{subtitle}</p>}
-
-    <div class="faq-list">
+    {subtitle && <p>{subtitle}</p>}
+    <div class="faq">
       {
-        items.map((item, idx) => (
-          <details class="faq-item" open={idx === 0}>
-            <summary>
-              <span>
-                <span style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--ochre); margin-right: 0.65rem;">
-                  0{idx + 1}
-                </span>
-                {item.question}
-              </span>
-            </summary>
-            <div class="faq-answer">
-              <p style="margin: 0;">{item.answer}</p>
-            </div>
+        items.map((item) => (
+          <details>
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
           </details>
         ))
       }
     </div>
   </div>
-
   {emitSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
 </section>

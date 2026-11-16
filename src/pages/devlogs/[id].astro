@@ -33,10 +33,11 @@ const blogPostingSchema = {
   },
   publisher: {
     "@type": "Organization",
-    name: STUDIO.legalName,
+    "@id": `${siteOrigin}/#organization`,
+    name: STUDIO.name,
     logo: {
       "@type": "ImageObject",
-      url: `${siteOrigin}/images/flexarion-logo.svg`,
+      url: `${siteOrigin}/images/flexarion-logo.png`,
     },
   },
   mainEntityOfPage: {
@@ -59,73 +60,68 @@ const blogPostingSchema = {
   ]}
   schemas={[blogPostingSchema]}
 >
-  <article class="section">
-    <div class="container">
-      <div style="max-width: 74ch;">
-        <span class="kicker kicker-pine">{post.data.tag} · {post.data.readingTime}</span>
-        <h1>{post.data.title}</h1>
-        <p style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-faint); margin-bottom: 2rem;">
-          Publié par <strong style="color: var(--ink);">{post.data.author}</strong> ({post.data.authorRole}) le{" "}
-          <time datetime={post.data.pubDate.toISOString()}>
-            {post.data.pubDate.toLocaleDateString("fr-FR", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </time>
-        </p>
-      </div>
+  <article>
+    <header class="wrap article-head">
+      <p class="post-meta">
+        {post.data.tag} · {post.data.readingTime}
+      </p>
+      <h1>{post.data.title.replace(/ ([:?!;])/g, "\u00a0$1")}</h1>
+      <p class="post-meta">
+        Par <strong>{post.data.author}</strong> ({post.data.authorRole}), le{" "}
+        <time datetime={post.data.pubDate.toISOString()}>
+          {post.data.pubDate.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" })}
+        </time>
+      </p>
+    </header>
 
-      <figure class="plate-frame" style="margin: 0 0 2.25rem; max-width: 920px;">
-        <ResponsivePicture
-          src={post.data.image}
-          alt={post.data.imageAlt}
-          width={1280}
-          height={720}
-          sizes="(max-width: 920px) 100vw, 920px"
-          eager={true}
-        />
-        <figcaption class="plate-caption">
-          <span>{post.data.imageAlt}</span>
-          <span>Archive Flexarion</span>
-        </figcaption>
-      </figure>
+    <figure class="wrap photo" style="max-width: 980px; margin-inline: auto;">
+      <ResponsivePicture
+        src={post.data.image}
+        alt={post.data.imageAlt}
+        width={1280}
+        height={720}
+        sizes="(max-width: 980px) 100vw, 980px"
+        eager={true}
+      />
+      <figcaption>{post.data.imageAlt}</figcaption>
+    </figure>
 
-      <aside class="panel-muted" style="max-width: 68ch; margin-bottom: 2.25rem;">
-        <h2 style="font-size: 1.15rem; margin-bottom: 0.65rem;">
-          Points clés de ce carnet (Synthèse GEO)
-        </h2>
-        <ul style="margin: 0; padding-left: 1.25rem; color: var(--ink-soft);">
+    <div class="wrap" style="padding-bottom: 4rem;">
+      <aside class="takeaways prose">
+        <h2>En bref</h2>
+        <ul>
           {post.data.summaryPoints.map((point) => <li>{point}</li>)}
         </ul>
       </aside>
-
       <div class="prose">
         <Content />
       </div>
-
-      {
-        otherDevlogs.length > 0 && (
-          <section class="section-ruled" style="margin-top: 3.5rem; padding-top: 2rem;">
-            <span class="kicker">Poursuivre dans le silo Devlogs</span>
-            <h2>Autres carnets de développement</h2>
-            <div class="grid-2" style="margin-top: 1.25rem;">
-              {otherDevlogs.map((other) => (
-                <article class="dispatch-item">
-                  <span class="kicker kicker-pine" style="margin-bottom: 0.45rem;">{other.data.tag}</span>
-                  <h3>
-                    <a href={`/devlogs/${other.id}/`} style="color: var(--ink);">
-                      {other.data.title}
-                    </a>
-                  </h3>
-                  <p>{other.data.description}</p>
-                  <a href={`/devlogs/${other.id}/`} class="link-editorial">Lire cet article →</a>
-                </article>
-              ))}
-            </div>
-          </section>
-        )
-      }
     </div>
   </article>
+
+  {
+    otherDevlogs.length > 0 && (
+      <section class="block block-chalk" aria-labelledby="more-heading">
+        <div class="wrap">
+          <h2 id="more-heading">À lire ensuite</h2>
+          <div class="post-list">
+            {otherDevlogs.map((other) => (
+              <article class="post">
+                <a href={`/devlogs/${other.id}/`} tabindex="-1" aria-hidden="true">
+                  <ResponsivePicture src={other.data.image} alt={other.data.imageAlt} width={1280} height={720} sizes="(max-width: 720px) 100vw, 520px" />
+                </a>
+                <div>
+                  <p class="post-meta">{other.data.tag}</p>
+                  <h3>
+                    <a href={`/devlogs/${other.id}/`}>{other.data.title}</a>
+                  </h3>
+                  <p>{other.data.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>

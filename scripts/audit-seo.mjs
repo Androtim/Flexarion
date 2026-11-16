@@ -21,7 +21,8 @@ function collectFiles(dir, acc = []) {
 }
 
 const allFiles = collectFiles(DIST_DIR);
-const htmlFiles = allFiles.filter((f) => f.endsWith(".html"));
+// Les fichiers de vérification (Google Search Console, Bing) ne sont pas des pages.
+const htmlFiles = allFiles.filter((f) => f.endsWith(".html") && !/(^|[\\/])(google[0-9a-f]+|BingSiteAuth)\.html$/.test(f));
 
 let errors = 0;
 let warnings = 0;
@@ -86,7 +87,8 @@ for (const file of htmlFiles) {
   }
 
   // Canonical
-  if (!/<link\s+rel=(["'])canonical\1\s+href=(["'])https?:\/\/[^"']+\2/i.test(html)) {
+  const isNoindex = /<meta\s+name=(["'])robots\1\s+content=(["'])[^"']*noindex/i.test(html);
+  if (!isNoindex && !/<link\s+rel=(["'])canonical\1\s+href=(["'])https?:\/\/[^"']+\2/i.test(html)) {
     fail(rel, "Balise <link rel=\"canonical\"> manquante ou relative.");
   }
 

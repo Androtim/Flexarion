@@ -9,7 +9,7 @@
 - **Cadre :** Module universitaire *Plan de communication & webmarketing à l'ère de l'IA* (BUT Informatique 2e année, IUT d'Aix-Marseille).
 - **Concept imposé :** Studio indépendant de jeux vidéo **Flexarion**, spécialisé en **science-fiction**, basé à **Aix-en-Provence**.
 - **Jeu phare retenu :** **Veridia 2140** (*Solarpunk méditerranéen — City-builder & simulation hydrique/mycélienne en Provence*).
-- **Règle d'équité (Publication) :** La mise en ligne publique et l'indexation Google (GitHub Pages / Alwaysdata + Google Search Console) sont **synchronisées avec le CM2**. Tant que le feu vert du CM2 n'est pas donné par l'utilisateur, **ne pas déployer de site public ni activer de déploiement automatique**.
+- **Publication :** le site est en ligne sur **https://flexarion.alwaysdata.net** depuis le 2026-11-16 (feu vert de l'utilisateur). Déploiement manuel par `rsync` SSH après `npm run build && npm run audit:seo` ; pas de déploiement automatique sans accord.
 - **Règle éthique & transparence :**
   - Interdiction stricte du *Black Hat SEO* (bourrage de mots-clés, fermes de liens, cloaking, contenu dupliqué).
   - Ne jamais ajouter de faux prix, de bouton d'achat, de `Offer`/`PreOrder` JSON-LD ni de fausses promesses commerciales : Flexarion Studio et *Veridia 2140* doivent rester clairement identifiés comme un **concept académique fictif (IUT d'Aix-Marseille)**.
@@ -27,10 +27,11 @@
   - `/devlogs/` + `/devlogs/<id>/` (Silo 3 — Carnets de développement Markdown typés dans `src/content.config.ts`)
   - `/contact/` (Contact & Kit Presse)
   - Éviter le maillage transversal anarchique entre silos profonds (respecter la structure du [CM2](docs/plan-communication.md)).
-- **Direction Artistique « Anti-AI-Slop » (`docs/brand-guidelines.md`) :**
-  - Palette éditoriale claire : papier calcaire (`#F5F0E6`), pierre sablée (`#EBE3D3`), encre (`#121917`), pin (`#155E44`), terre cuite (`#A95A22`). **Ne pas revenir à un dark-mode SaaS à halos néon ni aux badges pilules/grilles de cartes uniformes.**
-  - Typographies auto-hébergées en WOFF2 (`@fontsource-variable/fraunces`, `@fontsource-variable/dm-sans`, `@fontsource/ibm-plex-mono`) : **aucune requête externe Google Fonts** (LCP + RGPD).
-  - Éviter les surcharges de tirets cadratins (`—`) et le jargon marketing générique dans les textes français.
+- **Direction artistique v2 « carte d'abord » (`docs/brand-guidelines.md`) :**
+  - Le site est construit autour du jeu : panorama SVG interactif de Veridia (`src/components/Panorama.astro`) et schémas de mécaniques (`src/components/MechanicDiagram.astro`), dessinés en code, sans image générée.
+  - Palette : crépuscule `#13262E`, calcaire `#EFE6D2`, craie `#FBF7EE`, eau `#1FB5A8`/`#0C776F`, soleil `#F0A43A`, tuile `#C4532F`. Titres `Bricolage Grotesque`, texte `DM Sans`, `IBM Plex Mono` uniquement pour le code. Polices auto-hébergées en WOFF2.
+  - **Ne pas réintroduire** les marqueurs du style « warm editorial » généré par IA : sur-titres monospace « 01 / SECTION », coordonnées GPS décoratives, filets fins partout, numérotation de ce qui n'est pas une séquence, `→` sur chaque lien, texte marketing générique.
+  - Identité (logo, favicon, image Open Graph, avatar Instagram) générée par `npm run brand:build`.
 - **Images :** Utiliser `src/components/ResponsivePicture.astro` (WebP `640w`/`1280w` + fallback JPG optimisé via `npm run optimize:images`).
 
 ---

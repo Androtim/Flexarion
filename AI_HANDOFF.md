@@ -10,7 +10,7 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 ## État Actuel du Projet (Instantané à la dernière mise à jour)
 
 - **Version courante sur `main` & `develop` :** `v1.2.0` + documentation de passation multi-agents.
-- **Avancement du cours :** CM1 effectué ; 0 TD effectué (le site **ne doit pas** être déployé publiquement avant la date officielle fixée au CM2).
+- **Avancement du cours :** CM1 effectué ; 0 TD effectué. **Site en ligne depuis le 2026-11-16 sur https://flexarion.alwaysdata.net** (déploiement anticipé validé par l'utilisateur).
 - **Ce qui est déjà prêt et validé :**
   - Gouvernance Git pro (`main`, `develop`, PRs, Milestones M1–M4, Conventional Commits, GitHub Actions CI `.github/workflows/ci-seo.yml`).
   - Plan de communication complet (`docs/plan-communication.md`) et charte éditoriale (`docs/brand-guidelines.md`).
@@ -49,6 +49,54 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 ---
 
 ## Historique des Interventions IA
+
+### [2026-11-16 16:40] · Claude Opus 5.5 via Claude Code (refonte v2)
+- **Branche / Issue / PR :** `design/map-first-revamp` (basée sur `feat/seo-brand-signals-and-lore`, PR #23)
+- **Objectif de la session :** Refondre tout le site pour qu'il ne ressemble plus à un site généré par IA (demande de l'utilisateur).
+- **Constat de départ :** recherche web (Capital & Compute, 21st.dev, etc.) : la v1 « papier calcaire + serif + étiquettes monospace + filets + `→` » correspond au style « warm editorial », désormais identifié comme un marqueur de site généré par IA.
+- **Ce qui a été fait :**
+  - `src/components/Panorama.astro` : **panorama SVG interactif** de Veridia (Sainte-Victoire, planète à anneau, dômes, aqueduc avec eau animée, restanques, bassin du Réaltor) avec 4 districts cliquables ; défilement horizontal sur mobile.
+  - `src/components/MechanicDiagram.astro` : 3 schémas dessinés (eau gravitaire, mycélium, course du soleil sur un dôme).
+  - `src/styles/global.css` : réécriture complète (palette tirée des illustrations, Bricolage Grotesque + DM Sans, coins arrondis variés, boutons pleins, plus de sur-titres/filets/flèches, `prefers-reduced-motion`).
+  - Toutes les pages réécrites (accueil, studio, jeu, univers, devlogs, article, contact, 404) avec des textes plus concrets ; en-tête/pied de page refaits (crête de la Sainte-Victoire en pied de page).
+  - Logo, image Open Graph et avatar Instagram regénérés en Bricolage Grotesque sur fond crépuscule (`npm run brand:build`) ; Fraunces désinstallée.
+  - Pseudo Instagram secondaire corrigé : `@flexarion.official`.
+  - `CLAUDE.md`, `AGENTS.md`, `docs/brand-guidelines.md` : nouvelle direction artistique documentée.
+- **Vérifications :** `npm run build` (9 pages), `npm run audit:seo` (0 erreur, 0 avertissement), captures headless 1280 px et 390 px de chaque gabarit.
+- **À faire / Attention :**
+  - Déployer après validation visuelle de l'utilisateur (`rsync`, voir l'entrée précédente). Ne jamais supprimer `public/google5a4bf04ecd7e8477.html` (vérification Search Console).
+  - Ajouter les URL YouTube/Instagram dans `STUDIO` (`sameAs`) dès que l'utilisateur les donne.
+  - Vidéos YouTube/Reels générées en code : à lancer (première vidéo test « les aqueducs »).
+  - Équipe : remplacer « Présentation à venir » dans `src/pages/studio.astro` quand le groupe est constitué.
+
+---
+
+### [2026-11-16 16:10] · Claude Opus 5.5 via Claude Code
+- **Branche / Issue / PR :** `feat/seo-brand-signals-and-lore` (depuis `develop`)
+- **Objectif de la session :** Mettre le site en ligne au plus tôt sur alwaysdata, maximiser le classement sur la requête « Flexarion » et remplacer le logo généré par IA par une identité vectorielle cohérente.
+- **Ce qui a été fait (fichiers modifiés/créés) :**
+  - **Déploiement :** le site est **en ligne sur https://flexarion.alwaysdata.net** (feu vert explicite de l'utilisateur pour déployer avant le CM2). Déploiement par `rsync` SSH (clé `~/.ssh/alwaysdata_flexarion`, compte `flexarion`, dossier `~/www/`) : `rsync -az --delete -e "ssh -i ~/.ssh/alwaysdata_flexarion" dist/ flexarion@ssh-flexarion.alwaysdata.net:www/`.
+  - `public/.htaccess` : redirection HTTP→HTTPS (301), `ErrorDocument 404`, cache long sur `_astro/`, compression.
+  - `src/data/site.ts` : `Organization` enrichie (`@id`, `legalName`, `alternateName`, logo PNG, `foundingLocation`, `knowsAbout`) + nouveau `buildWebSiteSchema` (nom de site « Flexarion » dans Google). Lien « Univers » ajouté à la navigation.
+  - `src/layouts/BaseLayout.astro` : `WebSite` JSON-LD sur l'accueil, favicons PNG + `apple-touch-icon` + `site.webmanifest`, `og:image:width/height/alt`, prop `noindex`, image de partage par défaut `og-flexarion.jpg`, correction du lien de navigation actif (correspondance la plus longue).
+  - `src/pages/jeux/veridia-2140/univers.astro` : **nouvelle page** (chronologie 2038–2140, 4 districts, 3 factions, lexique, FAQ).
+  - `src/pages/404.astro` : page 404 `noindex`. `scripts/audit-seo.mjs` : pas d'exigence de canonical sur les pages `noindex`.
+  - Titres/H1 : « Flexarion » en tête du `<title>` et du `<h1>` de l'accueil, du studio et des devlogs.
+  - `scripts/build-brand-assets.mjs` (`npm run brand:build`) : génère logo, favicon, icônes, image Open Graph et avatar Instagram en **SVG vectoriel**, texte converti en tracés depuis Fraunces + IBM Plex Mono. Emblème : Sainte-Victoire, planète à anneau (SF), arches de l'aqueduc de Roquefavour, palette de la charte.
+- **Pourquoi ces choix :**
+  - `flexarion.fr` et `flexarion-studio.github.io` sont déjà occupés par d'autres groupes : le sous-domaine `flexarion.alwaysdata.net` (mot-clé exact) a été réservé immédiatement.
+  - L'ancien logo/avatar (néon, dégradés) contredisait la charte calcaire ; un logo vectoriel reste net à toute taille et Google exige un logo raster pour `Organization.logo`.
+  - Devlog #3 volontairement **non publié** maintenant : le garder pour le TD3 donne un signal de fraîcheur et respecte le calendrier du brief.
+- **Vérifications exécutées :**
+  - `npm run build` : 9 pages. `npm run audit:seo` : 0 erreur, 0 avertissement.
+  - Captures Chrome headless 1280 px et 390 px (accueil, Univers) ; vérification en ligne : 200 sur toutes les pages, 404 réel, HTTP→HTTPS en 301.
+  - ⚠️ `npm install` sur réseau lent avait laissé `@fontsource-variable/*` incomplets (Fraunces/DM Sans absents du build) : réinstallés. En cas de doute, vérifier `ls dist/_astro | grep fraunces`.
+- **À faire / Attention pour le prochain agent :**
+  - L'utilisateur doit ajouter le site dans **Google Search Console** et **Bing Webmaster Tools** (vérification par fichier HTML ou balise méta), soumettre `sitemap-index.xml` et demander l'indexation de chaque URL.
+  - Créer les profils externes (Instagram avec le nouvel avatar, itch.io, YouTube…) et renseigner leurs URL dans `STUDIO` (`sameAs`) de `src/data/site.ts`.
+  - Équipe : composition du groupe pas encore fixée (6 amis à répartir), ne pas inventer de noms.
+
+---
 
 ### [2026-11-16 15:16] · Gemini 4 Hydrogen (Antigravity)
 - **Branche / Issue / PR :** `docs/ai-handoff-and-agent-instructions` -> `develop` -> `main` · Issue `#19`

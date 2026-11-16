@@ -1,0 +1,206 @@
+---
+// Panorama interactif de Veridia en 2140, dessiné en SVG (aucune image générée).
+// Les points orange ouvrent une fiche de district.
+const districts = [
+  {
+    id: "victoire",
+    x: 51.4,
+    y: 60,
+    name: "Dôme Sainte-Victoire",
+    text: "Adossé à la montagne, il produit l'essentiel de l'électricité. Son problème : la roche rend la chaleur toute la nuit.",
+  },
+  {
+    id: "arbois",
+    x: 15,
+    y: 80,
+    name: "Plateau de l'Arbois",
+    text: "Lavande, oliviers et céréales anciennes en restanques, au-dessus du réseau mycélien le plus dense.",
+  },
+  {
+    id: "fontaines",
+    x: 78,
+    y: 60,
+    name: "Quartier des Fontaines",
+    text: "Le vieil Aix sous une canopée de verre. Chaque fontaine ouverte rafraîchit les rues voisines.",
+  },
+  {
+    id: "realtor",
+    x: 88,
+    y: 87,
+    name: "Bassin du Réaltor",
+    text: "Le réservoir de la cité. Il alimente tous les quartiers par gravité, sans une seule pompe.",
+  },
+];
+
+const arches = Array.from({ length: 15 }, (_, i) => 392 + i * 58);
+const cypress = [
+  [70, 520, 1],
+  [110, 540, 1.3],
+  [470, 560, 1.1],
+  [520, 548, 0.9],
+  [980, 556, 1.2],
+  [1030, 540, 0.9],
+  [1530, 530, 1.1],
+];
+---
+
+<div class="panorama" data-panorama>
+  <div class="panorama-scroll" data-scroll>
+  <div class="panorama-inner">
+  <svg viewBox="0 0 1600 640" role="img" aria-labelledby="pano-title">
+    <title id="pano-title">
+      Panorama de Veridia en 2140 : la montagne Sainte-Victoire, des dômes de verre solaire, un aqueduc
+      où coule l'eau, des restanques de lavande et le bassin du Réaltor.
+    </title>
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#13262E" />
+        <stop offset="0.45" stop-color="#2B4A52" />
+        <stop offset="0.72" stop-color="#B9714A" />
+        <stop offset="0.86" stop-color="#F0A43A" />
+      </linearGradient>
+      <linearGradient id="cliff" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#A9A7A0" />
+        <stop offset="1" stop-color="#6F7D80" />
+      </linearGradient>
+    </defs>
+
+    <rect width="1600" height="640" fill="url(#sky)" />
+    <g fill="#EFE6D2" opacity="0.7">
+      <circle cx="140" cy="60" r="1.6" /><circle cx="330" cy="120" r="1.2" /><circle cx="560" cy="40" r="1.5" />
+      <circle cx="880" cy="90" r="1.1" /><circle cx="1010" cy="30" r="1.6" /><circle cx="1420" cy="70" r="1.3" />
+      <circle cx="1530" cy="150" r="1" /><circle cx="720" cy="140" r="1" />
+    </g>
+
+    <g transform="translate(1180 250)">
+      <ellipse rx="150" ry="30" transform="rotate(-14)" fill="none" stroke="#F6C27A" stroke-width="4" opacity="0.7" />
+      <circle r="70" fill="#F0A43A" />
+      <path d="M-150 0 A150 30 0 0 0 150 0" transform="rotate(-14)" fill="none" stroke="#F6C27A" stroke-width="4" />
+    </g>
+
+    <path
+      d="M0 420 L200 404 L380 372 L520 302 L598 250 L655 204 L690 216 L742 198 L800 232 L960 282 L1150 332 L1350 372 L1600 392 V640 H0 Z"
+      fill="#5F6F74"
+    />
+    <path d="M598 250 L655 204 L690 216 L742 198 L760 260 L700 300 L640 296 Z" fill="url(#cliff)" opacity="0.75" />
+
+    <path
+      d="M0 472 C200 446 380 452 560 436 C760 418 900 444 1100 432 C1300 420 1450 444 1600 432 V640 H0 Z"
+      fill="#2D4A3E"
+    />
+
+    <g>
+      <path d="M760 436 A62 50 0 0 1 884 436 Z" fill="#1FB5A8" opacity="0.28" />
+      <path d="M760 436 A62 50 0 0 1 884 436" fill="none" stroke="#EFE6D2" stroke-width="3" />
+      <path d="M782 418 L822 392 L862 418 M822 386 V436" fill="none" stroke="#EFE6D2" stroke-width="1.5" opacity="0.6" />
+      <path d="M1190 432 A66 54 0 0 1 1322 432 Z" fill="#1FB5A8" opacity="0.28" />
+      <path d="M1190 432 A66 54 0 0 1 1322 432" fill="none" stroke="#EFE6D2" stroke-width="3" />
+      <path d="M1214 412 L1256 384 L1298 412 M1256 378 V432" fill="none" stroke="#EFE6D2" stroke-width="1.5" opacity="0.6" />
+      <path d="M262 458 A40 34 0 0 1 342 458 Z" fill="#1FB5A8" opacity="0.28" />
+      <path d="M262 458 A40 34 0 0 1 342 458" fill="none" stroke="#EFE6D2" stroke-width="2.5" />
+      <g fill="#F6C27A">
+        <rect x="796" y="424" width="6" height="8" /><rect x="814" y="420" width="6" height="12" />
+        <rect x="842" y="424" width="6" height="8" /><rect x="1226" y="418" width="6" height="10" />
+        <rect x="1246" y="414" width="8" height="14" /><rect x="1276" y="420" width="6" height="8" />
+        <rect x="1300" y="424" width="5" height="6" /><rect x="290" y="448" width="5" height="7" />
+      </g>
+      <g fill="#C4532F">
+        <rect x="1110" y="420" width="40" height="16" /><rect x="1336" y="424" width="34" height="14" />
+        <rect x="1380" y="430" width="26" height="12" /><rect x="700" y="428" width="30" height="12" />
+      </g>
+    </g>
+
+    <rect x="380" y="474" width="878" height="72" fill="#D9C9A8" />
+    <rect x="380" y="474" width="878" height="8" fill="#C7B48F" />
+    <g fill="#2D4A3E">
+      {arches.map((x) => <path d={`M${x} 546 V510 A17 17 0 0 1 ${x + 34} 510 V546 Z`} />)}
+    </g>
+    <path d="M384 471 H1254" stroke="#0C776F" stroke-width="8" />
+    <path class="flow" d="M384 471 H1254" stroke="#5FE0D3" stroke-width="4" fill="none" />
+
+    <path
+      d="M0 520 C160 500 300 530 420 548 C600 572 820 552 1000 566 C1200 580 1400 548 1600 540 V640 H0 Z"
+      fill="#1F3A30"
+    />
+    <g fill="none" stroke-linecap="round" stroke-width="5">
+      <path d="M30 566 C120 556 220 566 330 586" stroke="#8D7FB3" />
+      <path d="M20 590 C130 580 240 592 360 612" stroke="#8D7FB3" opacity="0.85" />
+      <path d="M10 616 C140 606 260 618 380 636" stroke="#8D7FB3" opacity="0.7" />
+      <path d="M560 600 C680 592 800 598 900 610" stroke="#5E6E2F" />
+      <path d="M540 624 C670 616 800 622 920 634" stroke="#5E6E2F" />
+    </g>
+    <g fill="#13261F">
+      {
+        cypress.map(([x, y, k]) => (
+          <path d={`M${x} ${y} C${x - 9 * k} ${y - 30 * k} ${x - 4 * k} ${y - 70 * k} ${x} ${y - 90 * k} C${x + 4 * k} ${y - 70 * k} ${x + 9 * k} ${y - 30 * k} ${x} ${y} Z`} />
+        ))
+      }
+    </g>
+
+    <ellipse cx="1400" cy="596" rx="170" ry="30" fill="#0C776F" />
+    <ellipse cx="1400" cy="592" rx="150" ry="22" fill="#1FB5A8" />
+    <g fill="#13262E" opacity="0.85">
+      <rect x="1300" y="584" width="40" height="5" /><rect x="1352" y="580" width="40" height="5" />
+      <rect x="1404" y="584" width="40" height="5" /><rect x="1456" y="580" width="40" height="5" />
+    </g>
+  </svg>
+
+  {
+    districts.map((d, i) => (
+      <button
+        type="button"
+        class="hotspot"
+        style={`left:${d.x}%;top:${d.y}%`}
+        aria-expanded="false"
+        aria-controls={`district-${d.id}`}
+        aria-label={`Afficher le district : ${d.name}`}
+        data-hotspot={d.id}
+      >
+        {i + 1}
+      </button>
+    ))
+  }
+  </div>
+  </div>
+
+  {
+    districts.map((d) => (
+      <div class="district-card" id={`district-${d.id}`} hidden data-card={d.id}>
+        <h3>{d.name}</h3>
+        <p>{d.text}</p>
+        <a href="/jeux/veridia-2140/univers/">Tous les districts de Veridia</a>
+        <button type="button" aria-label="Fermer" data-close>×</button>
+      </div>
+    ))
+  }
+  <span class="panorama-hint">Touchez un point pour visiter un district</span>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-panorama]");
+  const scroller = root?.querySelector<HTMLElement>("[data-scroll]");
+  if (scroller && scroller.scrollWidth > scroller.clientWidth) {
+    scroller.scrollLeft = (scroller.scrollWidth - scroller.clientWidth) / 2;
+  }
+  if (root) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>("[data-hotspot]");
+    const cards = root.querySelectorAll<HTMLElement>("[data-card]");
+    const close = () => {
+      cards.forEach((c) => (c.hidden = true));
+      buttons.forEach((b) => b.setAttribute("aria-expanded", "false"));
+    };
+    buttons.forEach((btn) =>
+      btn.addEventListener("click", () => {
+        const open = btn.getAttribute("aria-expanded") === "true";
+        close();
+        if (!open) {
+          btn.setAttribute("aria-expanded", "true");
+          const card = root.querySelector<HTMLElement>(`[data-card="${btn.dataset.hotspot}"]`);
+          if (card) card.hidden = false;
+        }
+      }),
+    );
+    root.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => e.key === "Escape" && close());
+  }
+</script>

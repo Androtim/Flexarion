@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page introuvable (404) | Flexarion Studio, Aix-en-Provence"
+  description="Cette page n'existe pas ou a été déplacée. Retrouvez le studio Flexarion, le jeu Veridia 2140 et nos devlogs depuis les liens ci-dessous."
+  noindex={true}
+>
+  <section class="wrap page-head" style="min-height: 50vh;">
+    <h1>Cet aqueduc ne mène nulle part.</h1>
+    <p class="lead narrow">La page demandée n'existe pas ou a été déplacée. Reprenez le chemin :</p>
+    <div class="actions">
+      <a href="/" class="btn btn-water">Accueil</a>
+      <a href="/jeux/veridia-2140/" class="btn btn-ghost">Veridia 2140</a>
+      <a href="/devlogs/" class="btn btn-ghost">Devlogs</a>
+    </div>
+  </section>
+</BaseLayout>
