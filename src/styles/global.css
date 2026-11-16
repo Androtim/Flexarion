@@ -664,3 +664,10 @@ main {
   font-size: 0.76rem;
   color: rgba(245, 240, 230, 0.65);
 }
+
+/* Univers : 4 districts en grille 2×2 (pas de carte orpheline) */
+@media (min-width: 761px) {
+  .grid-districts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

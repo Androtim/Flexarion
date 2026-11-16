@@ -1,0 +1,250 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import FaqSection from "../../../components/FaqSection.astro";
+import ResponsivePicture from "../../../components/ResponsivePicture.astro";
+import { STUDIO } from "../../../data/site";
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+const pageUrl = new URL(Astro.url.pathname, siteOrigin).href;
+
+const timeline = [
+  {
+    year: "2038",
+    title: "Les étés sans pluie",
+    text: "Trois étés consécutifs sans précipitations notables vident le réservoir de Bimont. Le canal de Provence passe en régime de rationnement, et les fontaines d'Aix se taisent pour la première fois depuis des siècles.",
+  },
+  {
+    year: "2061",
+    title: "La Grande Soif",
+    text: "Une canicule de 74 jours rend les quartiers minéraux invivables en journée. La population se réfugie la nuit sur le plateau de l'Arbois. C'est l'événement fondateur que tous les habitants de Veridia connaissent par cœur.",
+  },
+  {
+    year: "2088",
+    title: "La Charte de l'Arc",
+    text: "Les communes du Pays d'Aix signent une charte commune : l'eau devient un bien géré par bassin versant, de la Torse jusqu'à l'Arc. Les premiers dômes de verre solaire sont posés sur les anciennes carrières de calcaire.",
+  },
+  {
+    year: "2112",
+    title: "La découverte du réseau",
+    text: "Des agronomes de l'Arbois observent qu'un mycélium cultivé sous les restanques transporte l'humidité sur plusieurs centaines de mètres. Le réseau devient une infrastructure publique, au même titre que les aqueducs.",
+  },
+  {
+    year: "2140",
+    title: "Début de la partie",
+    text: "Veridia réunit sept dômes reliés par des aqueducs enterrés. Le joueur hérite d'un district fragile et doit le faire traverser un été record sans perdre un seul quartier.",
+  },
+];
+
+const districts = [
+  {
+    name: "Dôme Sainte-Victoire",
+    role: "Captation solaire",
+    text: "Adossé à la montagne, ce dôme orienté plein sud produit l'essentiel de l'électricité de Veridia. Son défi : évacuer la chaleur accumulée par la roche avant la nuit.",
+  },
+  {
+    name: "Plateau de l'Arbois",
+    role: "Agriculture et réserves",
+    text: "Restanques de lavande, d'oliviers et de céréales anciennes au-dessus du réseau mycélien le plus dense. C'est le grenier de la cité, et sa première victime en cas de rupture d'eau.",
+  },
+  {
+    name: "Quartier des Fontaines",
+    role: "Cœur historique",
+    text: "L'ancien centre d'Aix, conservé sous une canopée de verre filtrant. Ses fontaines restaurées servent de régulateurs thermiques : chaque bassin ouvert rafraîchit les rues voisines.",
+  },
+  {
+    name: "Bassin du Réaltor",
+    role: "Stockage hydrique",
+    text: "Le grand réservoir de la cité, couvert de pergolas photovoltaïques flottantes. Il alimente les autres districts par gravité, à condition que le joueur maintienne la pente des aqueducs.",
+  },
+];
+
+const factions = [
+  {
+    name: "Les Fontainiers",
+    text: "Héritiers des anciens gardiens des fontaines aixoises, ils entretiennent les aqueducs et défendent une répartition stricte de l'eau, quartier par quartier.",
+  },
+  {
+    name: "La Coopérative de l'Arbois",
+    text: "Agriculteurs et agronomes du plateau. Ils réclament la priorité sur l'eau en été, arguant que sans récolte, aucun dôme ne tient l'hiver.",
+  },
+  {
+    name: "Les Veilleurs du réseau",
+    text: "Spécialistes du mycélium, ils lisent l'état de la ville dans la bioluminescence du sol. Leurs alertes sont précises, mais ils refusent toute extension du réseau qu'ils jugent trop rapide.",
+  },
+];
+
+const glossary = [
+  ["Restanque", "Terrasse de culture soutenue par un muret de pierre sèche, typique de la Provence."],
+  ["Dôme", "Quartier couvert de verre photovoltaïque modulable, qui filtre la lumière et produit de l'énergie."],
+  ["Aqueduc gravitaire", "Canal enterré qui transporte l'eau uniquement grâce à la pente, sans pompe."],
+  ["Réseau mycélien", "Filaments de champignons cultivés qui redistribuent l'humidité sous les cultures et les rues."],
+  ["Îlot de chaleur", "Zone urbaine minérale qui stocke la chaleur du jour et la relâche la nuit."],
+];
+
+const universeFaqs = [
+  {
+    question: "Où se déroule Veridia 2140 ?",
+    answer:
+      "Veridia 2140 se déroule dans le Pays d'Aix, autour d'Aix-en-Provence, en l'an 2140. La carte reprend des lieux réels (montagne Sainte-Victoire, plateau de l'Arbois, bassin du Réaltor) réinterprétés dans un futur Solarpunk.",
+  },
+  {
+    question: "Veridia 2140 est-il un jeu post-apocalyptique ?",
+    answer:
+      "Non. L'univers part d'une crise climatique, mais la société de 2140 s'est adaptée. Le ton est celui d'une science-fiction optimiste et exigeante : la ville fonctionne, mais reste fragile.",
+  },
+  {
+    question: "Qui a créé l'univers de Veridia 2140 ?",
+    answer:
+      "L'univers a été imaginé par l'équipe de Flexarion Studio à Aix-en-Provence, dans le cadre d'un projet universitaire en BUT Informatique à l'IUT d'Aix-Marseille.",
+  },
+];
+
+const pageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Univers et lore de Veridia 2140",
+  url: pageUrl,
+  inLanguage: "fr-FR",
+  isPartOf: { "@id": `${siteOrigin}/#website` },
+  publisher: { "@id": `${siteOrigin}/#organization` },
+  about: {
+    "@type": "VideoGame",
+    name: STUDIO.flagshipGame.title,
+    url: `${siteOrigin}/jeux/veridia-2140/`,
+    author: { "@id": `${siteOrigin}/#organization` },
+  },
+};
+---
+
+<BaseLayout
+  title="Univers de Veridia 2140 : lore, factions et districts | Flexarion"
+  description="Chronologie, districts et factions de Veridia 2140, le jeu de science-fiction Solarpunk de Flexarion Studio situé dans le Pays d'Aix en l'an 2140."
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Veridia 2140", href: "/jeux/veridia-2140/" },
+    { name: "Univers", href: "/jeux/veridia-2140/univers/" },
+  ]}
+  ogImage="/images/veridia-hero.jpg"
+  ogImageAlt="Panorama de Veridia 2140 : dômes solaires au pied de la Sainte-Victoire"
+  schemas={[pageSchema]}
+>
+  <section class="section">
+    <div class="container hero-editorial">
+      <div>
+        <span class="kicker">Silo 02 / Univers du jeu</span>
+        <h1>L'univers de Veridia 2140, la cité de Flexarion.</h1>
+        <p class="lead">
+          Un siècle après les premiers étés sans pluie, le Pays d'Aix a survécu en apprenant à guider
+          chaque goutte d'eau. Voici la chronologie, les quartiers et les factions que le joueur
+          rencontre dans <strong>Veridia 2140</strong>, le jeu de science-fiction de
+          <strong>Flexarion</strong>.
+        </p>
+        <div class="actions">
+          <a href="/jeux/veridia-2140/" class="btn btn-primary">Fiche du jeu</a>
+          <a href="/devlogs/genese-veridia-2140-solarpunk-aix/" class="link-editorial">
+            Lire la genèse du projet
+          </a>
+        </div>
+      </div>
+
+      <figure class="plate-frame">
+        <ResponsivePicture
+          src="/images/veridia-hero.jpg"
+          alt="Panorama de Veridia 2140 : dômes solaires au pied de la montagne Sainte-Victoire"
+          width={1280}
+          height={720}
+          eager={true}
+        />
+        <figcaption class="plate-caption">
+          <span>Veridia vue depuis l'Arbois · Fin d'après-midi, juillet 2140</span>
+          <span>Planche 01</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section-tight section-ruled" aria-labelledby="timeline-heading">
+    <div class="container">
+      <span class="kicker kicker-pine">01 / Chronologie</span>
+      <h2 id="timeline-heading">De la Grande Soif à 2140</h2>
+      <div class="archival-list">
+        {
+          timeline.map((entry) => (
+            <article class="archival-row">
+              <span class="archival-num">{entry.year}</span>
+              <h3>{entry.title}</h3>
+              <p>{entry.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight section-ruled" aria-labelledby="districts-heading">
+    <div class="container">
+      <span class="kicker">02 / Les districts</span>
+      <h2 id="districts-heading">Quatre quartiers, quatre contraintes</h2>
+      <div class="grid-2 grid-districts" style="margin-top: 1.5rem;">
+        {
+          districts.map((district) => (
+            <article class="panel">
+              <span class="kicker kicker-pine" style="margin-bottom: 0.4rem;">{district.role}</span>
+              <h3>{district.name}</h3>
+              <p style="margin: 0;">{district.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight section-ruled" aria-labelledby="factions-heading">
+    <div class="container">
+      <span class="kicker kicker-pine">03 / Les factions</span>
+      <h2 id="factions-heading">Qui décide de l'eau ?</h2>
+      <p style="max-width: 68ch;">
+        Dans Veridia 2140, il n'y a pas d'ennemi armé. Les tensions viennent de trois groupes qui ont
+        chacun raison, et que le joueur doit arbitrer à chaque été.
+      </p>
+      <div class="archival-list">
+        {
+          factions.map((faction, idx) => (
+            <article class="archival-row">
+              <span class="archival-num">{String(idx + 1).padStart(2, "0")}</span>
+              <h3>{faction.name}</h3>
+              <p>{faction.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight section-ruled" aria-labelledby="glossary-heading">
+    <div class="container">
+      <span class="kicker">04 / Lexique</span>
+      <h2 id="glossary-heading">Petit lexique de Veridia</h2>
+      <dl class="panel-muted" style="max-width: 72ch;">
+        {
+          glossary.map(([term, definition]) => (
+            <>
+              <dt style="font-weight: 600; color: var(--ink); margin-top: 0.75rem;">{term}</dt>
+              <dd style="margin: 0.2rem 0 0; color: var(--ink-soft);">{definition}</dd>
+            </>
+          ))
+        }
+      </dl>
+      <p style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--ink-faint);">
+        <strong>Note de transparence :</strong> {STUDIO.flagshipGame.status}. Les lieux cités existent,
+        les événements futurs sont fictifs.
+      </p>
+    </div>
+  </section>
+
+  <FaqSection
+    title="Questions sur l'univers de Veridia 2140"
+    subtitle="Ce qu'il faut savoir sur le monde imaginé par Flexarion."
+    items={universeFaqs}
+  />
+</BaseLayout>

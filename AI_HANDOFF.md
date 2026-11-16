@@ -10,7 +10,7 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 ## État Actuel du Projet (Instantané à la dernière mise à jour)
 
 - **Version courante sur `main` & `develop` :** `v1.2.0` + documentation de passation multi-agents.
-- **Avancement du cours :** CM1 effectué ; 0 TD effectué (le site **ne doit pas** être déployé publiquement avant la date officielle fixée au CM2).
+- **Avancement du cours :** CM1 effectué ; 0 TD effectué. **Site en ligne depuis le 2026-11-16 sur https://flexarion.alwaysdata.net** (déploiement anticipé validé par l'utilisateur).
 - **Ce qui est déjà prêt et validé :**
   - Gouvernance Git pro (`main`, `develop`, PRs, Milestones M1–M4, Conventional Commits, GitHub Actions CI `.github/workflows/ci-seo.yml`).
   - Plan de communication complet (`docs/plan-communication.md`) et charte éditoriale (`docs/brand-guidelines.md`).
@@ -49,6 +49,33 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 ---
 
 ## Historique des Interventions IA
+
+### [2026-11-16 16:10] · Claude Opus 5.5 via Claude Code
+- **Branche / Issue / PR :** `feat/seo-brand-signals-and-lore` (depuis `develop`)
+- **Objectif de la session :** Mettre le site en ligne au plus tôt sur alwaysdata, maximiser le classement sur la requête « Flexarion » et remplacer le logo généré par IA par une identité vectorielle cohérente.
+- **Ce qui a été fait (fichiers modifiés/créés) :**
+  - **Déploiement :** le site est **en ligne sur https://flexarion.alwaysdata.net** (feu vert explicite de l'utilisateur pour déployer avant le CM2). Déploiement par `rsync` SSH (clé `~/.ssh/alwaysdata_flexarion`, compte `flexarion`, dossier `~/www/`) : `rsync -az --delete -e "ssh -i ~/.ssh/alwaysdata_flexarion" dist/ flexarion@ssh-flexarion.alwaysdata.net:www/`.
+  - `public/.htaccess` : redirection HTTP→HTTPS (301), `ErrorDocument 404`, cache long sur `_astro/`, compression.
+  - `src/data/site.ts` : `Organization` enrichie (`@id`, `legalName`, `alternateName`, logo PNG, `foundingLocation`, `knowsAbout`) + nouveau `buildWebSiteSchema` (nom de site « Flexarion » dans Google). Lien « Univers » ajouté à la navigation.
+  - `src/layouts/BaseLayout.astro` : `WebSite` JSON-LD sur l'accueil, favicons PNG + `apple-touch-icon` + `site.webmanifest`, `og:image:width/height/alt`, prop `noindex`, image de partage par défaut `og-flexarion.jpg`, correction du lien de navigation actif (correspondance la plus longue).
+  - `src/pages/jeux/veridia-2140/univers.astro` : **nouvelle page** (chronologie 2038–2140, 4 districts, 3 factions, lexique, FAQ).
+  - `src/pages/404.astro` : page 404 `noindex`. `scripts/audit-seo.mjs` : pas d'exigence de canonical sur les pages `noindex`.
+  - Titres/H1 : « Flexarion » en tête du `<title>` et du `<h1>` de l'accueil, du studio et des devlogs.
+  - `scripts/build-brand-assets.mjs` (`npm run brand:build`) : génère logo, favicon, icônes, image Open Graph et avatar Instagram en **SVG vectoriel**, texte converti en tracés depuis Fraunces + IBM Plex Mono. Emblème : Sainte-Victoire, planète à anneau (SF), arches de l'aqueduc de Roquefavour, palette de la charte.
+- **Pourquoi ces choix :**
+  - `flexarion.fr` et `flexarion-studio.github.io` sont déjà occupés par d'autres groupes : le sous-domaine `flexarion.alwaysdata.net` (mot-clé exact) a été réservé immédiatement.
+  - L'ancien logo/avatar (néon, dégradés) contredisait la charte calcaire ; un logo vectoriel reste net à toute taille et Google exige un logo raster pour `Organization.logo`.
+  - Devlog #3 volontairement **non publié** maintenant : le garder pour le TD3 donne un signal de fraîcheur et respecte le calendrier du brief.
+- **Vérifications exécutées :**
+  - `npm run build` : 9 pages. `npm run audit:seo` : 0 erreur, 0 avertissement.
+  - Captures Chrome headless 1280 px et 390 px (accueil, Univers) ; vérification en ligne : 200 sur toutes les pages, 404 réel, HTTP→HTTPS en 301.
+  - ⚠️ `npm install` sur réseau lent avait laissé `@fontsource-variable/*` incomplets (Fraunces/DM Sans absents du build) : réinstallés. En cas de doute, vérifier `ls dist/_astro | grep fraunces`.
+- **À faire / Attention pour le prochain agent :**
+  - L'utilisateur doit ajouter le site dans **Google Search Console** et **Bing Webmaster Tools** (vérification par fichier HTML ou balise méta), soumettre `sitemap-index.xml` et demander l'indexation de chaque URL.
+  - Créer les profils externes (Instagram avec le nouvel avatar, itch.io, YouTube…) et renseigner leurs URL dans `STUDIO` (`sameAs`) de `src/data/site.ts`.
+  - Équipe : composition du groupe pas encore fixée (6 amis à répartir), ne pas inventer de noms.
+
+---
 
 ### [2026-11-16 15:16] · Gemini 4 Hydrogen (Antigravity)
 - **Branche / Issue / PR :** `docs/ai-handoff-and-agent-instructions` -> `develop` -> `main` · Issue `#19`

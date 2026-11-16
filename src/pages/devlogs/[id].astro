@@ -33,10 +33,11 @@ const blogPostingSchema = {
   },
   publisher: {
     "@type": "Organization",
-    name: STUDIO.legalName,
+    "@id": `${siteOrigin}/#organization`,
+    name: STUDIO.name,
     logo: {
       "@type": "ImageObject",
-      url: `${siteOrigin}/images/flexarion-logo.svg`,
+      url: `${siteOrigin}/images/flexarion-logo.png`,
     },
   },
   mainEntityOfPage: {
