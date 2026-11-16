@@ -21,7 +21,8 @@ function collectFiles(dir, acc = []) {
 }
 
 const allFiles = collectFiles(DIST_DIR);
-const htmlFiles = allFiles.filter((f) => f.endsWith(".html"));
+// Les fichiers de vérification (Google Search Console, Bing) ne sont pas des pages.
+const htmlFiles = allFiles.filter((f) => f.endsWith(".html") && !/(^|[\\/])(google[0-9a-f]+|BingSiteAuth)\.html$/.test(f));
 
 let errors = 0;
 let warnings = 0;
