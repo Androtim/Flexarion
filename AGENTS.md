@@ -9,7 +9,7 @@
 - **Cadre :** Module universitaire *Plan de communication & webmarketing à l'ère de l'IA* (BUT Informatique 2e année, IUT d'Aix-Marseille).
 - **Concept imposé :** Studio indépendant de jeux vidéo **Flexarion**, spécialisé en **science-fiction**, basé à **Aix-en-Provence**.
 - **Jeu phare retenu :** **Veridia 2140** (*Solarpunk méditerranéen — City-builder & simulation hydrique/mycélienne en Provence*).
-- **Règle d'équité (Publication) :** La mise en ligne publique et l'indexation Google (GitHub Pages / Alwaysdata + Google Search Console) sont **synchronisées avec le CM2**. Tant que le feu vert du CM2 n'est pas donné par l'utilisateur, **ne pas déployer de site public ni activer de déploiement automatique**.
+- **Publication :** le site est en ligne sur **https://flexarion.alwaysdata.net** depuis le 2026-11-16 (feu vert de l'utilisateur). Déploiement manuel par `rsync` SSH après `npm run build && npm run audit:seo` ; pas de déploiement automatique sans accord.
 - **Règle éthique & transparence :**
   - Interdiction stricte du *Black Hat SEO* (bourrage de mots-clés, fermes de liens, cloaking, contenu dupliqué).
   - Ne jamais ajouter de faux prix, de bouton d'achat, de `Offer`/`PreOrder` JSON-LD ni de fausses promesses commerciales : Flexarion Studio et *Veridia 2140* doivent rester clairement identifiés comme un **concept académique fictif (IUT d'Aix-Marseille)**.

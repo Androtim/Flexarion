@@ -5,7 +5,7 @@ import "@fontsource/ibm-plex-mono/latin-400.css";
 import "@fontsource/ibm-plex-mono/latin-500.css";
 import "@fontsource/ibm-plex-mono/latin-600.css";
 import "../styles/global.css";
-import { NAV_ITEMS, STUDIO, buildOrganizationSchema } from "../data/site";
+import { NAV_ITEMS, STUDIO, buildOrganizationSchema, buildWebSiteSchema } from "../data/site";
 
 export interface BreadcrumbItem {
   name: string;
@@ -16,6 +16,8 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  noindex?: boolean;
   preloadHeroBase?: string;
   ogType?: "website" | "article";
   breadcrumbs?: BreadcrumbItem[];
@@ -25,7 +27,9 @@ interface Props {
 const {
   title,
   description,
-  ogImage = "/images/veridia-hero.jpg",
+  ogImage = "/images/og-flexarion.jpg",
+  ogImageAlt = "Flexarion, studio de jeux vidéo de science-fiction à Aix-en-Provence",
+  noindex = false,
   preloadHeroBase,
   ogType = "website",
   breadcrumbs = [],
@@ -36,6 +40,10 @@ const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdat
 const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).href;
 const absoluteOgImage = new URL(ogImage, siteOrigin).href;
 const currentPath = Astro.url.pathname;
+// Lien actif : la correspondance la plus longue gagne (évite Veridia 2140 + Univers actifs en même temps).
+const activeHref = NAV_ITEMS.map((item) => item.href)
+  .filter((href) => (href === "/" ? currentPath === "/" : currentPath.startsWith(href)))
+  .sort((a, b) => b.length - a.length)[0];
 
 const breadcrumbSchema =
   breadcrumbs.length > 0
@@ -53,6 +61,7 @@ const breadcrumbSchema =
 
 const allSchemas = [
   buildOrganizationSchema(siteOrigin),
+  ...(currentPath === "/" ? [buildWebSiteSchema(siteOrigin)] : []),
   ...(breadcrumbSchema ? [breadcrumbSchema] : []),
   ...schemas,
 ];
@@ -65,9 +74,19 @@ const allSchemas = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <link rel="canonical" href={canonicalUrl} />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1"}
+    />
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
+    <meta name="application-name" content={STUDIO.name} />
+    <meta name="theme-color" content="#F5F0E6" />
+    <meta name="geo.region" content="FR-13" />
+    <meta name="geo.placename" content="Aix-en-Provence" />
+    <link rel="icon" href="/icon-48.png" sizes="48x48" type="image/png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     {
       preloadHeroBase && (
         <link
@@ -89,12 +108,16 @@ const allSchemas = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:image:width" content={ogImage.includes("og-flexarion") ? "1200" : "1280"} />
+    <meta property="og:image:height" content={ogImage.includes("og-flexarion") ? "630" : "720"} />
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteOgImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <!-- Données structurées JSON-LD (SEO & GEO) -->
     {
@@ -118,7 +141,7 @@ const allSchemas = [
             src="/images/flexarion-logo.svg"
             alt="Logo Flexarion Studio Aix-en-Provence"
             width="210"
-            height="44"
+            height="45"
           />
         </a>
 
@@ -126,10 +149,7 @@ const allSchemas = [
           <ul class="nav-links">
             {
               NAV_ITEMS.map((item) => {
-                const isActive =
-                  item.href === "/"
-                    ? currentPath === "/"
-                    : currentPath.startsWith(item.href);
+                const isActive = item.href === activeHref;
                 return (
                   <li>
                     <a
@@ -187,6 +207,7 @@ const allSchemas = [
               <li><a href="/">Accueil Flexarion</a></li>
               <li><a href="/studio/">Le Studio à Aix-en-Provence</a></li>
               <li><a href="/jeux/veridia-2140/">Dossier Veridia 2140</a></li>
+              <li><a href="/jeux/veridia-2140/univers/">Univers et lore de Veridia 2140</a></li>
               <li><a href="/devlogs/">Carnets de développement</a></li>
               <li><a href="/contact/">Contact &amp; Dossier Presse</a></li>
             </ul>

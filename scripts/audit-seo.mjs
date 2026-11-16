@@ -86,7 +86,8 @@ for (const file of htmlFiles) {
   }
 
   // Canonical
-  if (!/<link\s+rel=(["'])canonical\1\s+href=(["'])https?:\/\/[^"']+\2/i.test(html)) {
+  const isNoindex = /<meta\s+name=(["'])robots\1\s+content=(["'])[^"']*noindex/i.test(html);
+  if (!isNoindex && !/<link\s+rel=(["'])canonical\1\s+href=(["'])https?:\/\/[^"']+\2/i.test(html)) {
     fail(rel, "Balise <link rel=\"canonical\"> manquante ou relative.");
   }
 
