@@ -1,0 +1,581 @@
+---
+// Veridia 2140, le jeu des viaducs : partagé par /jouer/ et la version embarquée (itch.io).
+import { GAME_VERSION, TUNING } from "../viaducs/content";
+import { STUDIO } from "../data/site";
+---
+
+<section class="game-block" aria-label="Veridia 2140, jeu jouable">
+  <div class="wrap game" data-game>
+    <div class="hud">
+      <div class="hud-day">
+        <strong data-day>Jour 1</strong>
+        <span data-time>préparation</span>
+        <span class="timer" aria-hidden="true"><span data-timer></span></span>
+      </div>
+      <div class="hud-stat"><span>Tuyaux libres</span><strong data-pipes>12 / 12</strong></div>
+      <div class="hud-stat"><span>Eau</span><strong data-water>8 m³/s</strong></div>
+      <div class="hud-stat"><span>Vitesse</span><strong data-speed>1,5 cases/s</strong></div>
+      <div class="hud-stat"><span>Confiance</span><strong class="trust" data-trust role="img" aria-label="Confiance"></strong></div>
+      <div class="hud-stat"><span>Crédits</span><strong data-credits>0</strong></div>
+      <div class="hud-actions">
+        <button type="button" class="btn btn-sun go" data-go>Ouvrir les vannes</button>
+        <button type="button" class="chip" data-fast aria-pressed="false" title="Accélérer le temps">×2</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="canvas-wrap">
+        <canvas
+          data-canvas
+          aria-label="Carte du Pays d'Aix. Glissez depuis la source pour poser des tuyaux jusqu'aux quartiers ; commencez sur un tuyau pour le retirer."
+        ></canvas>
+
+        <div class="overlay" data-intro>
+          <div class="overlay-card">
+            <p class="kicker">Aix-en-Provence, 2140</p>
+            <h2>Les viaducs de Veridia</h2>
+            <p>
+              Chaque jour, une nouvelle carte du Pays d'Aix. Tracez des tuyaux depuis la source jusqu'aux quartiers,
+              ouvrez les vannes, et livrez à chacun son eau avant la fin de la journée ({TUNING.dayLength} s).
+            </p>
+            <ul class="rules">
+              <li><b>Glissez</b> pour poser des tuyaux, <b>commencez sur un tuyau</b> pour les retirer.</li>
+              <li>Vallons et rivière : il faut un <b>viaduc</b>, qui coûte 2 tuyaux.</li>
+              <li>Dès le jour 2, des <b>urgences</b> surgissent : quelques secondes pour y amener l'eau.</li>
+              <li>Entre deux jours, améliorez la <b>vitesse</b>, l'<b>eau disponible</b> et le nombre de <b>tuyaux</b>.</li>
+            </ul>
+            <button type="button" class="btn btn-sun" data-start>Commencer</button>
+          </div>
+        </div>
+
+        <div class="overlay" data-report hidden>
+          <div class="overlay-card wide">
+            <h2 data-report-title>Fin du jour</h2>
+            <ul class="report" data-report-list></ul>
+            <h3>Améliorations <span class="purse"><span data-shop-credits>0</span> crédits</span></h3>
+            <div class="shop" data-shop></div>
+            <button type="button" class="btn btn-sun" data-next>Jour suivant</button>
+          </div>
+        </div>
+
+        <div class="overlay" data-over hidden>
+          <div class="overlay-card">
+            <h2>La ville a soif</h2>
+            <p data-over-text></p>
+            <p>Une idée pour le jeu ? Dites-la en commentaire sur nos réseaux : la plus aimée entre dans Veridia.</p>
+            <div class="actions">
+              <button type="button" class="btn btn-sun" data-restart>Nouvelle partie</button>
+              <a class="btn btn-ghost" href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="hint" data-hint aria-live="polite"></p>
+    </div>
+
+    <aside class="side" aria-label="Quartiers et journal">
+      <h2 class="side-title">Quartiers du jour</h2>
+      <p class="quota" data-quota></p>
+      <ul class="quarters" data-quarters></ul>
+
+      <h2 class="side-title">Légende</h2>
+      <ul class="legend">
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="#CDBF9E" /><circle cx="16" cy="16" r="9.5" fill="#1FB5A8" /></svg>Source</li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30" stroke="#CDBF9E" stroke-width="13" /><path d="M2 16 H30" stroke="#8F7F5E" stroke-width="7.5" /><path d="M2 16 H30" stroke="#1FB5A8" stroke-width="5" /></svg>Tuyau en eau</li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="4" width="24" height="24" fill="#F3EAD6" stroke="#8F7F5E" /><path d="M6 28 V22 A4 4 0 0 1 14 22 V28 M18 28 V22 A4 4 0 0 1 26 22 V28" fill="#5E9FA6" /><path d="M4 13 H28" stroke="#8F7F5E" stroke-width="6" /></svg>Viaduc (2 tuyaux)</li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="6" width="10" height="10" fill="#C4532F" /><rect x="17" y="8" width="9" height="9" fill="#C4532F" /><rect x="8" y="18" width="9" height="9" fill="#93391F" /><circle cx="16" cy="16" r="14" fill="none" stroke="#1FB5A8" stroke-width="2.5" /></svg>Quartier et sa jauge</li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="#D2462F" /><path d="M16 8 Q22 16 19 20 Q16 23 13 20 Q10 16 16 8Z" fill="#F0A43A" /></svg>Urgence</li>
+        <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="12" r="7" fill="#46531F" /><circle cx="21" cy="19" r="7" fill="#5E6E2F" /></svg>Pinède protégée, rocher : infranchissables</li>
+      </ul>
+
+      <h2 class="side-title">Journal</h2>
+      <ul class="log" data-log></ul>
+
+      <div class="side-actions">
+        <button type="button" class="ghost-btn" data-clear>Effacer le réseau</button>
+        <button type="button" class="ghost-btn" data-restart>Nouvelle partie</button>
+      </div>
+      <p class="version">v{GAME_VERSION} · <span data-best></span></p>
+    </aside>
+  </div>
+</section>
+
+<script>
+  import { boot } from "../viaducs/main.ts";
+  const root = document.querySelector<HTMLElement>("[data-game]");
+  if (root) boot(root);
+</script>
+
+<style>
+  .game-block {
+    background: var(--dusk);
+    color: var(--limestone);
+    padding-block: 1.25rem 2.25rem;
+  }
+
+  .game {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-areas: "hud hud" "board side";
+    gap: 1rem 1.5rem;
+  }
+
+  .hud {
+    grid-area: hud;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(239, 230, 210, 0.12);
+  }
+
+  .hud span {
+    color: #9fb0aa;
+    font-size: 0.85rem;
+  }
+
+  .hud strong {
+    display: block;
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hud-day {
+    min-width: 9.5rem;
+  }
+
+  .hud-day strong {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .timer {
+    display: block;
+    height: 4px;
+    margin-top: 0.45rem;
+    background: var(--dusk-2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .timer span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--sun);
+  }
+
+  .trust {
+    display: flex !important;
+    gap: 0.3rem;
+    padding-top: 0.25rem;
+  }
+
+  .trust :global(i) {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    border: 2px solid var(--water);
+  }
+
+  .trust :global(i.on) {
+    background: var(--water);
+  }
+
+  .hud-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .go {
+    min-width: 11.5rem;
+  }
+
+  .go:not(.btn-sun) {
+    background: var(--dusk-2);
+    color: #fff;
+  }
+
+  .chip {
+    font: inherit;
+    font-weight: 600;
+    padding: 0.55rem 0.8rem;
+    border-radius: 99px;
+    border: 1px solid rgba(239, 230, 210, 0.25);
+    background: none;
+    color: var(--limestone);
+    cursor: pointer;
+  }
+
+  .chip[aria-pressed="true"] {
+    background: var(--limestone);
+    color: var(--dusk);
+  }
+
+  .board {
+    grid-area: board;
+    min-width: 0;
+  }
+
+  /* Carte et panneaux empilés dans la même cellule : un panneau plus haut que la carte agrandit la zone. */
+  .canvas-wrap {
+    display: grid;
+    width: 100%;
+  }
+
+  .canvas-wrap > * {
+    grid-area: 1 / 1;
+  }
+
+  canvas {
+    display: block;
+    margin-inline: auto;
+    border-radius: 6px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    touch-action: none;
+    cursor: crosshair;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .overlay {
+    display: grid;
+    place-items: center;
+    background: rgba(19, 38, 46, 0.6);
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .overlay[hidden] {
+    display: none;
+  }
+
+  .overlay-card {
+    background: var(--chalk);
+    color: var(--ink);
+    border-radius: 18px;
+    padding: 1.5rem 1.6rem 1.6rem;
+    max-width: 440px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  .overlay-card.wide {
+    max-width: 620px;
+  }
+
+  .overlay-card h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .overlay-card h3 {
+    font-size: 1.1rem;
+    margin: 1.1rem 0 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .overlay-card p,
+  .rules {
+    color: var(--ink-soft);
+  }
+
+  .kicker {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--water-deep) !important;
+    margin-bottom: 0.2rem;
+  }
+
+  .rules {
+    padding-left: 1.1rem;
+    margin: 0 0 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .rules li + li {
+    margin-top: 0.3rem;
+  }
+
+  .report {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .report :global(li) {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(27, 35, 38, 0.08);
+  }
+
+  .report :global(li.sum) {
+    border: 0;
+    font-size: 1.1rem;
+  }
+
+  .report :global(b) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .purse {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--water-deep);
+  }
+
+  .shop {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .shop :global(.upgrade) {
+    display: grid;
+    gap: 0.25rem;
+    align-content: start;
+    text-align: left;
+    font: inherit;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1.5px solid rgba(27, 35, 38, 0.14);
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .shop :global(.upgrade:hover:not(:disabled)) {
+    border-color: var(--water);
+  }
+
+  .shop :global(.upgrade:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .shop :global(.u-name) {
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .shop :global(.u-val) {
+    font-size: 0.88rem;
+    color: var(--water-deep);
+  }
+
+  .shop :global(.u-help) {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+
+  .shop :global(.u-cost) {
+    margin-top: 0.3rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--roof);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .hint {
+    margin: 0.9rem 0 0;
+    padding: 0.7rem 0.9rem;
+    border-left: 3px solid var(--sun);
+    background: rgba(240, 164, 58, 0.08);
+    border-radius: 0 8px 8px 0;
+    color: #f3ead6;
+    font-size: 0.98rem;
+  }
+
+  .hint:empty {
+    display: none;
+  }
+
+  .side {
+    grid-area: side;
+    font-size: 0.92rem;
+  }
+
+  .side-title {
+    font-size: 1rem;
+    color: #fff;
+    letter-spacing: 0;
+    margin: 1.25rem 0 0.5rem;
+  }
+
+  .side-title:first-child {
+    margin-top: 0;
+  }
+
+  .quota {
+    color: #9fb0aa;
+    font-size: 0.84rem;
+    margin: 0 0 0.6rem;
+  }
+
+  .quarters,
+  .log,
+  .legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .quarters :global(li) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 0.6rem;
+    padding: 0.3rem 0;
+  }
+
+  .quarters :global(.qn) {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .quarters :global(.num) {
+    color: #c9d3cf;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+  }
+
+  .quarters :global(.bar) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    height: 5px;
+    background: var(--dusk-2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .quarters :global(.bar span) {
+    display: block;
+    height: 100%;
+    background: var(--water);
+  }
+
+  .quarters :global(li.done .bar span) {
+    background: #2f9e6e;
+  }
+
+  .quarters :global(li.done .num) {
+    color: #6fd3a5;
+  }
+
+  .legend :global(li) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.15rem 0;
+    color: #c9d3cf;
+    font-size: 0.86rem;
+  }
+
+  .legend svg {
+    width: 26px;
+    height: 26px;
+    flex: none;
+  }
+
+  .log :global(li) {
+    color: #aebdb7;
+    font-size: 0.84rem;
+    padding: 0.3rem 0;
+  }
+
+  .log :global(li + li) {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .side-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .ghost-btn {
+    font: inherit;
+    font-size: 0.86rem;
+    color: inherit;
+    padding: 0.5rem;
+    background: none;
+    border: 1px solid rgba(239, 230, 210, 0.25);
+    border-radius: 99px;
+    cursor: pointer;
+  }
+
+  .ghost-btn:hover:not(:disabled) {
+    border-color: var(--limestone);
+  }
+
+  .ghost-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .version {
+    margin: 0.6rem 0 0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: #7f938c;
+  }
+
+  @media (max-width: 960px) {
+    .game {
+      grid-template-columns: 1fr;
+      grid-template-areas: "hud" "board" "side";
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hud {
+      gap: 0.6rem 1.1rem;
+    }
+
+    .hud strong {
+      font-size: 1.1rem;
+    }
+
+    .hud-day strong {
+      font-size: 1.5rem;
+    }
+
+    .hud-actions {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .go {
+      flex: 1;
+    }
+
+    .shop {
+      grid-template-columns: 1fr;
+    }
+
+    .overlay {
+      padding: 0.5rem;
+    }
+
+    .overlay-card {
+      padding: 1.2rem 1.1rem 1.3rem;
+    }
+  }
+</style>

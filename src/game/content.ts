@@ -1,7 +1,7 @@
-// Contenu du jeu : bâtiments et réglages. C'est ici qu'entrent les ajouts du défi
-// « La ville des joueurs » (un nouveau bâtiment = une entrée dans BUILDINGS).
+// Contenu de l'Été 1, premier prototype de Veridia 2140 (abandonné, voir /jouer/ete-2140/).
+// Le défi « La ville des joueurs » vit désormais dans src/viaducs/content.ts.
 
-/** Version du prototype : +0.1 à chaque ajout du défi « La ville des joueurs ». */
+/** Version figée du prototype abandonné. */
 export const GAME_VERSION = "0.1";
 
 export type BuildingId = "aqueduct" | "basin" | "mycelium" | "dome";
