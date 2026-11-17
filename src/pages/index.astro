@@ -3,7 +3,6 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FaqSection from "../components/FaqSection.astro";
 import Panorama from "../components/Panorama.astro";
-import MechanicDiagram from "../components/MechanicDiagram.astro";
 import ResponsivePicture from "../components/ResponsivePicture.astro";
 
 const devlogs = (await getCollection("devlogs")).sort(
@@ -21,7 +20,7 @@ const homeFaqs = [
   {
     question: "Sur quel jeu travaille Flexarion ?",
     answer:
-      "Flexarion conçoit Veridia 2140, un city-builder Solarpunk qui se déroule dans le Pays d'Aix en 2140. Le joueur gère l'eau d'une cité de sept dômes reliés par des aqueducs, sans pompe, uniquement par gravité.",
+      "Flexarion crée Veridia 2140, un jeu de puzzle et de stratégie en temps réel qui se déroule à Aix-en-Provence en 2140. Le joueur trace tuyaux et viaducs pour amener l'eau aux quartiers, jour après jour. Il est jouable gratuitement dans le navigateur.",
   },
   {
     question: "Où suivre l'actualité de Flexarion ?",
@@ -33,18 +32,18 @@ const homeFaqs = [
 
 <BaseLayout
   title="Flexarion : jeux vidéo de science-fiction à Aix-en-Provence"
-  description="Flexarion est un studio indépendant de jeux vidéo de science-fiction à Aix-en-Provence. Nous créons Veridia 2140, un city-builder Solarpunk en Provence."
+  description="Flexarion est un studio indépendant de jeux vidéo de science-fiction à Aix-en-Provence. Nous créons Veridia 2140, un jeu de viaducs gratuit dans Aix en 2140."
 >
   <section class="hero">
     <div class="wrap hero-text">
-      <h1>Flexarion fait des jeux où l'eau coule vers le bas.</h1>
+      <h1>Flexarion fait des jeux où chaque goutte d'eau compte.</h1>
       <p class="lead">
         Studio de science-fiction à Aix-en-Provence. Notre premier jeu, <strong>Veridia 2140</strong>,
-        vous confie une cité de sept dômes au pied de la Sainte-Victoire, un été record, et pas une seule
-        pompe.
+        vous confie l'eau de la ville au pied de la Sainte-Victoire : des tuyaux, des viaducs, et
+        quarante secondes par jour pour que personne n'ait soif.
       </p>
       <div class="actions">
-        <a href="/jouer/" class="btn btn-sun">Jouer au prototype</a>
+        <a href="/jouer/" class="btn btn-sun">Jouer gratuitement</a>
         <a href="/jeux/veridia-2140/" class="btn btn-ghost">Découvrir Veridia 2140</a>
       </div>
     </div>
@@ -56,46 +55,52 @@ const homeFaqs = [
       <div class="narrow">
         <h2 id="play-heading">Comment on joue</h2>
         <p class="lead">
-          Veridia 2140 n'a ni ennemis ni armée. Votre adversaire, c'est l'été. Trois systèmes physiques
-          décident si vos quartiers tiennent jusqu'à septembre.
+          Veridia 2140 n'a ni ennemis ni armée. Votre adversaire, c'est la soif : chaque jour, une nouvelle
+          carte d'Aix, et quarante secondes pour servir tous les quartiers.
         </p>
       </div>
 
       <div>
         <article class="mechanic">
           <div>
-            <span class="tag">L'eau</span>
-            <h3>Tout descend par gravité</h3>
+            <span class="tag">Tracer</span>
+            <h3>De la source aux quartiers</h3>
             <p>
-              Le réservoir est en haut, la ville en bas. Chaque aqueduc que vous tracez doit garder sa pente :
-              un mètre de trop et l'eau stagne, un mètre de moins et le quartier suivant a soif.
+              Glissez pour poser des tuyaux depuis le Canal de Provence jusqu'à Mazarin, Les Milles ou Jas
+              de Bouffan. Pour franchir l'Arc, il faut un viaduc, et il coûte double.
             </p>
           </div>
-          <MechanicDiagram type="water" label="Schéma : l'eau descend du réservoir vers l'Arbois puis vers la ville, par gravité." />
+          <figure class="diagram shot">
+            <ResponsivePicture src="/images/jeu-reseau.jpg" alt="Réseau de tuyaux tracé du Canal de Provence vers quatre quartiers d'Aix, avec un viaduc au-dessus de l'Arc" width={1280} height={960} />
+          </figure>
         </article>
 
         <article class="mechanic">
           <div>
-            <span class="tag">Le réseau</span>
-            <h3>Le sol qui rafraîchit la ville</h3>
+            <span class="tag">Partager</span>
+            <h3>Assez d'eau pour tout le monde ?</h3>
             <p>
-              Sous les restanques, un mycélium cultivé transporte l'humidité des bassins frais vers les rues
-              surchauffées. S'il manque d'eau, il s'endort, et sa lumière s'éteint sur la carte.
+              Vannes ouvertes, l'eau avance et se partage à chaque embranchement. Plus il y a de quartiers,
+              plus il faut penser son réseau : un seul tuyau ne suffit plus.
             </p>
           </div>
-          <MechanicDiagram type="mycelium" label="Schéma : le réseau mycélien transporte l'humidité d'un bassin frais vers les rues à 41 °C." />
+          <figure class="diagram shot">
+            <ResponsivePicture src="/images/jeu-partage.jpg" alt="L'eau turquoise circule dans les tuyaux et remplit les jauges des quartiers" width={1280} height={960} />
+          </figure>
         </article>
 
         <article class="mechanic">
           <div>
-            <span class="tag">Le verre</span>
-            <h3>Des dômes qui suivent le soleil</h3>
+            <span class="tag">Tenir</span>
+            <h3>Urgences et améliorations</h3>
             <p>
-              Orientez les panneaux d'un dôme plein sud et il produit beaucoup d'énergie, mais chauffe le
-              quartier. Ouvrez-le à l'est et il respire mieux le soir. Chaque choix a un coût.
+              Un feu de garrigue, un hôpital à sec : quelques secondes pour y amener l'eau. Le soir, vous
+              améliorez la vitesse, l'eau ou le nombre de tuyaux, car demain sera plus dur.
             </p>
           </div>
-          <MechanicDiagram type="dome" label="Schéma : course du soleil de 8 h à 18 h au-dessus d'un dôme de verre solaire." />
+          <figure class="diagram shot">
+            <ResponsivePicture src="/images/jeu-boutique.jpg" alt="Bilan de la journée et choix des améliorations" width={1280} height={960} />
+          </figure>
         </article>
       </div>
 
