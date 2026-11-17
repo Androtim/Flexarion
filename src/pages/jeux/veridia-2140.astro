@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import FaqSection from "../../components/FaqSection.astro";
 import ResponsivePicture from "../../components/ResponsivePicture.astro";
 import MechanicDiagram from "../../components/MechanicDiagram.astro";
+import YouTubeLite from "../../components/YouTubeLite.astro";
 import { STUDIO } from "../../data/site";
 
 const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
@@ -133,6 +134,24 @@ const gameFaqs = [
         </div>
         <MechanicDiagram type="dome" label="Schéma : course du soleil au-dessus d'un dôme et orientation des panneaux." />
       </article>
+    </div>
+  </section>
+
+  <section class="block block-dusk" aria-labelledby="video-heading">
+    <div class="wrap narrow" style="max-width: 860px;">
+      <h2 id="video-heading">Veridia 2140 en 30 secondes</h2>
+      <p>
+        Le Pays d'Aix en 2140, une cité de sept dômes, et une règle simple : pas une seule pompe, toute
+        l'eau descend par gravité. Une vidéo réalisée par Flexarion, entièrement dessinée en code.
+      </p>
+      <YouTubeLite
+        id="3cmC7k321xE"
+        title="Veridia 2140 : les aqueducs, par Flexarion"
+        description="En 2140, dans le Pays d'Aix, toute l'eau de la ville descend par gravité. Veridia 2140 est un city-builder Solarpunk imaginé par Flexarion, studio de jeux vidéo de science-fiction à Aix-en-Provence."
+        poster="/images/video-aqueducs.jpg"
+        uploadDate="2026-11-16T16:45:19+00:00"
+        duration="PT30S"
+      />
     </div>
   </section>
 
