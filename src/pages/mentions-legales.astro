@@ -1,0 +1,103 @@
+---
+// Mentions légales (LCEN) et politique de confidentialité (RGPD), sur une seule page.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { STUDIO } from "../data/site";
+---
+
+<BaseLayout
+  title="Mentions légales et confidentialité | Flexarion"
+  description="Mentions légales et confidentialité de Flexarion, projet étudiant de l'IUT d'Aix-Marseille : aucun cookie, aucune mesure d'audience, aucune donnée collectée."
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Mentions légales et confidentialité", href: "/mentions-legales/" },
+  ]}
+>
+  <header class="wrap page-head">
+    <h1>Mentions légales et confidentialité</h1>
+    <p class="lead narrow">
+      En bref : ce site ne dépose aucun cookie, ne mesure pas l'audience, n'affiche pas de publicité et ne
+      vous demande aucune donnée. La sauvegarde du jeu reste dans votre navigateur.
+    </p>
+  </header>
+
+  <section class="block">
+    <div class="wrap narrow prose">
+      <h2>Éditeur du site</h2>
+      <p>
+        Flexarion est un studio de jeux vidéo <strong>fictif</strong>, créé par des étudiants du BUT
+        Informatique de l'IUT d'Aix-Marseille dans le cadre du module « Plan de communication et
+        webmarketing à l'ère de l'IA ». Le site est édité à titre non professionnel ; conformément à
+        l'article 6, III, 2 de la loi n° 2004-575 du 21 juin 2004 (LCEN), l'identité de l'éditeur a été
+        communiquée à l'hébergeur. Rien n'est vendu sur ce site.
+      </p>
+      <p>
+        Contact : par message privé sur Instagram (<a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">@flexarion</a>)
+        ou via les <a href={`${STUDIO.githubRepo}/issues`} target="_blank" rel="noopener noreferrer">tickets du dépôt GitHub</a>.
+      </p>
+
+      <h2>Hébergeur</h2>
+      <p>
+        ALWAYSDATA, SARL au capital de 200 000 €, RCS Paris 492 893 490, 91 rue du Faubourg Saint-Honoré,
+        75008 Paris, France. Téléphone : +33 1 84 16 23 40.
+        <a href="https://www.alwaysdata.com/" target="_blank" rel="noopener noreferrer">alwaysdata.com</a>
+      </p>
+
+      <h2 id="donnees">Données personnelles</h2>
+      <p>Nous avons fait en sorte de ne presque rien collecter. Voici tout ce qui existe.</p>
+      <h3>Ce que le site ne fait pas</h3>
+      <ul>
+        <li>Pas de cookie, pas de mesure d'audience, pas de publicité, pas de pixel de réseau social.</li>
+        <li>Pas de compte, pas de formulaire, pas d'adresse e-mail demandée.</li>
+        <li>Les polices de caractères sont hébergées sur notre serveur : aucune requête vers Google Fonts.</li>
+      </ul>
+      <h3>La sauvegarde du jeu</h3>
+      <p>
+        Votre partie et votre record sont enregistrés dans le stockage local de votre navigateur
+        (<code>localStorage</code>, clés <code>veridia-2140-viaducs</code>, <code>veridia-2140-viaducs-record</code>
+        et, pour le prototype archivé, <code>veridia-2140-ete-1</code>). Ces données ne quittent jamais votre
+        appareil et ne nous sont pas transmises. Elles servent uniquement au jeu que vous avez lancé, ce
+        qui ne demande pas de consentement. Pour les effacer, videz les données du site dans les réglages de
+        votre navigateur.
+      </p>
+      <h3>Les journaux du serveur</h3>
+      <p>
+        Comme tout hébergeur, alwaysdata enregistre techniquement chaque requête (adresse IP, page
+        demandée, date, navigateur). Ces journaux servent à la sécurité et au bon fonctionnement du site ;
+        nous ne les consultons que pour vérifier que le site répond et que les moteurs de recherche le
+        visitent. Ils ne sont ni croisés avec d'autres données ni transmis à des tiers. Base légale :
+        l'intérêt légitime à faire fonctionner et sécuriser le site. Leur durée de conservation est fixée
+        par l'hébergeur (voir sa <a href="https://www.alwaysdata.com/fr/protection-des-donnees/" target="_blank" rel="noopener noreferrer">politique de protection des données</a>).
+      </p>
+      <h3>Les vidéos YouTube</h3>
+      <p>
+        Les vidéos intégrées n'affichent d'abord qu'une image hébergée chez nous : rien n'est chargé depuis
+        YouTube tant que vous ne cliquez pas sur lecture. Après le clic, la vidéo est servie par
+        <code>youtube-nocookie.com</code> (Google), selon la
+        <a href="https://policies.google.com/privacy?hl=fr" target="_blank" rel="noopener noreferrer">politique de confidentialité de Google</a>.
+      </p>
+      <h3>Le défi « La ville des joueurs »</h3>
+      <p>
+        Les idées sont proposées en commentaire sur TikTok, Instagram ou YouTube : ces commentaires sont
+        publics et traités par ces plateformes. Nous ne recopions sur ce site que l'idée gagnante, et ne
+        citons le pseudo de son auteur qu'avec son accord.
+      </p>
+      <h3>Vos droits</h3>
+      <p>
+        Vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition sur les données vous
+        concernant. Écrivez-nous par les moyens de contact ci-dessus. Vous pouvez aussi adresser une
+        réclamation à la <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">CNIL</a>.
+      </p>
+
+      <h2>Propriété intellectuelle et crédits</h2>
+      <p>
+        Les textes, le jeu, les visuels et le code de Flexarion sont l'œuvre de l'équipe étudiante ; le code
+        source est consultable sur <a href={STUDIO.githubRepo} target="_blank" rel="noopener noreferrer">GitHub</a>.
+        Certaines illustrations et une partie du code ont été produites avec l'aide d'outils d'IA, comme
+        expliqué sur la <a href="/studio/">page du studio</a>. Polices : Bricolage Grotesque et DM Sans
+        (licence SIL Open Font License). Les lieux d'Aix-en-Provence cités existent ; les événements de 2140
+        sont fictifs. Les noms de plateformes cités appartiennent à leurs propriétaires.
+      </p>
+      <p class="note">Dernière mise à jour : 17 novembre 2026.</p>
+    </div>
+  </section>
+</BaseLayout>
