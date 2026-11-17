@@ -1,42 +1,55 @@
 ---
-// Le jeu (HUD, carte, outils), partagé par /jouer/ et la version embarquée pour itch.io.
-import { BUILDINGS, GAME_VERSION } from "../game/content";
+// Le jeu, partagé par /jouer/ et la version embarquée pour itch.io.
+// Le panneau latéral est la légende de la carte : chaque outil y porte le symbole dessiné sur la carte.
+import { BUILDINGS, GAME_VERSION, RULES } from "../game/content";
 import { STUDIO } from "../data/site";
 
 const tools = Object.values(BUILDINGS);
+const heatwaveStart = (RULES.heatwave.from / RULES.days) * 100;
+const heatwaveWidth = ((RULES.heatwave.to - RULES.heatwave.from) / RULES.days) * 100;
 ---
 
 <section class="game-block" aria-label="Prototype jouable">
   <div class="wrap game" data-game>
     <div class="hud">
-      <div><span>Jour</span><strong data-day>0</strong></div>
-      <div><span>Air</span><strong data-ambient>29 °C</strong></div>
-      <div><span>Crédits</span><strong data-credits>0</strong></div>
-      <div class="hud-res">
-        <span>Réservoir</span><strong data-reservoir>0</strong>
-        <span class="meter"><span data-reservoir-bar></span></span>
+      <div class="hud-date">
+        <strong data-date>21 juin</strong>
+        <span data-daynum>jour 0 sur 90</span>
+        <span class="summer" aria-hidden="true">
+          <span class="summer-wave" style={`left:${heatwaveStart}%;width:${heatwaveWidth}%`}></span>
+          <span class="summer-bar" data-summer-bar></span>
+        </span>
+      </div>
+      <div class="hud-stat">
+        <span>Air</span>
+        <strong data-ambient>29 °C</strong>
+      </div>
+      <div class="hud-stat hud-tank">
+        <span class="tank" aria-hidden="true"><span data-reservoir-bar></span></span>
+        <span>Réservoir</span>
+        <strong data-reservoir>300</strong>
       </div>
       <label class="hud-valve">
-        <span>Vanne : <b data-valve-label></b></span>
-        <input type="range" min="0" max="50" step="1" data-valve aria-label="Débit de la vanne du réservoir" />
+        <span>Vanne <b data-valve-label></b></span>
+        <input type="range" min="0" max="50" step="1" data-valve aria-label="Débit de la vanne du réservoir, par jour" />
       </label>
+      <div class="hud-stat">
+        <span>Crédits</span>
+        <strong data-credits>150</strong>
+      </div>
     </div>
 
     <div class="board">
       <div class="canvas-wrap">
-        <canvas data-canvas aria-label="Carte du district de Veridia. Utilisez les outils puis touchez une case pour construire."></canvas>
+        <canvas data-canvas aria-label="Carte topographique du district de Veridia. Choisissez un outil dans la légende puis touchez une case pour construire."></canvas>
 
         <div class="overlay" data-intro>
           <div class="overlay-card">
-            <h2>Été 2140, Pays d'Aix</h2>
-            <ul>
-              <li><strong>Aqueducs</strong> : partez du réservoir (en haut) et descendez vers les quartiers. L'eau ne passe que vers une case <em>plus basse</em>.</li>
-              <li><strong>Bassins</strong> : ils stockent l'eau pour la canicule et rafraîchissent autour.</li>
-              <li><strong>Mycélium</strong> : posé contre l'eau, il refroidit tout le voisinage.</li>
-              <li><strong>Dômes</strong> : ils rapportent des crédits, mais chauffent.</li>
-              <li>Réglez la <strong>vanne</strong> : trop ouverte, le réservoir se vide avant la fin de l'été.</li>
-            </ul>
-            <p>Astuce : la vue <strong>Relief</strong> affiche l'altitude de chaque case.</p>
+            <h2>Été 2140</h2>
+            <p>
+              Le Pays d'Aix doit traverser 90 jours de chaleur. Vous tenez le réservoir, en haut de la carte.
+              L'eau ne coule que vers le bas : suivez les courbes de niveau jusqu'aux cinq quartiers.
+            </p>
             <button type="button" class="btn btn-sun" data-start>Commencer l'été</button>
           </div>
         </div>
@@ -45,44 +58,83 @@ const tools = Object.values(BUILDINGS);
           <div class="overlay-card">
             <h2 data-end-title></h2>
             <p data-end-text></p>
-            <p>Une idée pour la suite ? Proposez-la en commentaire sur nos réseaux : la plus aimée entre dans le jeu.</p>
+            <p>Une idée pour l'été prochain ? Dites-la en commentaire sur nos réseaux : la plus aimée entre dans le jeu.</p>
             <div class="actions">
-              <button type="button" class="btn btn-sun" data-restart>Rejouer</button>
-              <a class="btn btn-ghost" href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">Instagram</a>
+              <button type="button" class="btn btn-sun" data-restart>Rejouer l'été</button>
+              <a class="btn btn-ghost" href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
             </div>
           </div>
         </div>
       </div>
-      <p class="info" data-info aria-live="polite"></p>
+      <p class="hint" data-hint aria-live="polite"></p>
+      <p class="info" data-info></p>
     </div>
 
-    <div class="side">
-      <div class="tools" role="toolbar" aria-label="Constructions">
+    <aside class="side" aria-label="Légende et commandes">
+      <h2 class="side-title">Légende</h2>
+      <div class="legend" role="toolbar" aria-label="Constructions">
         {
           tools.map((t) => (
-            <button type="button" data-tool={t.id} aria-pressed="false" title={t.help}>
-              <span>{t.name}</span>
-              <small>{t.cost} cr · touche {t.key}</small>
+            <button type="button" data-tool={t.id} aria-pressed="false">
+              <svg class="sym" viewBox="0 0 32 32" aria-hidden="true">
+                {t.id === "aqueduct" && (
+                  <>
+                    <path d="M4 16 H28" stroke="#CDBF9E" stroke-width="12" stroke-linecap="round" />
+                    <path d="M4 16 H28" stroke="#8F7F5E" stroke-width="6" stroke-linecap="round" />
+                    <path d="M4 16 H28" stroke="#1FB5A8" stroke-width="3.5" stroke-linecap="round" />
+                  </>
+                )}
+                {t.id === "basin" && (
+                  <>
+                    <rect x="3" y="3" width="26" height="26" rx="7" fill="#CDBF9E" />
+                    <rect x="8" y="8" width="16" height="16" rx="4" fill="#1FB5A8" />
+                  </>
+                )}
+                {t.id === "mycelium" && (
+                  <g stroke="#7FF0E4" stroke-width="2" fill="none" stroke-linecap="round">
+                    <path d="M16 16 Q10 10 5 9 M16 16 Q22 12 27 6 M16 16 Q12 22 9 28 M16 16 Q23 21 28 24" />
+                    <circle cx="16" cy="16" r="3" fill="#7FF0E4" />
+                  </g>
+                )}
+                {t.id === "dome" && (
+                  <>
+                    <circle cx="16" cy="16" r="12" fill="#4FB9AE" stroke="#EFE6D2" stroke-width="2" />
+                    <path d="M16 16 L23 16 L19.5 22 Z" fill="#F0A43A" />
+                    <path d="M9 16 H23 M12.5 10 L19.5 22 M19.5 10 L12.5 22" stroke="#EFE6D2" stroke-width="1" />
+                  </>
+                )}
+              </svg>
+              <span class="name">{t.name}<small>{t.help}</small></span>
+              <span class="cost">{t.cost}</span>
             </button>
           ))
         }
         <button type="button" data-tool="demolish" aria-pressed="false">
-          <span>Démolir</span><small>touche 5</small>
+          <svg class="sym" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M9 9 L23 23 M23 9 L9 23" stroke="#D2462F" stroke-width="3" stroke-linecap="round" />
+          </svg>
+          <span class="name">Démolir<small>Rend la moitié du prix.</small></span>
+          <span class="cost">+½</span>
         </button>
         <button type="button" data-tool="inspect" aria-pressed="false">
-          <span>Observer</span><small>sans construire</small>
+          <svg class="sym" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="14" cy="14" r="7" fill="none" stroke="#EFE6D2" stroke-width="2.5" />
+            <path d="M19 19 L26 26" stroke="#EFE6D2" stroke-width="3" stroke-linecap="round" />
+          </svg>
+          <span class="name">Observer<small>Lire une case sans construire.</small></span>
+          <span class="cost"></span>
         </button>
       </div>
 
-      <div class="controls">
-        <div class="seg" role="group" aria-label="Vitesse">
+      <div class="toggles">
+        <div class="seg" role="group" aria-label="Vitesse du temps">
           <button type="button" data-speed="0" aria-pressed="false">Pause</button>
           <button type="button" data-speed="1" aria-pressed="false">×1</button>
           <button type="button" data-speed="3" aria-pressed="false">×3</button>
         </div>
-        <div class="seg" role="group" aria-label="Vue">
+        <div class="seg" role="group" aria-label="Affichage de la carte">
           <button type="button" data-view="normal" aria-pressed="true">Carte</button>
-          <button type="button" data-view="relief" aria-pressed="false">Relief</button>
+          <button type="button" data-view="relief" aria-pressed="false">Altitudes</button>
           <button type="button" data-view="heat" aria-pressed="false">Chaleur</button>
         </div>
       </div>
@@ -90,12 +142,12 @@ const tools = Object.values(BUILDINGS);
       <h2 class="side-title">Quartiers</h2>
       <ul class="quarters" data-quarters></ul>
 
-      <h2 class="side-title">Journal</h2>
+      <h2 class="side-title">Journal de l'été</h2>
       <ul class="log" data-log></ul>
 
       <button type="button" class="restart" data-restart>Recommencer l'été</button>
-      <p class="version">Prototype v{GAME_VERSION} · Été 1</p>
-    </div>
+      <p class="version">Prototype v{GAME_VERSION}, été 1</p>
+    </aside>
   </div>
 </section>
 
@@ -109,70 +161,114 @@ const tools = Object.values(BUILDINGS);
   .game-block {
     background: var(--dusk);
     color: var(--limestone);
-    padding-block: 1.25rem 2rem;
+    padding-block: 1.25rem 2.25rem;
   }
 
   .game {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 270px;
+    grid-template-columns: minmax(0, 1fr) 290px;
     grid-template-areas: "hud hud" "board side";
-    gap: 1rem;
+    gap: 1rem 1.5rem;
   }
+
+  /* ---------- Bandeau ---------- */
 
   .hud {
     grid-area: hud;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
-    align-items: center;
-    font-size: 0.9rem;
-  }
-
-  .hud > div,
-  .hud > label {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
+    align-items: flex-end;
+    gap: 0.75rem 2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(239, 230, 210, 0.12);
   }
 
   .hud span {
     color: #9fb0aa;
+    font-size: 0.85rem;
   }
 
   .hud strong {
+    display: block;
     color: #fff;
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: 1.35rem;
+    line-height: 1.1;
   }
 
-  .meter {
-    display: inline-block;
-    width: 90px;
-    height: 8px;
+  .hud-date {
+    min-width: 11rem;
+  }
+
+  .hud-date strong {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .summer {
+    position: relative;
+    display: block;
+    height: 4px;
+    margin-top: 0.45rem;
     background: var(--dusk-2);
     border-radius: 99px;
-    overflow: hidden;
-    align-self: center;
   }
 
-  .meter span {
-    display: block;
-    height: 100%;
+  .summer-bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--sun);
+    border-radius: 99px;
+  }
+
+  .summer-wave {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    background: rgba(210, 70, 47, 0.55);
+    border-radius: 3px;
+  }
+
+  .hud-tank {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    column-gap: 0.55rem;
+    align-items: end;
+  }
+
+  .tank {
+    grid-row: span 2;
+    width: 14px;
+    height: 38px;
+    border: 2px solid var(--limestone-2);
+    border-radius: 3px 3px 5px 5px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tank span {
+    position: absolute;
+    inset: auto 0 0 0;
     background: var(--water);
   }
 
   .hud-valve {
-    flex-wrap: wrap;
+    display: grid;
+    gap: 0.3rem;
   }
 
   .hud-valve b {
     color: #fff;
+    font-weight: 600;
   }
 
   .hud-valve input {
+    width: 160px;
     accent-color: var(--water);
-    width: 140px;
   }
+
+  /* ---------- Carte ---------- */
 
   .board {
     grid-area: board;
@@ -187,7 +283,8 @@ const tools = Object.values(BUILDINGS);
 
   canvas {
     display: block;
-    border-radius: var(--radius-m);
+    border-radius: 6px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
     touch-action: none;
     cursor: crosshair;
   }
@@ -203,10 +300,9 @@ const tools = Object.values(BUILDINGS);
     inset: 0;
     display: grid;
     place-items: center;
-    background: rgba(19, 38, 46, 0.72);
-    border-radius: var(--radius-m);
+    background: rgba(19, 38, 46, 0.55);
+    border-radius: 6px;
     padding: 1rem;
-    overflow-y: auto;
   }
 
   .overlay[hidden] {
@@ -216,101 +312,150 @@ const tools = Object.values(BUILDINGS);
   .overlay-card {
     background: var(--chalk);
     color: var(--ink);
-    border-radius: var(--radius-m);
-    padding: 1.25rem 1.4rem;
-    max-width: 460px;
-    font-size: 0.95rem;
+    border-radius: 18px;
+    padding: 1.5rem 1.6rem 1.6rem;
+    max-width: 420px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
   }
 
   .overlay-card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.6rem;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
   }
 
-  .overlay-card ul {
-    padding-left: 1.1rem;
-    margin: 0 0 0.8rem;
+  .overlay-card p {
     color: var(--ink-soft);
-    display: grid;
-    gap: 0.35rem;
   }
 
-  .overlay-card strong {
-    color: var(--ink);
+  .hint {
+    margin: 0.9rem 0 0;
+    padding: 0.7rem 0.9rem;
+    border-left: 3px solid var(--sun);
+    background: rgba(240, 164, 58, 0.08);
+    border-radius: 0 8px 8px 0;
+    color: #f3ead6;
+    font-size: 0.98rem;
+  }
+
+  .hint:empty {
+    display: none;
   }
 
   .info {
-    min-height: 2.6em;
+    min-height: 1.5em;
     margin: 0.5rem 0 0;
-    font-size: 0.9rem;
-    color: #c9d3cf;
+    font-size: 0.88rem;
+    color: #9fb0aa;
   }
+
+  /* ---------- Légende ---------- */
 
   .side {
     grid-area: side;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
 
-  .tools {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.4rem;
+  .side-title {
+    font-size: 1rem;
+    color: #fff;
+    letter-spacing: 0;
+    margin: 1.25rem 0 0.5rem;
+  }
+
+  .side-title:first-child {
+    margin-top: 0;
   }
 
   button {
     font: inherit;
+    color: inherit;
   }
 
-  .tools button,
-  .seg button,
-  .restart {
-    background: var(--dusk-2);
-    color: var(--limestone);
-    border: 2px solid transparent;
-    border-radius: 10px;
-    padding: 0.5rem 0.6rem;
-    cursor: pointer;
-    text-align: left;
-  }
-
-  .tools button span {
-    display: block;
-    font-weight: 700;
-  }
-
-  .tools button small {
-    color: #9fb0aa;
-    font-size: 0.75rem;
-  }
-
-  .tools button[aria-pressed="true"],
-  .seg button[aria-pressed="true"] {
-    border-color: var(--sun);
-    background: #24485a;
-  }
-
-  .controls {
+  .legend {
     display: grid;
-    gap: 0.4rem;
-    margin-top: 0.75rem;
+  }
+
+  .legend button {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 0.7rem;
+    align-items: center;
+    padding: 0.5rem 0.6rem 0.5rem 0.5rem;
+    background: none;
+    border: 0;
+    border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .legend button:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .legend button[aria-pressed="true"] {
+    background: var(--dusk-2);
+    border-left-color: var(--sun);
+  }
+
+  .sym {
+    width: 32px;
+    height: 32px;
+  }
+
+  .name {
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.25;
+  }
+
+  .name small {
+    display: none;
+    font-weight: 400;
+    color: #aebdb7;
+    font-size: 0.8rem;
+    margin-top: 0.15rem;
+  }
+
+  .legend button[aria-pressed="true"] small {
+    display: block;
+  }
+
+  .cost {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--sun);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .toggles {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
   }
 
   .seg {
     display: flex;
-    gap: 0.3rem;
+    padding: 3px;
+    background: var(--dusk-2);
+    border-radius: 99px;
   }
 
   .seg button {
     flex: 1;
-    text-align: center;
-    padding: 0.4rem;
+    padding: 0.35rem 0.4rem;
+    background: none;
+    border: 0;
+    border-radius: 99px;
+    color: #c9d3cf;
+    cursor: pointer;
+    font-size: 0.86rem;
   }
 
-  .side-title {
-    font-size: 0.95rem;
-    color: #fff;
-    margin: 1rem 0 0.4rem;
-    letter-spacing: 0;
+  .seg button[aria-pressed="true"] {
+    background: var(--limestone);
+    color: var(--dusk);
+    font-weight: 600;
   }
 
   .quarters,
@@ -322,39 +467,49 @@ const tools = Object.values(BUILDINGS);
 
   .quarters :global(li) {
     display: grid;
-    grid-template-columns: 7.5rem 1fr 3.6rem;
+    grid-template-columns: 20px 1fr auto;
+    gap: 0.6rem;
     align-items: center;
-    gap: 0.5rem;
     padding: 0.2rem 0;
   }
 
+  .quarters :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
   .quarters :global(li.lost) {
-    opacity: 0.55;
-  }
-
-  .quarters :global(.bar) {
-    height: 7px;
-    background: var(--dusk-2);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-
-  .quarters :global(.bar span) {
-    display: block;
-    height: 100%;
+    opacity: 0.5;
   }
 
   .quarters :global(.num) {
-    text-align: right;
     color: #c9d3cf;
-    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
   }
 
   .log :global(li) {
     color: #aebdb7;
-    font-size: 0.82rem;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.84rem;
+    padding: 0.3rem 0;
+  }
+
+  .log :global(li + li) {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .restart {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.55rem;
+    background: none;
+    border: 1px solid rgba(239, 230, 210, 0.25);
+    border-radius: 99px;
+    cursor: pointer;
+  }
+
+  .restart:hover {
+    border-color: var(--limestone);
   }
 
   .version {
@@ -364,20 +519,28 @@ const tools = Object.values(BUILDINGS);
     color: #7f938c;
   }
 
-  .restart {
-    margin-top: 1rem;
-    width: 100%;
-    text-align: center;
-  }
-
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     .game {
       grid-template-columns: 1fr;
       grid-template-areas: "hud" "board" "side";
     }
 
-    .tools {
-      grid-template-columns: repeat(3, 1fr);
+    .legend {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hud {
+      gap: 0.75rem 1.25rem;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .legend {
+      grid-template-columns: 1fr;
+    }
+
+    .hud-date strong {
+      font-size: 1.6rem;
     }
   }
 </style>

@@ -1,20 +1,27 @@
-// Interface du prototype : boucle de jeu, saisie souris/tactile, sauvegarde locale.
+// Interface du prototype : boucle de jeu, saisie souris/tactile, sauvegarde locale.
 import { BUILDINGS, RULES, type BuildingId } from "./content.ts";
 import { COLS, ROWS } from "./map.ts";
 import { build, canBuild, demolish, idx, newGame, quarters, setValve, step, type GameState } from "./sim.ts";
-import { draw, type View } from "./render.ts";
+import { draw, invalidateTerrain, type View } from "./render.ts";
 import { autoplayUntil } from "./demo.ts";
 
 type Tool = BuildingId | "demolish" | "inspect";
 const SAVE_KEY = "veridia-2140-ete-1";
 const DAY_MS = 1200;
 
+const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+/** Le jour 0 est le 21 juin : l'été du jeu suit le vrai calendrier. */
+export function dateLabel(day: number): string {
+  const d = new Date(2140, 5, 21 + day);
+  return `${d.getDate() === 1 ? "1er" : d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
 export function boot(root: HTMLElement) {
   const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
   const canvas = $<HTMLCanvasElement>("[data-canvas]");
   const ctx = canvas.getContext("2d")!;
 
-  // Mode démo (/jouer/?demo=45) : partie jouée automatiquement jusqu'au jour indiqué, sans sauvegarde.
+  // Mode démo (/jouer/?demo=45) : partie jouée automatiquement jusqu'au jour indiqué, sans sauvegarde.
   const demoDay = Number(new URLSearchParams(location.search).get("demo"));
   const demo = Number.isFinite(demoDay) && demoDay > 0;
   let s: GameState = demo ? newGame() : (load() ?? newGame());
@@ -28,6 +35,8 @@ export function boot(root: HTMLElement) {
   let last = performance.now();
   let painting = false;
   let message = "";
+  let placed: { x: number; y: number; at: number } | null = null;
+  let highlight: { x: number; y: number } | null = null;
 
   function save() {
     if (demo) return;
@@ -73,12 +82,13 @@ export function boot(root: HTMLElement) {
     if (err && !painting) message = err;
     else if (!err) {
       message = "";
+      if (tool !== "demolish") placed = { x: p.x, y: p.y, at: performance.now() / 1000 };
       save();
     }
     ui();
   }
 
-  // Souris : clic ou glisser pour tracer. Tactile : un simple tap (glisser fait défiler la carte).
+  // Souris : clic ou glisser pour tracer. Tactile : un simple tap (glisser fait défiler la carte).
   let touchStart: { x: number; y: number } | null = null;
   canvas.addEventListener("pointerdown", (e) => {
     const p = tileAt(e);
@@ -146,8 +156,9 @@ export function boot(root: HTMLElement) {
   });
   root.querySelectorAll("[data-restart]").forEach((b) =>
     b.addEventListener("click", () => {
-      if (s.day > 0 && s.status === "playing" && !confirm("Recommencer l'été depuis le début ?")) return;
+      if (s.day > 0 && s.status === "playing" && !confirm("Recommencer l'été depuis le début ?")) return;
       s = newGame();
+      invalidateTerrain();
       speed = 1;
       save();
       ui();
@@ -175,37 +186,65 @@ export function boot(root: HTMLElement) {
     ui();
   });
 
+  // Guidage en contexte : une seule consigne à la fois, selon l'avancée de la partie.
+  function hint(): string {
+    highlight = null;
+    if (s.status !== "playing") return "";
+    const res = s.tiles.find((t) => t.ground === "reservoir")!;
+    const near = (t: { x: number; y: number }) => [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => s.tiles.find((n) => n.x === t.x + dx && n.y === t.y + dy)).filter(Boolean);
+    if (!near(res).some((n) => n!.build === "aqueduct" || n!.build === "basin")) {
+      highlight = { x: res.x, y: res.y };
+      return "Commencez au réservoir : tracez un aqueduc juste en dessous, puis descendez case par case.";
+    }
+    const dry = quarters(s).filter((q) => !q.lost && q.supplied < 0.5);
+    if (dry.length) {
+      return `${dry.length === 1 ? `${dry[0].quarterName} attend` : `${dry.length} quartiers attendent`} l'eau. Suivez les courbes de niveau vers le bas : l'eau ne remonte jamais.`;
+    }
+    const hot = quarters(s).find((q) => !q.lost && q.temp > RULES.heatLimit);
+    if (hot) return `${hot.quarterName} a trop chaud (${Math.round(hot.temp)} °C). Du mycélium posé contre l'eau, à côté du quartier, le rafraîchit.`;
+    if (s.day < RULES.heatwave.from && !s.tiles.some((t) => t.build === "basin"))
+      return `La canicule arrive le ${dateLabel(RULES.heatwave.from)}. Un bassin près d'un quartier garde l'eau en réserve.`;
+    if (s.reservoir < 80) return "Le réservoir baisse. Refermez un peu la vanne pour tenir jusqu'en septembre.";
+    return "Tout tient. Gardez un œil sur la vanne et sur la chaleur.";
+  }
+
   // Affichage
   function ui() {
-    $("[data-day]").textContent = `${s.day} / ${RULES.days}`;
-    $("[data-ambient]").textContent = `${s.ambient.toFixed(1)} °C`;
+    $("[data-date]").textContent = dateLabel(s.day);
+    $("[data-daynum]").textContent = `jour ${s.day} sur ${RULES.days}`;
+    $<HTMLElement>("[data-summer-bar]").style.width = `${(s.day / RULES.days) * 100}%`;
+    $("[data-ambient]").textContent = `${Math.round(s.ambient)} °C`;
     $("[data-credits]").textContent = String(s.credits);
-    $("[data-reservoir]").textContent = `${Math.round(s.reservoir)} / ${RULES.reservoir.cap}`;
-    $<HTMLElement>("[data-reservoir-bar]").style.width = `${(s.reservoir / RULES.reservoir.cap) * 100}%`;
+    $("[data-reservoir]").textContent = String(Math.round(s.reservoir));
+    $<HTMLElement>("[data-reservoir-bar]").style.height = `${(s.reservoir / RULES.reservoir.cap) * 100}%`;
     valve.value = String(s.valve);
-    $("[data-valve-label]").textContent = `${s.valve} / jour`;
+    $("[data-valve-label]").textContent = `${s.valve} par jour`;
+    $("[data-hint]").textContent = hint();
 
     root.querySelectorAll<HTMLButtonElement>("[data-tool]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tool === tool)));
     root.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
     root.querySelectorAll<HTMLButtonElement>("[data-speed]").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.speed) === speed)));
 
     $("[data-quarters]").innerHTML = quarters(s)
-      .map(
-        (q) => `<li class="${q.lost ? "lost" : ""}"><span>${q.quarterName}</span>
-          <span class="bar"><span style="width:${q.health}%;background:${q.health > 60 ? "#3E9B74" : q.health > 30 ? "#F0A43A" : "#C43C28"}"></span></span>
-          <span class="num">${q.lost ? "évacué" : Math.round(q.health) + " %"}</span></li>`,
-      )
+      .map((q) => {
+        const col = q.health > 60 ? "#3E9B74" : q.health > 30 ? "#F0A43A" : "#D2462F";
+        const dash = (q.health / 100) * 50.27;
+        return `<li class="${q.lost ? "lost" : ""}">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="#24485a" stroke-width="3"/>
+          <circle cx="10" cy="10" r="8" fill="none" stroke="${col}" stroke-width="3" stroke-dasharray="${dash} 60" transform="rotate(-90 10 10)"/></svg>
+          <span>${q.quarterName}</span>
+          <span class="num">${q.lost ? "évacué" : Math.round(q.health) + " %"}</span></li>`;
+      })
       .join("");
 
-    const help = tool === "inspect" ? "" : tool === "demolish" ? "Démolir rend la moitié du prix." : BUILDINGS[tool].help;
-    let info = message || help;
+    let info = message;
     if (hover) {
       const t = s.tiles[idx(hover.x, hover.y)];
       const what =
         t.ground === "quarter" ? `Quartier ${t.quarterName}` : t.ground === "reservoir" ? "Réservoir" : t.ground === "rock" ? "Rocher" : t.build ? BUILDINGS[t.build].name : "Garrigue";
       const extra =
         t.build === "basin" ? ` · réserve ${Math.round(t.store)}` : t.build === "aqueduct" ? ` · débit ${t.flow.toFixed(1)}${t.stagnant ? " · l'eau stagne ici" : ""}` : t.build === "mycelium" ? (t.awake ? " · éveillé" : " · endormi (pas d'eau)") : "";
-      info = `${what} · altitude ${t.elev} m · ${t.temp.toFixed(1)} °C${extra}${message ? ` · ${message}` : ""}`;
+      info = `${what}, ${t.elev} m, ${t.temp.toFixed(1)} °C${extra.replaceAll(" · ", ", ")}${message ? `. ${message}` : ""}`;
     }
     $("[data-info]").textContent = info;
     $("[data-log]").innerHTML = s.log.map((l) => `<li>${l}</li>`).join("");
@@ -214,7 +253,7 @@ export function boot(root: HTMLElement) {
     end.hidden = s.status === "playing";
     if (s.status !== "playing") {
       const alive = quarters(s).filter((q) => !q.lost).length;
-      $("[data-end-title]").textContent = s.status === "won" ? "Veridia a tenu tout l'été !" : "L'été a été plus fort.";
+      $("[data-end-title]").textContent = s.status === "won" ? "Veridia a tenu tout l'été !" : "L'été a été plus fort.";
       $("[data-end-text]").textContent = `${alive} quartier${alive > 1 ? "s" : ""} sur 5 sauvé${alive > 1 ? "s" : ""}, ${Math.round(s.reservoir)} unités d'eau en réserve, ${s.credits} crédits.`;
     }
   }
@@ -232,7 +271,7 @@ export function boot(root: HTMLElement) {
       }
     }
     const preview = hover && tool !== "inspect" && tool !== "demolish" ? canBuild(s, s.tiles[idx(hover.x, hover.y)], tool) : null;
-    draw(ctx, s, { size, time: now / 1000, view, hover, tool, preview });
+    draw(ctx, s, { size, time: now / 1000, view, hover, tool, preview, highlight, placed });
     requestAnimationFrame(frame);
   }
 
