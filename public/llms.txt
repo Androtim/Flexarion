@@ -23,5 +23,6 @@
 - [Accueil Flexarion](/): Présentation du studio et positionnement
 - [Le Studio](/studio/): Histoire aixoise, équipe, manifeste Solarpunk et transparence IA
 - [Veridia 2140](/jeux/veridia-2140/): Fiche complète du jeu phare, gameplay et FAQ
+- [Jouer à Veridia 2140](/jouer/): Jeu gratuit dans le navigateur : puzzle de viaducs en temps réel dans Aix-en-Provence, cartes procédurales, urgences
 - [Devlogs](/devlogs/): Journal de développement technique et artistique
 - [Contact & Kit Presse](/contact/): Demandes presse, partenaires et canaux officiels

@@ -1,15 +1,15 @@
 ---
-// Version embarquée du prototype (itch.io, iframe) : le jeu seul, sans en-tête ni pied de page.
+// Version embarquée du jeu (itch.io, iframe) : le jeu seul, sans en-tête ni pied de page.
 // Non indexée : la page de référence pour Google est /jouer/.
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/dm-sans";
 import "../../styles/global.css";
-import GameApp from "../../components/GameApp.astro";
+import ViaducsApp from "../../components/ViaducsApp.astro";
 
 const schema = {
   "@context": "https://schema.org",
   "@type": "VideoGame",
-  name: "Veridia 2140 : Été 1 (prototype)",
+  name: "Veridia 2140 : les viaducs",
   url: "https://flexarion.alwaysdata.net/jouer/",
   author: { "@type": "Organization", name: "Flexarion", url: "https://flexarion.alwaysdata.net/" },
 };
@@ -20,10 +20,10 @@ const schema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Veridia 2140 : Été 1, prototype jouable par Flexarion</title>
+    <title>Veridia 2140 : les viaducs, un jeu de Flexarion</title>
     <meta
       name="description"
-      content="Version embarquée du prototype de Veridia 2140 par Flexarion, studio de jeux vidéo de science-fiction à Aix-en-Provence."
+      content="Version embarquée du jeu de Veridia 2140 par Flexarion, studio de jeux vidéo de science-fiction à Aix-en-Provence."
     />
     <meta name="robots" content="noindex, follow" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -47,10 +47,10 @@ const schema = {
     </style>
   </head>
   <body>
-    <h1 class="sr-only">Veridia 2140 : Été 1, prototype de Flexarion</h1>
-    <GameApp />
+    <h1 class="sr-only">Veridia 2140 : les viaducs, un jeu de Flexarion</h1>
+    <ViaducsApp />
     <p class="credit">
-      Un prototype de <a href="https://flexarion.alwaysdata.net/" target="_blank" rel="noopener">Flexarion</a>,
+      Un jeu de <a href="https://flexarion.alwaysdata.net/" target="_blank" rel="noopener">Flexarion</a>,
       studio de jeux vidéo de science-fiction à Aix-en-Provence (projet étudiant, gratuit).
     </p>
   </body>

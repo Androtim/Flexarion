@@ -1,0 +1,56 @@
+---
+// Archives : l'Été 1, premier prototype de Veridia 2140, abandonné au profit du jeu des viaducs.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GameApp from "../../components/GameApp.astro";
+import { RULES } from "../../game/content";
+---
+
+<BaseLayout
+  title="Veridia 2140 : l'Été 1, prototype abandonné | Flexarion"
+  description="Archives de Flexarion : l'Été 1, premier prototype de Veridia 2140, un city-builder sur 90 jours d'été à Aix-en-Provence. Projet abandonné, toujours jouable."
+  ogImage="/images/veridia-hero.jpg"
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "Jouer", href: "/jouer/" },
+    { name: "Archives : l'Été 1", href: "/jouer/ete-2140/" },
+  ]}
+>
+  <header class="wrap page-head" style="padding-bottom: 1.5rem;">
+    <p class="archive-tag">Projet abandonné</p>
+    <h1>Archives : l'Été 1.</h1>
+    <p class="lead narrow">
+      Notre premier prototype de Veridia 2140 : un city-builder où l'on tient {RULES.days} jours d'été en guidant
+      l'eau par gravité. Nous l'avons arrêté pour <a href="/jouer/">le jeu des viaducs</a>, plus court et plus
+      lisible. Il reste jouable ici, tel qu'on l'a laissé.
+    </p>
+  </header>
+
+  <GameApp />
+
+  <section class="block" aria-labelledby="why-heading">
+    <div class="wrap narrow">
+      <h2 id="why-heading">Pourquoi on l'a abandonné</h2>
+      <ul class="plain-list">
+        <li><strong>Trop lent :</strong> une partie demandait 90 jours de jeu. Sur téléphone, entre deux cours, personne n'allait au bout.</li>
+        <li><strong>Trop de systèmes à la fois :</strong> eau, chaleur, mycélium, dômes. Les joueurs ne voyaient pas pourquoi un quartier souffrait.</li>
+        <li><strong>Ce qu'on a gardé :</strong> l'eau comme cœur du jeu, Aix-en-Provence, les aqueducs. Le nouveau jeu en fait un puzzle d'une journée, avec des urgences.</li>
+      </ul>
+      <p><a href="/jouer/" class="btn btn-sun">Jouer au nouveau jeu</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .archive-tag {
+    display: inline-block;
+    margin: 0 0 0.6rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 99px;
+    background: var(--roof);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
