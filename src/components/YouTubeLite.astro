@@ -37,6 +37,7 @@ const schema = {
   </button>
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </div>
+<p class="yt-note">La vidéo n'est chargée depuis YouTube qu'au clic. <a href="/mentions-legales/#donnees">En savoir plus</a></p>
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-yt]").forEach((box) => {
@@ -52,6 +53,16 @@ const schema = {
 </script>
 
 <style>
+  .yt-note {
+    margin: 0.6rem 0 0;
+    font-size: 0.82rem;
+    opacity: 0.75;
+  }
+
+  .yt-note a {
+    color: inherit;
+  }
+
   .yt {
     position: relative;
     aspect-ratio: 16 / 9;
