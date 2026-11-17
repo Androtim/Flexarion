@@ -17,10 +17,10 @@ export const STUDIO = {
   githubRepo: "https://github.com/Androtim/Flexarion",
   flagshipGame: {
     title: "VERIDIA 2140",
-    genre: "Stratégie & City-Builder Solarpunk",
-    businessModel: "Modèle pensé : Jeu indé payant (sans microtransactions)",
-    platform: "PC (Concept en pré-production)",
-    status: "Concept de jeu vidéo réalisé en cadre universitaire (IUT d'Aix-Marseille)",
+    genre: "Puzzle & stratégie en temps réel",
+    businessModel: "Gratuit, sans publicité",
+    platform: "Navigateur web (ordinateur et téléphone), itch.io",
+    status: "Jeu réalisé en cadre universitaire (IUT d'Aix-Marseille)",
   },
 };
 

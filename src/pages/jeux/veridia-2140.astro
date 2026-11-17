@@ -2,7 +2,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FaqSection from "../../components/FaqSection.astro";
 import ResponsivePicture from "../../components/ResponsivePicture.astro";
-import MechanicDiagram from "../../components/MechanicDiagram.astro";
 import YouTubeLite from "../../components/YouTubeLite.astro";
 import { STUDIO } from "../../data/site";
 
@@ -12,51 +11,49 @@ const videoGameSchema = {
   "@context": "https://schema.org",
   "@type": "VideoGame",
   name: STUDIO.flagshipGame.title,
+  url: `${siteOrigin}/jouer/`,
   description:
-    "City-builder tactique et simulation éco-futuriste Solarpunk en Provence en 2140, conçu par Flexarion Studio à Aix-en-Provence.",
-  genre: ["Strategy", "City-Builder", "Science Fiction", "Solarpunk"],
-  gamePlatform: ["PC", "Windows", "Linux"],
-  applicationCategory: "Game",
-  operatingSystem: "Windows 11, Linux",
+    "Jeu de puzzle et de stratégie en temps réel, gratuit dans le navigateur : à Aix-en-Provence en 2140, tracez tuyaux et viaducs pour amener l'eau aux quartiers, sur des cartes générées de plus en plus difficiles, et répondez aux urgences.",
+  genre: ["Puzzle", "Strategy", "Science Fiction"],
+  gamePlatform: ["Web browser"],
+  playMode: "SinglePlayer",
+  isAccessibleForFree: true,
   inLanguage: "fr",
-  author: {
-    "@type": "Organization",
-    name: STUDIO.legalName,
-    url: siteOrigin,
-  },
-  publisher: {
-    "@type": "Organization",
-    name: STUDIO.legalName,
-    url: siteOrigin,
-  },
-  image: `${siteOrigin}/images/veridia-hero.jpg`,
+  author: { "@id": `${siteOrigin}/#organization` },
+  publisher: { "@id": `${siteOrigin}/#organization` },
+  image: `${siteOrigin}/images/devlog-viaducs.jpg`,
 };
 
 const gameFaqs = [
   {
-    question: "Quel est le modèle économique imaginé pour Veridia 2140 ?",
+    question: "Veridia 2140 est-il gratuit ?",
     answer:
-      "Dans le cadre de ce concept de studio, Veridia 2140 est pensé comme un jeu indépendant PC payant à achat unique (sans microtransaction ni boutique intégrée), accompagné d'une démo jouable.",
+      "Oui. Le jeu se joue gratuitement dans le navigateur, sur ordinateur comme sur téléphone, sans inscription ni téléchargement. Une version est aussi disponible sur itch.io.",
   },
   {
-    question: "Veridia 2140 est-il déjà disponible à l'achat ?",
+    question: "Combien de temps dure une partie ?",
     answer:
-      "Non : Veridia 2140 et Flexarion Studio constituent un projet universitaire de conception et de communication (BUT Informatique, IUT d'Aix-Marseille). Aucune vente ni précommande n'est ouverte.",
+      "Une journée de jeu dure 40 secondes, plus le temps de tracer votre réseau. Une partie s'arrête quand la ville perd confiance, en général entre le jour 5 et le jour 10 ; votre record est gardé dans le navigateur.",
   },
   {
-    question: "Qu'est-ce qui distingue Veridia 2140 des autres city-builders de science-fiction ?",
+    question: "Peut-on proposer des idées pour le jeu ?",
     answer:
-      "Contrairement aux jeux spatiaux ou post-apocalyptiques sombres, Veridia 2140 adopte une direction Solarpunk méditerranéenne située à Aix-en-Provence en 2140, centrée sur la gravité hydraulique et le mycélium.",
+      "Oui, c'est le défi « La ville des joueurs » : tous les deux jours, l'idée la plus aimée en commentaire sous notre vidéo de vote (TikTok, Instagram, YouTube Shorts) entre dans le jeu.",
+  },
+  {
+    question: "Flexarion est-il un vrai studio ?",
+    answer:
+      "Non : Flexarion et Veridia 2140 sont un projet universitaire de conception et de communication (BUT Informatique, IUT d'Aix-Marseille). Le jeu est réel et jouable, mais rien n'est vendu.",
   },
 ];
 ---
 
 <BaseLayout
-  title="Veridia 2140 : Jeu Solarpunk par Flexarion Studio à Aix"
-  description="Découvrez Veridia 2140, le jeu phare de Flexarion Studio : city-builder Solarpunk en Provence, flux hydriques réalistes, réseau mycélien et modèle sans microtransaction."
+  title="Veridia 2140 : jeu de viaducs gratuit par Flexarion, Aix"
+  description="Veridia 2140, le jeu de Flexarion : un puzzle de stratégie en temps réel dans Aix-en-Provence en 2140. Tuyaux, viaducs, cartes procédurales et urgences. Gratuit."
   preloadHeroBase="/images/veridia-hero"
-  ogImage="/images/veridia-hero.jpg"
-  ogImageAlt="Veridia 2140 : dômes solaires au pied de la montagne Sainte-Victoire"
+  ogImage="/images/devlog-viaducs.jpg"
+  ogImageAlt="Veridia 2140 : un réseau d'eau turquoise relie le Canal de Provence aux quartiers d'Aix"
   breadcrumbs={[
     { name: "Accueil", href: "/" },
     { name: "Veridia 2140", href: "/jeux/veridia-2140/" },
@@ -65,84 +62,98 @@ const gameFaqs = [
 >
   <header class="wrap page-head split">
     <div>
-      <h1>Veridia 2140 : faire passer l'été à une ville entière.</h1>
+      <h1>Veridia 2140 : amener l'eau à toute une ville, jour après jour.</h1>
       <p class="lead">
-        Un city-builder Solarpunk dans le Pays d'Aix en 2140. Vous héritez d'un district de Veridia, une
-        cité de sept dômes reliés par des aqueducs, et vous devez lui faire traverser l'été le plus chaud
-        jamais mesuré.
+        Aix-en-Provence, 2140. Chaque matin, une nouvelle carte du Pays d'Aix. Vous tracez tuyaux et
+        viaducs de la source jusqu'aux quartiers, vous ouvrez les vannes, et vous avez 40 secondes pour
+        que chacun ait son eau. Demain sera plus dur.
       </p>
       <dl class="facts">
-        <div><dt>Genre</dt><dd>City-builder, stratégie</dd></div>
-        <div><dt>Plateforme visée</dt><dd>PC (Windows, Linux)</dd></div>
-        <div><dt>Modèle imaginé</dt><dd>Achat unique, sans microtransaction</dd></div>
-        <div><dt>État</dt><dd>Concept en pré-production</dd></div>
+        <div><dt>Genre</dt><dd>Puzzle, stratégie en temps réel</dd></div>
+        <div><dt>Plateforme</dt><dd>Navigateur (ordinateur, téléphone), itch.io</dd></div>
+        <div><dt>Prix</dt><dd>Gratuit, sans publicité</dd></div>
+        <div><dt>État</dt><dd>Jouable, mis à jour avec vos idées</dd></div>
       </dl>
+      <div class="actions" style="margin-top: 1.5rem;">
+        <a href="/jouer/" class="btn btn-sun">Jouer gratuitement</a>
+      </div>
     </div>
     <figure class="photo">
       <ResponsivePicture
         src="/images/veridia-hero.jpg"
-        alt="Illustration principale de Veridia 2140 : dômes géodésiques, aqueduc et Sainte-Victoire"
+        alt="Illustration de l'univers de Veridia 2140 : dômes géodésiques, aqueduc et Sainte-Victoire"
         width={1280}
         height={720}
         eager={true}
       />
-      <figcaption>Recherche visuelle : le bassin aixois au crépuscule, été 2140.</figcaption>
+      <figcaption>L'univers du jeu : le bassin aixois au crépuscule, été 2140.</figcaption>
     </figure>
   </header>
 
   <section class="block block-chalk" aria-labelledby="mechanics-heading">
     <div class="wrap">
       <div class="narrow">
-        <h2 id="mechanics-heading">Trois systèmes, un seul adversaire : la chaleur</h2>
+        <h2 id="mechanics-heading">Une journée, quarante secondes</h2>
         <p class="lead">
-          Pas de combat dans Veridia 2140. Chaque été, la température monte et vos trois systèmes doivent
-          tenir ensemble. Si l'un lâche, les deux autres suivent.
+          Pas d'ennemis dans Veridia 2140 : votre adversaire, c'est la soif. Les règles tiennent en trois
+          gestes, la difficulté vient de la carte qui change chaque jour.
         </p>
       </div>
       <article class="mechanic">
         <div>
-          <span class="tag">Hydrologie</span>
-          <h3>L'eau ne remonte jamais</h3>
+          <span class="tag">1. Tracer</span>
+          <h3>Des tuyaux, et des viaducs pour franchir l'Arc</h3>
           <p>
-            Les bassins et les aqueducs forment un réseau orienté : l'eau va du plus haut au plus bas. Le
-            relief réel du Pays d'Aix décide donc où vous pouvez construire. Couvrir un canal d'une pergola
-            solaire réduit l'évaporation, mais coûte cher.
+            Glissez depuis la source (le Canal de Provence, le barrage de Bimont…) jusqu'à côté de chaque
+            quartier. Les rochers et les pinèdes protégées ne se traversent pas. Les vallons et la rivière de
+            l'Arc demandent un viaduc, qui coûte deux tuyaux, comme l'aqueduc de Roquefavour.
           </p>
         </div>
-        <MechanicDiagram type="water" label="Schéma : réseau d'eau gravitaire du réservoir jusqu'à la ville." />
+        <figure class="diagram shot">
+          <ResponsivePicture src="/images/jeu-reseau.jpg" alt="Carte du jeu en préparation : un réseau de tuyaux relie le Canal de Provence à quatre quartiers et franchit l'Arc par un viaduc" width={1280} height={960} />
+        </figure>
       </article>
       <article class="mechanic">
         <div>
-          <span class="tag">Mycélium</span>
-          <h3>Un réseau vivant sous la ville</h3>
+          <span class="tag">2. Partager</span>
+          <h3>L'eau se partage à chaque embranchement</h3>
           <p>
-            Le mycélium cultivé sous les restanques déplace l'humidité vers les îlots de chaleur. Il est
-            efficace et gratuit, mais il meurt s'il reste sec trop longtemps. Sa lumière sur la carte vous
-            dit où il souffre, sans aucune fenêtre d'alerte.
+            Vannes ouvertes, l'eau avance à votre vitesse d'acheminement. À chaque embranchement, elle se
+            partage à parts égales entre les quartiers qui ont soif, et un tuyau ne porte pas plus de 7 m³/s.
+            Avec cinq quartiers, un seul tronc ne suffit plus.
           </p>
         </div>
-        <MechanicDiagram type="mycelium" label="Schéma : transfert d'humidité par le mycélium vers les rues chaudes." />
+        <figure class="diagram shot">
+          <ResponsivePicture src="/images/jeu-partage.jpg" alt="L'eau turquoise circule du barrage de Bimont vers Pont de l'Arc et Les Facultés, dont les jauges se remplissent" width={1280} height={960} />
+        </figure>
       </article>
       <article class="mechanic">
         <div>
-          <span class="tag">Architecture</span>
-          <h3>Calcaire et verre solaire</h3>
+          <span class="tag">3. Tenir</span>
+          <h3>Urgences, puis améliorations</h3>
           <p>
-            Le calcaire garde la fraîcheur de la nuit, le verre produit l'énergie du jour. L'orientation de
-            chaque dôme est un arbitrage entre électricité et confort, à refaire quand l'été avance.
+            Dès le jour 2, un feu de garrigue ou un hôpital à sec surgit : quelques secondes pour y amener
+            l'eau. Le soir, vos crédits achètent de la vitesse, de l'eau ou des tuyaux. Les tuyaux non
+            utilisés rapportent un bonus de sobriété : le meilleur réseau est le plus court.
           </p>
         </div>
-        <MechanicDiagram type="dome" label="Schéma : course du soleil au-dessus d'un dôme et orientation des panneaux." />
+        <figure class="diagram shot">
+          <ResponsivePicture src="/images/jeu-boutique.jpg" alt="Bilan de fin de journée : quartiers servis, urgences, bonus de sobriété et trois améliorations à acheter" width={1280} height={960} />
+        </figure>
       </article>
+      <div class="actions">
+        <a href="/jouer/" class="btn btn-water">Jouer à Veridia 2140</a>
+      </div>
     </div>
   </section>
 
-  <section class="block block-dusk" aria-labelledby="video-heading">
+<section class="block block-dusk" aria-labelledby="video-heading">
     <div class="wrap narrow" style="max-width: 860px;">
-      <h2 id="video-heading">Veridia 2140 en 30 secondes</h2>
+      <h2 id="video-heading">L'univers en 30 secondes</h2>
       <p>
-        Le Pays d'Aix en 2140, une cité de sept dômes, et une règle simple : pas une seule pompe, toute
-        l'eau descend par gravité. Une vidéo réalisée par Flexarion, entièrement dessinée en code.
+        Notre première vidéo présente le monde de Veridia : le Pays d'Aix en 2140, ses aqueducs et une
+        règle de départ, pas une seule pompe. Elle date de notre premier prototype, l'Été 1, et a été
+        entièrement dessinée en code.
       </p>
       <YouTubeLite
         id="3cmC7k321xE"
@@ -159,32 +170,32 @@ const gameFaqs = [
     <div class="wrap split">
       <figure class="photo">
         <ResponsivePicture
-          src="/images/devlog-hydrology.jpg"
-          alt="Vue isométrique de canaux turquoise et de restanques cultivées sous un dôme dans Veridia 2140"
+          src="/images/devlog-viaducs.jpg"
+          alt="Le réseau d'eau en pleine journée, pendant qu'une urgence clignote à la Fontaine de la Rotonde"
           width={1280}
           height={720}
           sizes="(max-width: 860px) 100vw, 540px"
         />
-        <figcaption>Recherche visuelle : canaux et restanques sous un dôme.</figcaption>
+        <figcaption>Une urgence en cours : 13 secondes pour amener l'eau à la Rotonde.</figcaption>
       </figure>
       <div>
         <h2 id="dev-heading">Comment on le construit</h2>
         <p>
-          La simulation repose sur des graphes orientés pour l'eau et une grille thermique pour la chaleur.
-          Elle est déterministe : la même partie rejouée donne exactement le même résultat, ce qui nous permet
-          de la tester automatiquement.
+          Chaque carte est générée au hasard, puis vérifiée par le jeu lui-même : il cherche un réseau qui
+          relie tous les quartiers et le jette s'il ne tient pas dans vos tuyaux. À chaque modification, un
+          script teste 480 cartes et fait jouer un joueur automatique pour régler la difficulté.
         </p>
         <p>
-          Nous détaillons ces choix dans nos devlogs, et l'univers complet (chronologie, districts, factions)
-          a sa propre page.
+          Le jeu a remplacé notre premier prototype, l'Été 1, un city-builder trop lent pour le téléphone.
+          Il reste <a href="/jouer/ete-2140/">jouable dans nos archives</a>.
         </p>
         <div class="actions">
-          <a href="/jouer/" class="btn btn-water">Jouer au prototype</a>
-          <a href="/devlogs/simulation-flux-hydriques-graphes/" class="btn btn-ghost">Lire le devlog technique</a>
+          <a href="/jouer/" class="btn btn-water">Jouer</a>
+          <a href="/devlogs/pivot-viaducs-generation-procedurale/" class="btn btn-ghost">Lire le devlog #3</a>
           <a href="/jeux/veridia-2140/univers/" class="btn btn-ghost">L'univers du jeu</a>
         </div>
         <p class="note" style="margin-top: 1.5rem;">
-          {STUDIO.flagshipGame.status}. Aucune vente ni précommande n'est proposée.
+          {STUDIO.flagshipGame.status}. Gratuit, rien n'est vendu.
         </p>
       </div>
     </div>
