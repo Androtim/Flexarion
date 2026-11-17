@@ -17,3 +17,15 @@ export interface DefiEntry {
 }
 
 export const DEFI_ENTRIES: DefiEntry[] = [];
+
+/**
+ * Vote en cours. À mettre à jour à chaque nouvelle vidéo de vote :
+ * `url` = lien de la vidéo (TikTok, Instagram ou Short), `closes` = date de clôture (AAAA-MM-JJ).
+ * `url: null` : pas de vote ouvert, les liens mènent au profil TikTok.
+ */
+export const DEFI_VOTE: { round: number; url: string | null; platform: string; closes: string | null } = {
+  round: 1,
+  url: null,
+  platform: "TikTok",
+  closes: null,
+};

@@ -2,6 +2,9 @@
 // Veridia 2140, le jeu des viaducs : partagé par /jouer/ et la version embarquée (itch.io).
 import { GAME_VERSION, TUNING } from "../viaducs/content";
 import { STUDIO } from "../data/site";
+import { DEFI_VOTE } from "../data/defi";
+
+const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
 ---
 
 <section class="game-block" aria-label="Veridia 2140, jeu jouable">
@@ -54,7 +57,10 @@ import { STUDIO } from "../data/site";
             <ul class="report" data-report-list></ul>
             <h3>Améliorations <span class="purse"><span data-shop-credits>0</span> crédits</span></h3>
             <div class="shop" data-shop></div>
-            <button type="button" class="btn btn-sun" data-next>Jour suivant</button>
+            <div class="actions">
+              <button type="button" class="btn btn-sun" data-next>Jour suivant</button>
+              <a class="idea" href={ideaUrl} target="_blank" rel="noopener noreferrer">Une idée pour le jeu ? Proposez-la</a>
+            </div>
           </div>
         </div>
 
@@ -65,7 +71,7 @@ import { STUDIO } from "../data/site";
             <p>Une idée pour le jeu ? Dites-la en commentaire sur nos réseaux : la plus aimée entre dans Veridia.</p>
             <div class="actions">
               <button type="button" class="btn btn-sun" data-restart>Nouvelle partie</button>
-              <a class="btn btn-ghost" href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
+              <a class="btn btn-ghost" href={ideaUrl} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
             </div>
           </div>
         </div>
@@ -390,7 +396,14 @@ import { STUDIO } from "../data/site";
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.6rem 1.2rem;
+  }
+
+  .idea {
+    color: var(--water-deep);
+    font-size: 0.92rem;
+    font-weight: 600;
   }
 
   .hint {

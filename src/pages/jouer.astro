@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import FaqSection from "../components/FaqSection.astro";
 import ViaducsApp from "../components/ViaducsApp.astro";
 import { GAME_VERSION, TUNING } from "../viaducs/content";
-import { DEFI_ENTRIES } from "../data/defi";
+import { DEFI_ENTRIES, DEFI_VOTE } from "../data/defi";
 import { STUDIO } from "../data/site";
 
 const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
@@ -83,6 +83,22 @@ const faqs = [
         <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">Instagram</a> entre dans le
         jeu : un bâtiment, un événement, une règle. Veridia se construit avec vous.
       </p>
+      <div class="vote-box">
+        {
+          DEFI_VOTE.url ? (
+            <>
+              <p><strong>Vote n°{DEFI_VOTE.round} ouvert</strong>{DEFI_VOTE.closes && <> jusqu'au {new Date(DEFI_VOTE.closes).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}</>}.</p>
+              <a class="btn btn-sun" href={DEFI_VOTE.url} target="_blank" rel="noopener noreferrer">Proposer mon idée sur {DEFI_VOTE.platform}</a>
+            </>
+          ) : (
+            <>
+              <p><strong>Le prochain vote arrive bientôt.</strong> Abonnez-vous pour ne pas le manquer.</p>
+              <a class="btn btn-sun" href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">Suivre Flexarion sur TikTok</a>
+            </>
+          )
+        }
+        <p class="note">Idées faciles à faire entrer : une nouvelle urgence, un quartier, une source, une amélioration, un obstacle, une règle.</p>
+      </div>
       <ul class="plain-list">
         <li><strong>Comment participer :</strong> commentez sous la vidéo du vote. Le commentaire avec le plus de « j'aime » à la clôture l'emporte.</li>
         <li><strong>Ce qui compte :</strong> l'idée doit rester dans l'univers de Veridia 2140. Nous gardons un droit de veto sur ce qui est offensant ou hors sujet, et prenons alors l'idée suivante.</li>
@@ -140,3 +156,21 @@ const faqs = [
 
   <FaqSection title="Questions sur le jeu" items={faqs} />
 </BaseLayout>
+
+<style>
+  .vote-box {
+    margin: 1.5rem 0;
+    padding: 1.2rem 1.3rem;
+    border-radius: var(--radius-m);
+    background: var(--chalk);
+    border-left: 4px solid var(--sun);
+  }
+
+  .vote-box p {
+    margin: 0 0 0.8rem;
+  }
+
+  .vote-box .note {
+    margin: 0.9rem 0 0;
+  }
+</style>
