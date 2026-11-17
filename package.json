@@ -14,7 +14,8 @@
     "audit:seo": "node scripts/audit-seo.mjs",
     "video:build": "node scripts/build-video.mjs",
     "game:check": "esbuild scripts/game-check.ts --bundle --platform=node --format=esm --log-level=warning --outfile=node_modules/.cache/game-check.mjs && node node_modules/.cache/game-check.mjs",
-    "itch:build": "node scripts/build-itch.mjs"
+    "itch:build": "node scripts/build-itch.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
