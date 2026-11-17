@@ -1,4 +1,4 @@
-// Contenu du jeu : bâtiments et réglages. C'est ici qu'entrent les ajouts du défi
+// Contenu du jeu : bâtiments et réglages. C'est ici qu'entrent les ajouts du défi
 // « La ville des joueurs » (un nouveau bâtiment = une entrée dans BUILDINGS).
 
 /** Version du prototype : +0.1 à chaque ajout du défi « La ville des joueurs ». */
@@ -20,7 +20,7 @@ export const BUILDINGS: Record<BuildingId, BuildingDef> = {
     name: "Aqueduc",
     cost: 2,
     key: "1",
-    help: "Transporte l'eau. Elle ne passe que vers une case plus basse : suivez la pente.",
+    help: "Transporte l'eau. Elle ne passe que vers une case plus basse : suivez la pente.",
   },
   basin: {
     id: "basin",
@@ -34,7 +34,7 @@ export const BUILDINGS: Record<BuildingId, BuildingDef> = {
     name: "Mycélium",
     cost: 5,
     key: "3",
-    help: "Réseau vivant : s'il touche de l'eau, il rafraîchit tout autour (−4 °C). Sinon, il s'endort.",
+    help: "Réseau vivant : s'il touche de l'eau, il rafraîchit tout autour (−4 °C). Sinon, il s'endort.",
   },
   dome: {
     id: "dome",

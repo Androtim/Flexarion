@@ -1,5 +1,5 @@
-// Simulation de Veridia 2140 : eau par gravité, chaleur, mycélium, quartiers.
-// Code pur (sans DOM) : testable avec `node scripts/game-check.ts`.
+// Simulation de Veridia 2140 : eau par gravité, chaleur, mycélium, quartiers.
+// Code pur (sans DOM) : testable avec `node scripts/game-check.ts`.
 import { BUILDINGS, RULES, type BuildingId } from "./content.ts";
 import { COLS, ROWS, generateMap, type MapTile } from "./map.ts";
 
@@ -74,7 +74,7 @@ export function newGame(): GameState {
     ambient: 29,
     tiles,
     status: "playing",
-    log: ["Jour 0 : l'été commence. Reliez le réservoir aux cinq quartiers avant les grandes chaleurs."],
+    log: ["Jour 0 : l'été commence. Reliez le réservoir aux cinq quartiers avant les grandes chaleurs."],
   };
   computeWater(s);
   computeHeat(s);
@@ -127,12 +127,12 @@ export function computeWater(s: GameState, consume = false) {
   const res = s.tiles.find((t) => t.ground === "reservoir")!;
   const evap = (temp: number) => 0.01 + Math.max(0, temp - 30) * 0.0015;
 
-  // Traitement du plus haut au plus bas : l'eau ne remonte jamais, le graphe est acyclique.
+  // Traitement du plus haut au plus bas : l'eau ne remonte jamais, le graphe est acyclique.
   const order = s.tiles.filter((t) => carriesWater(t) || t === res).sort((a, b) => b.elev - a.elev);
   const incoming = new Map<Tile, number>();
   const outs = (t: Tile) => neighbors4(s, t).filter((n) => carriesWater(n) && n.elev < t.elev);
   // Besoin en aval de chaque case (quartiers assoiffés + bassins à remplir), calculé du bas vers le haut.
-  // À chaque bifurcation, l'eau se répartit selon ces besoins : elle va là où on l'attend.
+  // À chaque bifurcation, l'eau se répartit selon ces besoins : elle va là où on l'attend.
   const demand = new Map<Tile, number>();
   for (let i = order.length - 1; i >= 0; i--) {
     const t = order[i];
@@ -164,7 +164,7 @@ export function computeWater(s: GameState, consume = false) {
       w *= 1 - evap(t.temp);
       t.flow = w;
     } else {
-      // Bassin : l'eau entrante s'ajoute à la réserve ; seul le surplus continue.
+      // Bassin : l'eau entrante s'ajoute à la réserve ; seul le surplus continue.
       stock = t.store + w;
       w = 0;
     }
@@ -185,7 +185,7 @@ export function computeWater(s: GameState, consume = false) {
     if (share(t, w) === 0 && w > 0.01) t.stagnant = true;
   }
 
-  // Mycélium : un réseau connexe s'éveille s'il touche une case en eau.
+  // Mycélium : un réseau connexe s'éveille s'il touche une case en eau.
   const seen = new Set<Tile>();
   for (const t of s.tiles) {
     if (t.build !== "mycelium" || seen.has(t)) continue;
@@ -223,7 +223,7 @@ export function step(s: GameState) {
   if (s.status !== "playing") return;
   s.day += 1;
   s.ambient = ambientFor(s.day);
-  if (s.day === RULES.heatwave.from) s.log.unshift(`Jour ${s.day} : canicule ! +${RULES.heatwave.extra} °C pendant une semaine.`);
+  if (s.day === RULES.heatwave.from) s.log.unshift(`Jour ${s.day} : canicule ! +${RULES.heatwave.extra} °C pendant une semaine.`);
 
   const p = s.day / RULES.days;
   const inflow = RULES.reservoir.inflowStart + (RULES.reservoir.inflowEnd - RULES.reservoir.inflowStart) * p;
@@ -242,7 +242,7 @@ export function step(s: GameState) {
     q.health = Math.max(0, Math.min(100, q.health - damage + heal));
     if (q.health <= 0) {
       q.lost = true;
-      s.log.unshift(`Jour ${s.day} : le quartier ${q.quarterName} est évacué.`);
+      s.log.unshift(`Jour ${s.day} : le quartier ${q.quarterName} est évacué.`);
     }
   }
 
@@ -252,12 +252,12 @@ export function step(s: GameState) {
   const alive = s.tiles.filter((t) => t.ground === "quarter" && !t.lost).length;
   if (alive === 0) {
     s.status = "lost";
-    s.log.unshift(`Jour ${s.day} : tous les quartiers sont évacués.`);
+    s.log.unshift(`Jour ${s.day} : tous les quartiers sont évacués.`);
   } else if (s.day >= RULES.days) {
     s.status = alive === 5 ? "won" : "lost";
     s.log.unshift(
       alive === 5
-        ? "Fin de l'été : Veridia a tenu, aucun quartier perdu !"
+        ? "Fin de l'été : Veridia a tenu, aucun quartier perdu !"
         : `Fin de l'été : ${alive} quartier${alive > 1 ? "s" : ""} sur 5 ont tenu.`,
     );
   }
