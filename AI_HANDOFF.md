@@ -50,6 +50,19 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-17 16:10] · Claude Opus 5.5 via Claude Code
+- **Branche / Issue / PR :** `feat/viaducs-game`
+- **Objectif de la session :** remplacer le jeu de `/jouer/` par le concept proposé par un ami du groupe (puzzle de viaducs en temps réel), en gardant l'ancien prototype comme « projet abandonné ».
+- **Ce qui a été fait (fichiers modifiés/créés) :**
+  - `src/viaducs/` (nouveau) : `content.ts` (réglages, améliorations, noms d'Aix, `GAME_VERSION = "0.2"` : c'est ici qu'entrent désormais les ajouts du défi), `level.ts` (génération procédurale + vérification par réseau glouton/Dijkstra), `sim.ts` (front d'eau, arbre d'écoulement, partage à parts égales plafonné à 7 m³/s par tuyau, urgences, bilan, boutique), `render.ts` (Canvas 2D), `main.ts` (saisie glisser/retirer, boucle temps réel, sauvegarde `veridia-2140-viaducs`), `demo.ts` (joueur automatique, mode `?demo=N`).
+  - `src/components/ViaducsApp.astro` : HUD, carte, panneaux intro/bilan+boutique/fin, légende, journal.
+  - `src/pages/jouer.astro` et `src/pages/jouer/embed.astro` : nouveau jeu, textes, schéma `VideoGame`, FAQ.
+  - `src/pages/jouer/ete-2140.astro` (nouveau) : archive jouable de l'Été 1, bandeau « Projet abandonné » et raisons.
+  - `src/content/devlogs/pivot-viaducs-generation-procedurale.md` + `public/images/devlog-viaducs*` : devlog #3.
+  - `scripts/viaducs-check.ts` + `npm run game:check` qui lance les deux contrôles.
+- **Pourquoi ces choix :** garder le titre Veridia 2140 et l'URL `/jouer/` (déjà indexée, vidéos et itch pointent dessus) ; l'Été 1 reste en ligne pour l'histoire du projet. Partage de l'eau par remplissage par niveaux + capacité des tuyaux : la distribution se complique toute seule quand les quartiers se multiplient.
+- **À faire ensuite :** `npm run itch:build` puis remplacer le zip sur itch.io ; tester sur téléphone ; ajuster `TUNING`/`UPGRADES` selon les retours ; le défi « La ville des joueurs » s'applique au nouveau jeu (`src/viaducs/content.ts`).
+
 ### [2026-11-17 13:15] · Claude Opus 5.5 via Claude Code (refonte visuelle du jeu)
 - **Branche :** `feat/game-visual-overhaul`
 - **Objectif :** le prototype était jugé « AI slop » par l'équipe. Refonte guidée par le skill `frontend-design` (et la lecture des règles du skill tiers « taste », **non installé** car il ajoute des hooks qui exécutent du code).

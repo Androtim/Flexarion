@@ -5,7 +5,7 @@
 > **Studio de développement de jeux vidéo indépendant · Science-Fiction Solarpunk · Aix-en-Provence**  
 > Projet réalisé dans le cadre du module *Plan de communication & webmarketing à l'ère de l'IA* (BUT Informatique 2e année — IUT d'Aix-Marseille).
 
-**Site officiel : [flexarion.alwaysdata.net](https://flexarion.alwaysdata.net)** · [Jouer au prototype](https://flexarion.alwaysdata.net/jouer/) · [Instagram](https://www.instagram.com/flexarion/) · [TikTok](https://www.tiktok.com/@flexarion_studio) · [YouTube](https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q) · [X](https://x.com/FlexarionStudio) · [itch.io](https://flexarion-studio.itch.io/)
+**Site officiel : [flexarion.alwaysdata.net](https://flexarion.alwaysdata.net)** · [Jouer à Veridia 2140](https://flexarion.alwaysdata.net/jouer/) · [Instagram](https://www.instagram.com/flexarion/) · [TikTok](https://www.tiktok.com/@flexarion_studio) · [YouTube](https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q) · [X](https://x.com/FlexarionStudio) · [itch.io](https://flexarion-studio.itch.io/)
 
 ---
 

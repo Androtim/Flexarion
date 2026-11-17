@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FaqSection from "../components/FaqSection.astro";
-import GameApp from "../components/GameApp.astro";
-import { RULES, GAME_VERSION } from "../game/content";
+import ViaducsApp from "../components/ViaducsApp.astro";
+import { GAME_VERSION, TUNING } from "../viaducs/content";
 import { DEFI_ENTRIES } from "../data/defi";
 import { STUDIO } from "../data/site";
 
@@ -11,11 +11,11 @@ const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdat
 const gameSchema = {
   "@context": "https://schema.org",
   "@type": "VideoGame",
-  name: "Veridia 2140 : Été 1 (prototype)",
+  name: "Veridia 2140 : les viaducs",
   url: `${siteOrigin}/jouer/`,
   description:
-    "Prototype jouable dans le navigateur de Veridia 2140, le city-builder Solarpunk de Flexarion : faites traverser l'été au Pays d'Aix en guidant l'eau par gravité.",
-  genre: ["Strategy", "City-Builder", "Simulation"],
+    "Jeu de puzzle et de stratégie gratuit dans le navigateur : à Aix-en-Provence en 2140, tracez des tuyaux et des viaducs pour amener l'eau aux quartiers, jour après jour, sur des cartes générées de plus en plus difficiles.",
+  genre: ["Puzzle", "Strategy"],
   gamePlatform: ["Web browser"],
   playMode: "SinglePlayer",
   inLanguage: "fr",
@@ -26,14 +26,24 @@ const gameSchema = {
 
 const faqs = [
   {
-    question: "Le prototype de Veridia 2140 est-il gratuit ?",
+    question: "Le jeu Veridia 2140 est-il gratuit ?",
     answer:
-      "Oui. Ce prototype se joue gratuitement dans le navigateur, sans inscription ni téléchargement. Flexarion est un studio fictif créé dans un projet étudiant : rien n'est vendu.",
+      "Oui. Il se joue gratuitement dans le navigateur, sans inscription ni téléchargement. Flexarion est un studio fictif créé dans un projet étudiant : rien n'est vendu.",
   },
   {
     question: "Ma partie est-elle sauvegardée ?",
     answer:
       "Oui, automatiquement, dans votre navigateur. Rien n'est envoyé à un serveur. En navigation privée, la sauvegarde disparaît à la fermeture.",
+  },
+  {
+    question: "Comment l'eau se répartit-elle ?",
+    answer:
+      "Elle avance dans les tuyaux à la vitesse d'acheminement, puis se partage à parts égales à chaque embranchement entre les quartiers qui ont encore soif. Un tuyau ne porte pas plus de 7 m³/s : pour beaucoup de quartiers, il faut plusieurs branches.",
+  },
+  {
+    question: "Qu'était l'Été 1 ?",
+    answer:
+      "Notre premier prototype, un city-builder lent sur un été de 90 jours. Nous l'avons abandonné au profit de ce jeu plus court et plus nerveux, mais il reste jouable dans nos archives.",
   },
   {
     question: "Le jeu va-t-il évoluer ?",
@@ -44,8 +54,8 @@ const faqs = [
 ---
 
 <BaseLayout
-  title="Jouer à Veridia 2140 : prototype gratuit en ligne | Flexarion"
-  description="Jouez gratuitement au prototype de Veridia 2140 par Flexarion : guidez l'eau par gravité, rafraîchissez la ville et faites traverser l'été au Pays d'Aix."
+  title="Jouer à Veridia 2140 : jeu de viaducs gratuit en ligne | Flexarion"
+  description="Jouez gratuitement à Veridia 2140 par Flexarion : tracez tuyaux et viaducs dans Aix-en-Provence en 2140, livrez l'eau aux quartiers et tenez face aux urgences."
   ogImage="/images/veridia-hero.jpg"
   breadcrumbs={[
     { name: "Accueil", href: "/" },
@@ -54,14 +64,15 @@ const faqs = [
   schemas={[gameSchema]}
 >
   <header class="wrap page-head" style="padding-bottom: 1.5rem;">
-    <h1>Jouer à Veridia 2140 : l'Été 1.</h1>
+    <h1>Jouer à Veridia 2140 : les viaducs.</h1>
     <p class="lead narrow">
-      Le premier prototype jouable de Flexarion. Reliez le réservoir aux cinq quartiers d'Aix, gardez-les
-      au frais, et tenez {RULES.days} jours d'été. L'eau ne remonte jamais.
+      Aix-en-Provence, 2140. Chaque jour, une nouvelle carte : tracez tuyaux et viaducs jusqu'aux quartiers,
+      ouvrez les vannes, et livrez l'eau en {TUNING.dayLength} secondes. Puis améliorez votre réseau, car
+      demain sera plus dur.
     </p>
   </header>
 
-  <GameApp />
+  <ViaducsApp />
 
   <section class="block" aria-labelledby="defi-heading">
     <div class="wrap narrow">
@@ -101,20 +112,31 @@ const faqs = [
 
   <section class="block block-chalk" aria-labelledby="how-heading">
     <div class="wrap narrow">
-      <h2 id="how-heading">Ce que ce prototype teste</h2>
+      <h2 id="how-heading">Comment on joue</h2>
+      <ol class="plain-list">
+        <li><strong>Préparer :</strong> glissez depuis la source pour poser des tuyaux jusqu'à une case voisine de chaque quartier. Les vallons et la rivière de l'Arc se franchissent en viaduc (2 tuyaux).</li>
+        <li><strong>Ouvrir les vannes :</strong> l'eau avance dans le réseau à votre vitesse d'acheminement. Chaque quartier doit recevoir son quota avant la fin de la journée.</li>
+        <li><strong>Répondre aux urgences :</strong> dès le jour 2, un feu de garrigue ou un hôpital à sec surgit. Quelques secondes pour y amener l'eau, quitte à reprendre les tuyaux d'un quartier déjà servi.</li>
+        <li><strong>Améliorer :</strong> entre deux jours, dépensez vos crédits en vitesse, en eau disponible ou en tuyaux. Les tuyaux non utilisés rapportent un bonus de sobriété.</li>
+      </ol>
       <p>
-        L'Été 1 met en place le cœur de <a href="/jeux/veridia-2140/">Veridia 2140</a> : un réseau d'eau
-        entièrement gravitaire, une chaleur qui monte jusqu'à la canicule, et un mycélium qui ne rafraîchit
-        la ville que s'il est relié à l'eau. Les détails de la simulation sont expliqués dans nos
+        Chaque carte est générée au hasard, puis vérifiée par le jeu : il existe toujours un réseau qui tient
+        dans vos tuyaux. Le jeu se déroule dans l'univers de <a href="/jeux/veridia-2140/">Veridia 2140</a>.
+      </p>
+      <h3 style="margin-top: 1.5rem;">Archives : l'Été 1</h3>
+      <p>
+        Notre premier prototype, un city-builder sur un été de 90 jours, a été abandonné : trop lent pour
+        une partie sur téléphone, et la chaleur restait difficile à lire. Il reste
+        <a href="/jouer/ete-2140/">jouable dans nos archives</a>. Le pourquoi du changement est raconté dans les
         <a href="/devlogs/">devlogs</a>.
       </p>
       <p class="note">
-        Prototype réalisé par Flexarion, studio fictif créé dans le cadre du BUT Informatique à l'IUT
+        Jeu réalisé par Flexarion, studio fictif créé dans le cadre du BUT Informatique à l'IUT
         d'Aix-Marseille. Gratuit, sans publicité, sans collecte de données : la sauvegarde reste dans votre
         navigateur.
       </p>
     </div>
   </section>
 
-  <FaqSection title="Questions sur le prototype" items={faqs} />
+  <FaqSection title="Questions sur le jeu" items={faqs} />
 </BaseLayout>
