@@ -50,6 +50,16 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-17 13:15] · Claude Opus 5.5 via Claude Code (refonte visuelle du jeu)
+- **Branche :** `feat/game-visual-overhaul`
+- **Objectif :** le prototype était jugé « AI slop » par l'équipe. Refonte guidée par le skill `frontend-design` (et la lecture des règles du skill tiers « taste », **non installé** car il ajoute des hooks qui exécutent du code).
+- **Direction :** la carte devient un **relevé topographique** du Pays d'Aix (relief ombré calculé, courbes de niveau tous les 20 m, cotes tous les 100 m, affleurements calcaires, garrigue et cyprès). L'eau ne s'allume que dans les tronçons qui descendent : la règle du jeu se lit sur la carte.
+- **Fichiers :** `src/game/render.ts` (réécrit, terrain mis en cache par taille de case), `src/game/main.ts` (dates réelles du 21 juin au 19 septembre, consigne en contexte avec repère pulsant sur le réservoir, animation de pose), `src/components/GameApp.astro` (panneau = légende de la carte avec symboles identiques à la carte, bandeau date/air/réservoir/vanne/crédits).
+- **Vérifications :** build, audit SEO, `game:check` (5/5), captures desktop/mobile/vue chaleur.
+- **Attention :** ne pas remplacer en masse « espace + : » dans le code TypeScript (ça touche les ternaires) ; les espaces insécables françaises vont uniquement dans les chaînes affichées.
+
+---
+
 ### [2026-11-16 18:10] · Claude Opus 5.5 via Claude Code (prototype jouable)
 - **Branche / Issue / PR :** `feat/game-prototype`
 - **Objectif :** Créer un premier prototype jouable de *Veridia 2140* (prérequis du défi « La ville des joueurs » : tous les 2 jours, le commentaire le plus aimé entre dans le jeu).
