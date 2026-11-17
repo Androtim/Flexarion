@@ -7,6 +7,10 @@ ErrorDocument 404 /404.html
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Une seule adresse par page : /page/index.html → /page/ (redirection 301)
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?] [NC]
+  RewriteRule ^(.*/)?index\.html$ https://%{HTTP_HOST}/$1 [L,R=301]
 </IfModule>
 
 <IfModule mod_expires.c>
