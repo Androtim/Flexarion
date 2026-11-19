@@ -50,6 +50,14 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-17 16:40] · Claude Opus 5.5 via Claude Code
+- **Branche / PR :** `feat/defi-vote` (#38), `content/game-page-viaducs` (#40), `feat/mentions-legales` (#42), releases #39, #41, #43.
+- **Fait :**
+  - `DEFI_VOTE` dans `src/data/defi.ts` : lien de la vidéo de vote en cours, utilisé par l'encart de `/jouer/` et les liens « Proposer une idée » du jeu.
+  - La fiche `/jeux/veridia-2140/` et la section « Comment on joue » de l'accueil décrivent le vrai jeu (captures `public/images/jeu-*`) ; H1 de l'accueil : « Flexarion fait des jeux où chaque goutte d'eau compte. »
+  - Page `/mentions-legales/` (LCEN + RGPD), liens dans le pied de page, note sous les vidéos YouTube.
+- **À faire ensuite :** publier la première vidéo de vote puis renseigner `DEFI_VOTE` ; mode « saison » (réseau du joueur conservé d'un jour à l'autre, nouvelle carte qui grandit) prévu pour le 18-19/11, à valider : un second mode sur `/jouer/` ou une page à part.
+
 ### [2026-11-17 16:10] · Claude Opus 5.5 via Claude Code
 - **Branche / Issue / PR :** `feat/viaducs-game`
 - **Objectif de la session :** remplacer le jeu de `/jouer/` par le concept proposé par un ami du groupe (puzzle de viaducs en temps réel), en gardant l'ancien prototype comme « projet abandonné ».
