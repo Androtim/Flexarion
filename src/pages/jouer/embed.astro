@@ -5,6 +5,7 @@ import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/dm-sans";
 import "../../styles/global.css";
 import ViaducsApp from "../../components/ViaducsApp.astro";
+import { GAME_VERSION } from "../../viaducs/content";
 
 const schema = {
   "@context": "https://schema.org",
@@ -50,7 +51,7 @@ const schema = {
     <h1 class="sr-only">Veridia 2140 : les viaducs, un jeu de Flexarion</h1>
     <ViaducsApp />
     <p class="credit">
-      Un jeu de <a href="https://flexarion.alwaysdata.net/" target="_blank" rel="noopener">Flexarion</a>,
+      Veridia 2140 version {GAME_VERSION}. Un jeu de <a href="https://flexarion.alwaysdata.net/" target="_blank" rel="noopener">Flexarion</a>,
       studio de jeux vidéo de science-fiction à Aix-en-Provence (projet étudiant, gratuit).
     </p>
   </body>
