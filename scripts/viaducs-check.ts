@@ -3,7 +3,7 @@
 // 2. sans réseau, la partie est perdue ;
 // 3. un joueur automatique simple tient plusieurs jours, et la difficulté monte.
 import { greedyNetwork, dayShape } from "../src/viaducs/level.ts";
-import { newGame, nextDay, openValves, pipesUsed, stat, tick, type GameState } from "../src/viaducs/sim.ts";
+import { dailySeed, newGame, nextDay, openValves, pipesUsed, stat, tick, type GameState } from "../src/viaducs/sim.ts";
 import { autoDay, autoShop } from "../src/viaducs/demo.ts";
 
 let failures = 0;
@@ -33,6 +33,16 @@ function nextDayAt(s: GameState, d: number) {
   s.phase = "report";
   s.day = d - 1;
   nextDay(s);
+}
+
+// 1 bis. Carte du jour : la même date donne exactement les mêmes cartes, deux dates différentes non.
+{
+  const a = newGame(dailySeed("2026-11-20"), "2026-11-20");
+  const b = newGame(dailySeed("2026-11-20"), "2026-11-20");
+  const c = newGame(dailySeed("2026-11-21"), "2026-11-21");
+  const same = JSON.stringify(a.level) === JSON.stringify(b.level);
+  const differs = JSON.stringify(a.level) !== JSON.stringify(c.level);
+  check(same && differs, `carte du jour : identique pour une même date (${same}), différente le lendemain (${differs})`);
 }
 
 // 2. Sans réseau.

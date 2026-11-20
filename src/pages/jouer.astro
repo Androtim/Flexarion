@@ -16,6 +16,8 @@ const gameSchema = {
   description:
     "Jeu de puzzle et de stratégie gratuit dans le navigateur : à Aix-en-Provence en 2140, tracez des tuyaux et des viaducs pour amener l'eau aux quartiers, jour après jour, sur des cartes générées de plus en plus difficiles.",
   genre: ["Puzzle", "Strategy"],
+  softwareVersion: GAME_VERSION,
+  dateModified: "2026-11-20",
   gamePlatform: ["Web browser"],
   playMode: "SinglePlayer",
   inLanguage: "fr",
@@ -34,6 +36,11 @@ const faqs = [
     question: "Ma partie est-elle sauvegardée ?",
     answer:
       "Oui, automatiquement, dans votre navigateur. Rien n'est envoyé à un serveur. En navigation privée, la sauvegarde disparaît à la fermeture.",
+  },
+  {
+    question: "Qu'est-ce que la carte du jour ?",
+    answer:
+      "Chaque jour, tous les joueurs reçoivent exactement la même suite de cartes, tirée de la date. Vous pouvez donc comparer vos scores : à la fin de la partie, le bouton « Partager mon score » prépare un message avec votre résultat. La carte change à minuit. La partie libre, elle, tire des cartes au hasard.",
   },
   {
     question: "Comment l'eau se répartit-elle ?",
@@ -68,7 +75,7 @@ const faqs = [
     <p class="lead narrow">
       Aix-en-Provence, 2140. Chaque jour, une nouvelle carte : tracez tuyaux et viaducs jusqu'aux quartiers,
       ouvrez les vannes, et livrez l'eau en {TUNING.dayLength} secondes. Puis améliorez votre réseau, car
-      demain sera plus dur.
+      demain sera plus dur. Nouveau : la <strong>carte du jour</strong>, la même pour tout le monde.
     </p>
   </header>
 
@@ -139,6 +146,11 @@ const faqs = [
         Chaque carte est générée au hasard, puis vérifiée par le jeu : il existe toujours un réseau qui tient
         dans vos tuyaux. Le jeu se déroule dans l'univers de <a href="/jeux/veridia-2140/">Veridia 2140</a>.
       </p>
+      <h3 style="margin-top: 1.5rem;">Nouveautés</h3>
+      <ul class="plain-list">
+        <li><strong>Version 0.3 (20 novembre) :</strong> la carte du jour, identique pour tous les joueurs, et le partage du score. <a href="/devlogs/carte-du-jour-generation-deterministe/">Comment ça marche</a>.</li>
+        <li><strong>Version 0.2 (17 novembre) :</strong> le jeu des viaducs remplace notre premier prototype. <a href="/devlogs/pivot-viaducs-generation-procedurale/">Pourquoi ce changement</a>.</li>
+      </ul>
       <h3 style="margin-top: 1.5rem;">Archives : l'Été 1</h3>
       <p>
         Notre premier prototype, un city-builder sur un été de 90 jours, a été abandonné : trop lent pour
