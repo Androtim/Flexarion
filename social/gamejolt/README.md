@@ -17,7 +17,7 @@ Pourquoi : une page de plus, sur un site fort, qui porte le nom « Flexarion » 
 4. **Engine / creation tool :** « Other » (HTML5). **Type :** « Game ». **Maturity :** « All ages ».
 5. **Tags :** `puzzle`, `strategy`, `html5`, `scifi`, `solarpunk`, `water`, `french`.
 6. **Thumbnail / header :** `social/itch/couverture-itch.png`.
-7. **Packages → New package → Upload build :** `social/itch/veridia-2140-web.zip`, cocher « Browser build » (HTML), taille 960 × 760.
+7. **Packages → New package → Upload build :** `social/itch/veridia-2140-web-vX.Y.zip` (le numéro = version du jeu), cocher « Browser build » (HTML), taille 960 × 760.
 8. Publier (« Publish »).
 
 ## Description à coller

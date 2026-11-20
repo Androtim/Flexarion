@@ -96,7 +96,7 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
   - `src/components/GameApp.astro` (UI partagée), `src/pages/jouer.astro` (page indexée + règles du défi), `src/pages/jouer/embed.astro` (version itch.io, `noindex`, hors sitemap).
   - `src/data/defi.ts` : liste des ajouts du défi (vide pour l'instant).
   - `scripts/game-check.ts` (`npm run game:check`, ajouté à la CI) : atteignabilité des 5 quartiers, défaite sans construction, victoire d'une stratégie raisonnable.
-  - `scripts/build-itch.mjs` (`npm run itch:build`) : archive `social/itch/veridia-2140-web.zip` avec chemins relatifs.
+  - `scripts/build-itch.mjs` (`npm run itch:build`) : archive `social/itch/veridia-2140-web-v<version>.zip` (version lue dans `src/viaducs/content.ts`, aussi dans `VERSION.txt` et le titre), script du jeu intégré à la page pour fonctionner aussi en local (file://).
   - Mode démo pour captures/vidéos : `/jouer/?demo=45` (et `&vue=heat` ou `&vue=relief`).
 - **Équilibrage vérifié :** sans rien faire, partie perdue au jour 49 ; stratégie simple : 5/5 quartiers, avec des quartiers à ~50 % pendant la canicule.
 - **Vérifications :** build (11 pages), audit SEO 0 erreur, `game:check` OK, test d'interaction réel via Chrome DevTools (clics, eau, sauvegarde, vitesse) sur le site et sur l'archive itch.io servie en sous-dossier.

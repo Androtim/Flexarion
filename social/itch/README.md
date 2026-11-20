@@ -21,7 +21,7 @@ Site officiel : https://flexarion.alwaysdata.net
 - **Project URL :** `veridia-2140` (→ `flexarion-studio.itch.io/veridia-2140`)
 - **Short description :** `Un city-builder Solarpunk dans le Pays d'Aix en 2140, par Flexarion.`
 - **Classification :** Games · **Kind of project :** **HTML** (jeu jouable dans le navigateur)
-- **Uploads :** `social/itch/veridia-2140-web.zip` (généré par `npm run build && npm run itch:build`), cocher **« This file will be played in the browser »**
+- **Uploads :** `social/itch/veridia-2140-web-vX.Y.zip` (généré par `npm run build && npm run itch:build` ; X.Y = version du jeu, aussi écrite dans `VERSION.txt` et le titre de la page), cocher **« This file will be played in the browser »**
 - **Embed options :** taille de la fenêtre `1280 × 900`, cocher **Mobile friendly** et **Fullscreen button**
 - **Release status :** `Prototype`
 - **Pricing :** `No payments` (aucune vente : projet étudiant)
