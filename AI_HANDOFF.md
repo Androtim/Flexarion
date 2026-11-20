@@ -50,6 +50,12 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-20 11:00] · Claude Opus 5.5 via Claude Code
+- **Branche :** `feat/carte-du-jour` (+ `content/referencement-kit` le 19/11).
+- **Fait :** jeu v0.3 : « carte du jour » (graine = hachage FNV-1a de la date, `dailySeed` dans `src/viaducs/sim.ts`, record du jour en `localStorage` `veridia-2140-carte-du-jour`), bouton « Partager mon score » (Web Share API, sinon presse-papiers), test de déterminisme dans `scripts/viaducs-check.ts`. Devlog #5, encart « Nouveautés » et FAQ sur `/jouer/`, `softwareVersion`/`dateModified` dans le schéma. Le 19/11 : devlog #4 et kit de référencement (`social/itch/devlogs/`, `social/gamejolt/`, `social/liens-et-descriptions.md`).
+- **Pourquoi :** montrer à Google un site actif avec du contenu réel, et donner aux joueurs une raison de revenir et de partager le lien.
+- **À faire ensuite :** remplacer le zip itch.io, publier `social/itch/devlogs/04-carte-du-jour-v0-3.md` ; vidéo de vote (audio de l'utilisateur) ; mode saison.
+
 ### [2026-11-17 16:40] · Claude Opus 5.5 via Claude Code
 - **Branche / PR :** `feat/defi-vote` (#38), `content/game-page-viaducs` (#40), `feat/mentions-legales` (#42), releases #39, #41, #43.
 - **Fait :**
