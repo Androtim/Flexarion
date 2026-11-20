@@ -5,10 +5,16 @@ import { STUDIO } from "../data/site";
 import { DEFI_VOTE } from "../data/defi";
 
 const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
+
+interface Props {
+  /** Version compacte pour les cadres de petite taille (itch.io) : la carte s'ajuste aussi à la hauteur. */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
 ---
 
 <section class="game-block" aria-label="Veridia 2140, jeu jouable">
-  <div class="wrap game" data-game>
+  <div class:list={["wrap game", { compact }]} data-game data-compact={compact ? "1" : undefined}>
     <div class="hud">
       <div class="hud-day">
         <strong data-day>Jour 1</strong>
@@ -17,7 +23,7 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
       </div>
       <div class="hud-stat"><span>Tuyaux libres</span><strong data-pipes>12 / 12</strong></div>
       <div class="hud-stat"><span>Eau</span><strong data-water>8 m³/s</strong></div>
-      <div class="hud-stat"><span>Vitesse</span><strong data-speed>1,5 cases/s</strong></div>
+      <div class="hud-stat hud-speed"><span>Vitesse</span><strong data-speed>1,5 cases/s</strong></div>
       <div class="hud-stat"><span>Confiance</span><strong class="trust" data-trust role="img" aria-label="Confiance"></strong></div>
       <div class="hud-stat"><span>Crédits</span><strong data-credits>0</strong></div>
       <div class="hud-actions">
@@ -207,6 +213,12 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
 
   .go {
     min-width: 11.5rem;
+  }
+
+  .go:disabled {
+    opacity: 0.45;
+    cursor: default;
+    transform: none;
   }
 
   .go:not(.btn-sun) {
@@ -604,6 +616,113 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
 
     .overlay-card {
       padding: 1.2rem 1.1rem 1.3rem;
+    }
+  }
+
+  /* ---------- Version compacte (itch.io, petits cadres) ---------- */
+
+  .game.compact {
+    grid-template-columns: 1fr;
+    grid-template-areas: "hud" "board" "side";
+    gap: 0.5rem;
+    padding-inline: 0.5rem;
+  }
+
+  .compact .hud {
+    gap: 0.25rem 1rem;
+    padding-bottom: 0.4rem;
+    align-items: center;
+  }
+
+  .compact .hud span {
+    font-size: 0.72rem;
+  }
+
+  .compact .hud strong {
+    font-size: 1rem;
+  }
+
+  .compact .hud-day {
+    min-width: 0;
+  }
+
+  .compact .hud-day strong {
+    font-size: 1.15rem;
+  }
+
+  .compact .timer {
+    margin-top: 0.2rem;
+  }
+
+  .compact .hud-speed {
+    display: none;
+  }
+
+  .compact .hud-actions {
+    margin-left: auto;
+    width: auto;
+  }
+
+  .compact .go {
+    min-width: 0;
+    padding: 0.45rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .compact .chip {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .compact .hint {
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  /* Dans un cadre, accueil, bilan et fin couvrent tout le cadre et défilent si besoin. */
+  .compact .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    overflow-y: auto;
+    padding: 0.6rem;
+    border-radius: 0;
+    background: rgba(19, 38, 46, 0.82);
+  }
+
+  .compact .overlay-card {
+    padding: 0.9rem 1rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
+
+  .compact .overlay-card h2 {
+    font-size: 1.4rem;
+  }
+
+  .compact .rules {
+    margin-bottom: 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .compact .shop {
+    margin-bottom: 0.7rem;
+  }
+
+  .compact .shop :global(.u-help) {
+    display: none;
+  }
+
+  /* Cadre très bas : l'accueil garde l'essentiel (les règles restent dans l'aide sous la carte). */
+  @media (max-height: 520px) {
+    .compact .rules,
+    .compact .kicker {
+      display: none;
+    }
+
+    .compact .overlay-card p {
+      font-size: 0.85rem;
+      margin-bottom: 0.6rem;
     }
   }
 </style>
