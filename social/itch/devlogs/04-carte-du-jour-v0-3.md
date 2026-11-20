@@ -1,4 +1,4 @@
-<!-- À publier aujourd'hui, APRÈS avoir remplacé le zip du jeu (Edit game → Uploads → veridia-2140-web.zip).
+<!-- À publier aujourd'hui, APRÈS avoir remplacé le zip du jeu (Edit game → Uploads → veridia-2140-web-v0.3.zip).
      Type : « Major Update ». -->
 
 Titre : Flexarion : Veridia 2140 v0.3, la carte du jour
