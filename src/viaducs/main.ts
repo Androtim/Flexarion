@@ -82,7 +82,13 @@ export function boot(root: HTMLElement) {
   function resize() {
     const l = s.level;
     const w = canvas.parentElement!.clientWidth;
-    size = Math.floor(Math.min(64, w / l.w));
+    let fit = w / l.w;
+    if (root.dataset.compact) {
+      // Cadre de petite taille (itch.io) : la carte doit aussi tenir en hauteur, sous le bandeau et l'aide.
+      const top = canvas.parentElement!.getBoundingClientRect().top + window.scrollY;
+      fit = Math.min(fit, (window.innerHeight - top - 52) / l.h);
+    }
+    size = Math.max(16, Math.floor(Math.min(64, fit)));
     const dpr = window.devicePixelRatio || 1;
     canvas.style.width = `${size * l.w}px`;
     canvas.style.height = `${size * l.h}px`;
@@ -141,7 +147,9 @@ export function boot(root: HTMLElement) {
 
   // Commandes.
   const goBtn = $<HTMLButtonElement>("[data-go]");
+  const introOpen = () => !$("[data-intro]").hidden;
   goBtn.addEventListener("click", () => {
+    if (introOpen()) return; // la partie commence par l'écran d'accueil
     if (s.phase === "plan") {
       openValves(s);
       paused = false;
@@ -277,7 +285,7 @@ export function boot(root: HTMLElement) {
     $("[data-trust]").innerHTML = Array.from({ length: TUNING.trustMax }, (_, k) => `<i class="${k < s.trust ? "on" : ""}"></i>`).join("");
     $("[data-trust]").setAttribute("aria-label", `Confiance : ${s.trust} sur ${TUNING.trustMax}`);
     goBtn.textContent = s.phase === "plan" ? "Ouvrir les vannes" : s.phase !== "run" ? "Journée terminée" : paused ? "Reprendre" : "Pause";
-    goBtn.disabled = s.phase !== "plan" && s.phase !== "run";
+    goBtn.disabled = (s.phase !== "plan" && s.phase !== "run") || introOpen();
     goBtn.classList.toggle("btn-sun", s.phase === "plan" || paused);
     fastBtn.setAttribute("aria-pressed", String(fast));
     $<HTMLButtonElement>("[data-clear]").disabled = s.phase !== "plan" || !s.pipes.some(Boolean);
