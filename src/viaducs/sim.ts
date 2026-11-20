@@ -35,6 +35,8 @@ export interface DayReport {
 export interface GameState {
   version: 2;
   seed: number;
+  /** Date (AAAA-MM-JJ) si c'est la carte du jour, commune à tous les joueurs ce jour-là. */
+  daily?: string;
   day: number;
   credits: number;
   trust: number;
@@ -74,10 +76,18 @@ export function pipesUsed(s: GameState): number {
   return n;
 }
 
-export function newGame(seed = (Math.random() * 2 ** 31) >>> 0): GameState {
+/** Graine de la carte du jour : la même date donne la même graine, donc les mêmes cartes, pour tout le monde. */
+export function dailySeed(date: string): number {
+  let h = 2166136261;
+  for (const ch of `veridia-2140:${date}`) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return h >>> 0;
+}
+
+export function newGame(seed = (Math.random() * 2 ** 31) >>> 0, daily?: string): GameState {
   const s = {
     version: 2,
     seed,
+    daily,
     day: 1,
     credits: 0,
     trust: TUNING.trustMax,

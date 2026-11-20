@@ -1,7 +1,7 @@
 // Veridia 2140 : réglages du jeu. C'est ici qu'entrent les ajouts du défi « La ville des joueurs ».
 
 /** Version du jeu : +0.1 à chaque ajout du défi. */
-export const GAME_VERSION = "0.2";
+export const GAME_VERSION = "0.3";
 
 export const TUNING = {
   /** Durée d'une journée, vannes ouvertes (secondes). */

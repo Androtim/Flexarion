@@ -1,12 +1,21 @@
 // Interface du jeu des viaducs : boucle temps réel, saisie souris/tactile, boutique, sauvegarde locale.
 import { TUNING, UPGRADES, type UpgradeId } from "./content.ts";
 import { N4, pipeCost } from "./level.ts";
-import { buy, newGame, nextDay, openValves, pipesUsed, place, quota, rate, remove, resetWater, stat, tick, upgradeCost, type GameState } from "./sim.ts";
+import { buy, dailySeed, newGame, nextDay, openValves, pipesUsed, place, quota, rate, remove, resetWater, stat, tick, upgradeCost, type GameState } from "./sim.ts";
 import { draw, invalidateTerrain } from "./render.ts";
 import { autoplayTo } from "./demo.ts";
 
 const SAVE_KEY = "veridia-2140-viaducs";
 const BEST_KEY = "veridia-2140-viaducs-record";
+const DAILY_KEY = "veridia-2140-carte-du-jour";
+const SITE = "https://flexarion.alwaysdata.net/jouer/";
+
+/** Date locale du joueur (AAAA-MM-JJ) : la carte du jour change à minuit. */
+export function today(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+const dateFr = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
 
 export function boot(root: HTMLElement) {
   const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
@@ -35,6 +44,7 @@ export function boot(root: HTMLElement) {
       localStorage.setItem(SAVE_KEY, JSON.stringify(s));
       const best = Number(localStorage.getItem(BEST_KEY) ?? 0);
       if (s.day > best) localStorage.setItem(BEST_KEY, String(s.day));
+      if (s.daily === today() && s.day > dailyBest()) localStorage.setItem(DAILY_KEY, JSON.stringify({ date: s.daily, best: s.day }));
     } catch {
       /* stockage indisponible : la partie continue sans sauvegarde */
     }
@@ -50,6 +60,15 @@ export function boot(root: HTMLElement) {
       return g;
     } catch {
       return null;
+    }
+  }
+  /** Meilleur jour atteint sur la carte du jour d'aujourd'hui. */
+  function dailyBest(): number {
+    try {
+      const d = JSON.parse(localStorage.getItem(DAILY_KEY) ?? "null") as { date: string; best: number } | null;
+      return d && d.date === today() ? d.best : 0;
+    } catch {
+      return 0;
     }
   }
   function best(): number {
@@ -142,12 +161,35 @@ export function boot(root: HTMLElement) {
   });
   for (const b of root.querySelectorAll<HTMLButtonElement>("[data-restart]"))
     b.addEventListener("click", () => {
-      if (s.phase !== "over" && !confirm("Recommencer une nouvelle partie au jour 1 ?")) return;
+      if (s.phase !== "over" && !confirm("Abandonner cette partie pour une partie libre au jour 1 ?")) return;
       s = newGame();
       fresh();
     });
   $("[data-start]").addEventListener("click", () => {
     $("[data-intro]").hidden = true;
+  });
+  const startDaily = () => {
+    s = newGame(dailySeed(today()), today());
+    $("[data-intro]").hidden = true;
+    fresh();
+  };
+  $("[data-start-daily]").addEventListener("click", startDaily);
+  $("[data-daily]").addEventListener("click", () => {
+    if (s.phase !== "over" && (s.day > 1 || s.pipes.some(Boolean)) && !confirm("Abandonner cette partie pour la carte du jour ?")) return;
+    startDaily();
+  });
+  $("[data-share]").addEventListener("click", async () => {
+    const what = s.daily ? `carte du jour du ${dateFr(s.daily)}` : "partie libre";
+    const text = `Veridia 2140 (${what}) : je suis allé jusqu'au jour ${s.day} et j'ai livré ${Math.round(s.total)} m³ d'eau 💧 Et toi ?`;
+    try {
+      if (navigator.share) await navigator.share({ title: "Veridia 2140", text, url: SITE });
+      else {
+        await navigator.clipboard.writeText(`${text}\n${SITE}`);
+        $("[data-share]").textContent = "Copié !";
+      }
+    } catch {
+      /* partage annulé */
+    }
   });
   $("[data-next]").addEventListener("click", () => {
     nextDay(s);
@@ -240,7 +282,7 @@ export function boot(root: HTMLElement) {
     fastBtn.setAttribute("aria-pressed", String(fast));
     $<HTMLButtonElement>("[data-clear]").disabled = s.phase !== "plan" || !s.pipes.some(Boolean);
     $("[data-hint]").textContent = hint();
-    $("[data-best]").textContent = best() ? `Record : jour ${best()}` : "";
+    $("[data-best]").textContent = [s.daily ? `Carte du jour (${dateFr(s.daily)})` : "Partie libre", best() > 1 ? `record : jour ${best()}` : ""].filter(Boolean).join(" · ");
 
     $("[data-quarters]").innerHTML = l.quarters
       .map((p, k) => {
@@ -272,7 +314,10 @@ export function boot(root: HTMLElement) {
         shop();
       }
       if (s.phase === "over") {
-        $("[data-over-text]").textContent = `Vous avez tenu jusqu'au jour ${s.day} et livré ${Math.round(s.total)} m³ d'eau. ${best() > s.day ? `Votre record : jour ${best()}.` : "C'est votre record !"}`;
+        const rec = s.daily ? dailyBest() : best();
+        const where = s.daily ? `sur la carte du ${dateFr(s.daily)}` : "";
+        $("[data-over-text]").textContent = `Vous avez tenu jusqu'au jour ${s.day} ${where} et livré ${Math.round(s.total)} m³ d'eau. ${rec > s.day ? `Votre record : jour ${rec}.` : "C'est votre record !"}`.replace("  ", " ");
+        $("[data-share]").textContent = "Partager mon score";
       }
     }
     void force;

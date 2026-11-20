@@ -40,6 +40,7 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
             <p>
               Chaque jour, une nouvelle carte du Pays d'Aix. Tracez des tuyaux depuis la source jusqu'aux quartiers,
               ouvrez les vannes, et livrez à chacun son eau avant la fin de la journée ({TUNING.dayLength} s).
+              La <b>carte du jour</b> est la même pour tout le monde : comparez vos scores.
             </p>
             <ul class="rules">
               <li><b>Glissez</b> pour poser des tuyaux, <b>commencez sur un tuyau</b> pour les retirer.</li>
@@ -47,7 +48,10 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
               <li>Dès le jour 2, des <b>urgences</b> surgissent : quelques secondes pour y amener l'eau.</li>
               <li>Entre deux jours, améliorez la <b>vitesse</b>, l'<b>eau disponible</b> et le nombre de <b>tuyaux</b>.</li>
             </ul>
-            <button type="button" class="btn btn-sun" data-start>Commencer</button>
+            <div class="actions">
+              <button type="button" class="btn btn-sun" data-start-daily>Carte du jour</button>
+              <button type="button" class="btn btn-ghost" data-start>Partie libre</button>
+            </div>
           </div>
         </div>
 
@@ -70,8 +74,9 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
             <p data-over-text></p>
             <p>Une idée pour le jeu ? Dites-la en commentaire sur nos réseaux : la plus aimée entre dans Veridia.</p>
             <div class="actions">
-              <button type="button" class="btn btn-sun" data-restart>Nouvelle partie</button>
-              <a class="btn btn-ghost" href={ideaUrl} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
+              <button type="button" class="btn btn-sun" data-share>Partager mon score</button>
+              <button type="button" class="btn btn-ghost" data-restart>Nouvelle partie</button>
+              <a class="idea" href={ideaUrl} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
             </div>
           </div>
         </div>
@@ -98,8 +103,9 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
       <ul class="log" data-log></ul>
 
       <div class="side-actions">
-        <button type="button" class="ghost-btn" data-clear>Effacer le réseau</button>
-        <button type="button" class="ghost-btn" data-restart>Nouvelle partie</button>
+        <button type="button" class="ghost-btn" data-daily>Carte du jour</button>
+        <button type="button" class="ghost-btn" data-restart>Partie libre</button>
+        <button type="button" class="ghost-btn wide-btn" data-clear>Effacer le réseau</button>
       </div>
       <p class="version">v{GAME_VERSION} · <span data-best></span></p>
     </aside>
@@ -393,6 +399,11 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
     color: var(--roof);
   }
 
+  .overlay-card :global(.btn-ghost) {
+    background: none;
+    color: var(--ink);
+  }
+
   .actions {
     display: flex;
     flex-wrap: wrap;
@@ -532,6 +543,10 @@ const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
     border: 1px solid rgba(239, 230, 210, 0.25);
     border-radius: 99px;
     cursor: pointer;
+  }
+
+  .wide-btn {
+    grid-column: 1 / -1;
   }
 
   .ghost-btn:hover:not(:disabled) {
