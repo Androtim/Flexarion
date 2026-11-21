@@ -3,7 +3,8 @@
 // 2. sans réseau, la partie est perdue ;
 // 3. un joueur automatique simple tient plusieurs jours, et la difficulté monte.
 import { greedyNetwork, dayShape } from "../src/viaducs/level.ts";
-import { dailySeed, newGame, nextDay, openValves, pipesUsed, stat, tick, type GameState } from "../src/viaducs/sim.ts";
+import { chooseWeekly, dailySeed, newGame, newSeason, nextDay, openValves, pipeBudget, pipesUsed, stat, tick, type GameState } from "../src/viaducs/sim.ts";
+import { SEASON } from "../src/viaducs/content.ts";
 import { autoDay, autoShop } from "../src/viaducs/demo.ts";
 
 let failures = 0;
@@ -76,6 +77,56 @@ function bot(seed: number, log = false) {
   console.log(`  joueur automatique sur 30 parties : jours atteints ${Math.min(...days)} à ${Math.max(...days)} (moyenne ${avg.toFixed(1)})`);
   check(Math.min(...days) >= 3, "le joueur automatique passe au moins les 2 premiers jours");
   check(Math.max(...days) <= 30, "la difficulté finit par l'emporter (pas de partie infinie)");
+}
+// 4. Mode saison : chaque jour, les quartiers habités sont reliables depuis le réseau existant
+// avec les tuyaux de base ; le réseau reste d'un jour à l'autre ; la soif finit par l'emporter.
+{
+  let bad = 0, days = 0;
+  for (let seed = 1; seed <= 40; seed++) {
+    const s = newSeason(seed);
+    for (let d = 1; d <= SEASON.quarters - SEASON.startQuarters + 1; d++) {
+      days++;
+      const net = greedyNetwork(s.level);
+      if (!net || net.cost > pipeBudget(s)) bad++;
+      s.phase = "report";
+      nextDay(s);
+    }
+  }
+  check(bad === 0, `saison : ${days} journées sur 40 cartes, ${bad} injouable(s) sans amélioration`);
+
+  const s = newSeason(5);
+  autoDay(s);
+  const before = [...s.pipes];
+  const quarters = s.level.quarters.length;
+  autoShop(s);
+  nextDay(s);
+  const kept = before.every((p, i) => !p || s.pipes[i] || s.level.ground[i] === "quarter");
+  check(kept && s.pipes.some(Boolean), "saison : le réseau est conservé au jour suivant");
+  check(s.level.quarters.length === quarters + 1 && s.level.w === SEASON.w, `saison : un quartier de plus (${quarters} → ${s.level.quarters.length}), même carte`);
+
+  const w = newSeason(9);
+  w.day = SEASON.weekly;
+  w.phase = "run";
+  w.t = 39.99;
+  tick(w, 0.05);
+  const lvl = w.upgrades.speed;
+  check(w.season!.weekly && !chooseWeekly(w, "speed") && w.upgrades.speed === lvl + 1, "saison : amélioration gratuite au jour 7");
+
+  const seasonBot = (seed: number, log = false) => {
+    const g = newSeason(seed);
+    while (g.phase !== "over" && g.day <= 60) {
+      autoDay(g);
+      if (log) console.log(`  saison j${g.day} quartiers ${g.report!.quartersOk}/${g.report!.quartersTotal} tuyaux ${pipesUsed(g)}/${pipeBudget(g)} eau ${stat(g, "water")} soif ${g.season!.thirst}`);
+      if ((g.phase as string) === "over") break;
+      autoShop(g);
+      nextDay(g);
+    }
+    return g.day;
+  };
+  seasonBot(3, true);
+  const sd = Array.from({ length: 20 }, (_, k) => seasonBot(200 + k));
+  console.log(`  saison, joueur automatique sur 20 parties : jours ${Math.min(...sd)} à ${Math.max(...sd)} (moyenne ${(sd.reduce((a, b) => a + b, 0) / sd.length).toFixed(1)})`);
+  check(Math.min(...sd) >= 5 && Math.max(...sd) <= 60, "saison : le joueur automatique tient au moins 5 jours, et la saison finit");
 }
 console.log(`  forme du jour 1 : ${JSON.stringify(dayShape(1))}, jour 10 : ${JSON.stringify(dayShape(10))}`);
 

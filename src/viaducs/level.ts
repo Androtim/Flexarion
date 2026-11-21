@@ -1,8 +1,9 @@
 // Génération procédurale d'une journée : carte, sources, quartiers. Chaque carte générée
 // est vérifiée : un réseau existe et tient dans le nombre de tuyaux du joueur.
-import { DISTRICTS, SOURCES, TUNING } from "./content.ts";
+import { DISTRICTS, SEASON, SOURCES, TUNING } from "./content.ts";
 
-export type Ground = "land" | "rock" | "pines" | "ravine" | "river" | "source" | "quarter";
+/** `site` : chantier d'un futur quartier (mode saison), infranchissable. */
+export type Ground = "land" | "rock" | "pines" | "ravine" | "river" | "source" | "quarter" | "site";
 
 export interface Place {
   x: number;
@@ -58,12 +59,18 @@ export function dayShape(day: number) {
 }
 
 /** Coût minimal (glouton) d'un réseau reliant les sources à tous les quartiers. */
-export function greedyNetwork(l: Pick<Level, "w" | "h" | "ground" | "sources" | "quarters">, start: number[] = []): { cost: number; tiles: number[] } | null {
+export function greedyNetwork(
+  l: Pick<Level, "w" | "h" | "ground" | "sources" | "quarters">,
+  start: number[] = [],
+): { cost: number; tiles: number[]; order: number[]; steps: number[] } | null {
   const { w, h, ground } = l;
   const inTree = new Set<number>([...l.sources.map((s) => s.y * w + s.x), ...start]);
   const remaining = new Set(l.quarters.map((q) => q.y * w + q.x));
   let cost = 0;
   const tiles: number[] = [];
+  /** Quartiers dans l'ordre où le réseau glouton les relie, et coût de chaque ajout. */
+  const order: number[] = [];
+  const steps: number[] = [];
   const adjQuarter = (i: number) => {
     const x = i % w, y = (i / w) | 0;
     for (const [dx, dy] of N4) {
@@ -108,18 +115,19 @@ export function greedyNetwork(l: Pick<Level, "w" | "h" | "ground" | "sources" | 
     }
     if (found < 0) return null;
     cost += dist.get(found)!;
+    order.push(target);
+    steps.push(dist.get(found)!);
     for (let c: number | undefined = found; c !== undefined && !inTree.has(c); c = prev.get(c)) {
       inTree.add(c);
       tiles.push(c);
     }
     remaining.delete(target);
   }
-  return { cost, tiles };
+  return { cost, tiles, order, steps };
 }
 
-function attempt(day: number, seed: number, quarterCount: number): Level {
+function attempt(day: number, seed: number, quarterCount: number, shape: { w: number; h: number; sources: number } = dayShape(day)): Level {
   const r = rng(seed);
-  const shape = dayShape(day);
   const { w, h } = shape;
   const ground: Ground[] = new Array(w * h).fill("land");
   const at = (x: number, y: number) => y * w + x;
@@ -176,7 +184,7 @@ function attempt(day: number, seed: number, quarterCount: number): Level {
   // Quartiers : loin des sources et les uns des autres.
   const names = [...DISTRICTS].sort(() => r() - 0.5);
   const quarters: Place[] = [];
-  for (let tries = 0; quarters.length < quarterCount && tries < 400; tries++) {
+  for (let tries = 0; quarters.length < quarterCount && tries < 800; tries++) {
     const x = ri(w), y = 1 + ri(h - 1);
     if (ground[at(x, y)] !== "land") continue;
     const far = (p: Place, d: number) => Math.max(Math.abs(p.x - x), Math.abs(p.y - y)) >= d;
@@ -217,4 +225,42 @@ export function generateLevel(day: number, seed: number, budget: number): Level 
   ground[3] = "source";
   ground[3 * w + 3] = "quarter";
   return { day, w, h, ground, sources: [{ x: 3, y: 0, name: SOURCES[0] }], quarters: [{ x: 3, y: 3, name: DISTRICTS[0] }], needed: 2 };
+}
+
+
+/** Tuyaux disponibles au jour `day` d'une saison, sans amélioration. */
+export const seasonPipes = (day: number, upgradePipes = 0) => upgradePipes + SEASON.pipesPerDay * (day - 1);
+
+/**
+ * Carte d'une saison : une grande carte et tous ses quartiers futurs, rangés dans l'ordre où ils
+ * deviendront habités (du plus proche au plus lointain du réseau). Garantie : chaque jour, un
+ * réseau qui relie les quartiers habités tient dans les tuyaux de base, avec une réserve.
+ */
+export function generateSeason(seed: number, basePipes: number): { level: Level; pool: Place[] } {
+  for (let k = 0; ; k++) {
+    const l = attempt(6, (seed * 2654435761 + k * 40503) >>> 0, SEASON.quarters, { w: SEASON.w, h: SEASON.h, sources: SEASON.sources });
+    const net = l.quarters.length === SEASON.quarters ? greedyNetwork(l) : null;
+    if (!net && k < 200) continue;
+    let ok = !!net;
+    if (net) {
+      let sum = 0;
+      net.steps.forEach((c, j) => {
+        sum += c;
+        const day = Math.max(1, j + 2 - SEASON.startQuarters);
+        const reserve = day >= 2 ? 3 : 1;
+        if (j + 1 >= SEASON.startQuarters && sum > basePipes + seasonPipes(day) - reserve) ok = false;
+      });
+    }
+    if (!ok && k < 200) continue;
+    const byTile = new Map(l.quarters.map((q) => [q.y * l.w + q.x, q]));
+    const pool = net ? net.order.map((i) => byTile.get(i)!) : l.quarters;
+    // Les quartiers pas encore habités sont des chantiers.
+    pool.forEach((q, j) => {
+      if (j >= SEASON.startQuarters) l.ground[q.y * l.w + q.x] = "site";
+    });
+    l.quarters = pool.slice(0, SEASON.startQuarters);
+    l.day = 1;
+    l.needed = net ? net.steps.slice(0, SEASON.startQuarters).reduce((a, b) => a + b, 0) : Infinity;
+    return { level: l, pool };
+  }
 }
