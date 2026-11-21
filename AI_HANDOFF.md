@@ -50,6 +50,12 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-21 10:30] · Claude Opus 5.5 via Claude Code
+- **Branche :** `feat/gamejolt-links`.
+- **Fait :** page Game Jolt publiée par l'utilisateur (https://gamejolt.com/games/veridia/1120816) : ajoutée à `STUDIO.gamejolt`, au `sameAs` de l'organisation, au pied de page, à `/contact/` et à `llms.txt`. `llms.txt` décrivait encore l'ancien concept (city-builder payant) : remplacé par le jeu réel (puzzle gratuit dans le navigateur).
+- **Pourquoi :** relier les profils de la marque pour Google ; une IA qui lit `llms.txt` ne doit pas décrire un jeu qui n'existe pas.
+- **À faire ensuite :** mode saison (v0.4) ; vidéo de vote (audio de l'utilisateur) ; posts Reddit selon `social/reddit/README.md`.
+
 ### [2026-11-20 11:00] · Claude Opus 5.5 via Claude Code
 - **Branche :** `feat/carte-du-jour` (+ `content/referencement-kit` le 19/11).
 - **Fait :** jeu v0.3 : « carte du jour » (graine = hachage FNV-1a de la date, `dailySeed` dans `src/viaducs/sim.ts`, record du jour en `localStorage` `veridia-2140-carte-du-jour`), bouton « Partager mon score » (Web Share API, sinon presse-papiers), test de déterminisme dans `scripts/viaducs-check.ts`. Devlog #5, encart « Nouveautés » et FAQ sur `/jouer/`, `softwareVersion`/`dateModified` dans le schéma. Le 19/11 : devlog #4 et kit de référencement (`social/itch/devlogs/`, `social/gamejolt/`, `social/liens-et-descriptions.md`).
