@@ -50,6 +50,12 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-21 19:30] · Claude Opus 5.5 via Claude Code
+- **Branche :** `feat/mode-saison`.
+- **Fait :** jeu v0.4, **mode saison** (inspiré du genre « réseau qui grandit », sans reprendre de jeu existant). `generateSeason` (`src/viaducs/level.ts`) génère une carte 16×11 et 12 quartiers ; l'ordre de `greedyNetwork` (nouveaux champs `order`/`steps`) fixe l'ordre d'apparition, et chaque préfixe doit tenir dans les tuyaux de base (12 + 3/jour, `SEASON` dans `content.ts`). Les quartiers futurs sont au sol `site` (chantier, dessiné en pointillés). `newSeason`, `chooseWeekly`, `pipeBudget` dans `sim.ts` : réseau et eau conservés au jour suivant, jauge de soif (0-100) à la place de la confiance, amélioration offerte tous les 7 jours. Interface : bouton « Mode saison » (accueil + panneau), jauge « Soif », bloc « Choix de la semaine », record de saison séparé (`veridia-2140-saison-record`), `?demo=N&mode=saison`. Tests dans `scripts/viaducs-check.ts` (440 journées de saison jouables, bot 6-9 jours). Devlog #6, FAQ et nouveautés de `/jouer/`. **Correctif** `scripts/build-itch.mjs` : le script intégré était inséré avec `String.replace` sur une chaîne, qui interprète `$&`/`$'` ; le nouveau code minifié en contenait, le jeu ne démarrait plus dans le zip. Remplacement par fonction.
+- **Pourquoi :** demande de l'utilisateur (mode « type Mini Metro » où la stratégie du joueur se garde) ; contenu réel et régulier pour Google.
+- **À faire ensuite :** l'utilisateur publie le zip v0.4 et les posts (`social/itch/devlogs/05-mode-saison-v0-4.md`, section 5 de `social/gamejolt/README.md`) ; vidéo de vote ; défi.
+
 ### [2026-11-21 10:30] · Claude Opus 5.5 via Claude Code
 - **Branche :** `feat/gamejolt-links`.
 - **Fait :** page Game Jolt publiée par l'utilisateur (https://gamejolt.com/games/veridia/1120816) : ajoutée à `STUDIO.gamejolt`, au `sameAs` de l'organisation, au pied de page, à `/contact/` et à `llms.txt`. `llms.txt` décrivait encore l'ancien concept (city-builder payant) : remplacé par le jeu réel (puzzle gratuit dans le navigateur).

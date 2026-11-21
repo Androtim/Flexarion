@@ -24,7 +24,7 @@ const { compact = false } = Astro.props;
       <div class="hud-stat"><span>Tuyaux libres</span><strong data-pipes>12 / 12</strong></div>
       <div class="hud-stat"><span>Eau</span><strong data-water>8 m³/s</strong></div>
       <div class="hud-stat hud-speed"><span>Vitesse</span><strong data-speed>1,5 cases/s</strong></div>
-      <div class="hud-stat"><span>Confiance</span><strong class="trust" data-trust role="img" aria-label="Confiance"></strong></div>
+      <div class="hud-stat"><span data-trust-label>Confiance</span><strong class="trust" data-trust role="img" aria-label="Confiance"></strong></div>
       <div class="hud-stat"><span>Crédits</span><strong data-credits>0</strong></div>
       <div class="hud-actions">
         <button type="button" class="btn btn-sun go" data-go>Ouvrir les vannes</button>
@@ -46,7 +46,8 @@ const { compact = false } = Astro.props;
             <p>
               Chaque jour, une nouvelle carte du Pays d'Aix. Tracez des tuyaux depuis la source jusqu'aux quartiers,
               ouvrez les vannes, et livrez à chacun son eau avant la fin de la journée ({TUNING.dayLength} s).
-              La <b>carte du jour</b> est la même pour tout le monde : comparez vos scores.
+              La <b>carte du jour</b> est la même pour tout le monde : comparez vos scores. En <b>mode saison</b>,
+              la carte et votre réseau restent, et un nouveau quartier apparaît chaque jour.
             </p>
             <ul class="rules">
               <li><b>Glissez</b> pour poser des tuyaux, <b>commencez sur un tuyau</b> pour les retirer.</li>
@@ -56,6 +57,7 @@ const { compact = false } = Astro.props;
             </ul>
             <div class="actions">
               <button type="button" class="btn btn-sun" data-start-daily>Carte du jour</button>
+              <button type="button" class="btn btn-ghost" data-start-season>Mode saison</button>
               <button type="button" class="btn btn-ghost" data-start>Partie libre</button>
             </div>
           </div>
@@ -65,6 +67,10 @@ const { compact = false } = Astro.props;
           <div class="overlay-card wide">
             <h2 data-report-title>Fin du jour</h2>
             <ul class="report" data-report-list></ul>
+            <div class="weekly" data-weekly hidden>
+              <h3>Choix de la semaine : une amélioration offerte</h3>
+              <div class="weekly-list" data-weekly-list></div>
+            </div>
             <h3>Améliorations <span class="purse"><span data-shop-credits>0</span> crédits</span></h3>
             <div class="shop" data-shop></div>
             <div class="actions">
@@ -81,7 +87,7 @@ const { compact = false } = Astro.props;
             <p>Une idée pour le jeu ? Dites-la en commentaire sur nos réseaux : la plus aimée entre dans Veridia.</p>
             <div class="actions">
               <button type="button" class="btn btn-sun" data-share>Partager mon score</button>
-              <button type="button" class="btn btn-ghost" data-restart>Nouvelle partie</button>
+              <button type="button" class="btn btn-ghost" data-restart="same">Rejouer</button>
               <a class="idea" href={ideaUrl} target="_blank" rel="noopener noreferrer">Proposer une idée</a>
             </div>
           </div>
@@ -91,7 +97,7 @@ const { compact = false } = Astro.props;
     </div>
 
     <aside class="side" aria-label="Quartiers et journal">
-      <h2 class="side-title">Quartiers du jour</h2>
+      <h2 class="side-title" data-side-title>Quartiers du jour</h2>
       <p class="quota" data-quota></p>
       <ul class="quarters" data-quarters></ul>
 
@@ -110,8 +116,9 @@ const { compact = false } = Astro.props;
 
       <div class="side-actions">
         <button type="button" class="ghost-btn" data-daily>Carte du jour</button>
+        <button type="button" class="ghost-btn" data-season>Mode saison</button>
         <button type="button" class="ghost-btn" data-restart>Partie libre</button>
-        <button type="button" class="ghost-btn wide-btn" data-clear>Effacer le réseau</button>
+        <button type="button" class="ghost-btn" data-clear>Effacer le réseau</button>
       </div>
       <p class="version">v{GAME_VERSION} · <span data-best></span></p>
     </aside>
@@ -202,6 +209,31 @@ const { compact = false } = Astro.props;
 
   .trust :global(i.on) {
     background: var(--water);
+  }
+
+  /* Mode saison : jauge de soif à la place de la confiance. */
+  .trust :global(.thirst) {
+    align-self: center;
+    width: 4.5rem;
+    height: 0.5rem;
+    background: var(--dusk-2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .trust :global(.thirst > span) {
+    display: block;
+    height: 100%;
+    background: var(--sun);
+  }
+
+  .trust :global(.thirst.high > span) {
+    background: #d2462f;
+  }
+
+  .trust :global(b) {
+    font-size: 1rem;
+    margin-left: 0.2rem;
   }
 
   .hud-actions {
@@ -364,6 +396,44 @@ const { compact = false } = Astro.props;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.6rem;
     margin-bottom: 1.2rem;
+  }
+
+  .weekly {
+    margin-bottom: 1rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 12px;
+    background: rgba(31, 181, 168, 0.12);
+  }
+
+  .weekly h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  .weekly-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .weekly-list :global(button) {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 99px;
+    border: 1.5px solid var(--water);
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .weekly-list :global(button:hover:not(:disabled)) {
+    background: var(--water);
+    color: #fff;
+  }
+
+  .weekly-list :global(button:disabled) {
+    opacity: 0.45;
+    cursor: not-allowed;
   }
 
   .shop :global(.upgrade) {

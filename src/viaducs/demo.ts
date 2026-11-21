@@ -1,11 +1,11 @@
 // Joueur automatique : sert aux tests (scripts/viaducs-check.ts) et au mode démo (/jouer/?demo=4).
 import type { UpgradeId } from "./content.ts";
 import { N4, greedyNetwork, pipeCost } from "./level.ts";
-import { buy, nextDay, openValves, pipesUsed, place, stat, tick, upgradeCost, type GameState } from "./sim.ts";
+import { buy, chooseWeekly, nextDay, openValves, pipeBudget, pipesUsed, place, tick, upgradeCost, type GameState } from "./sim.ts";
 
 /** Pose un réseau glouton qui relie les sources à tous les quartiers. */
 export function autoNetwork(s: GameState) {
-  const net = greedyNetwork(s.level);
+  const net = greedyNetwork(s.level, s.pipes.flatMap((p, i) => (p ? [i] : [])));
   if (net) for (const i of net.tiles) place(s, i);
 }
 
@@ -21,7 +21,7 @@ export function autoEmergencies(s: GameState) {
     if (near) continue;
     const start = s.pipes.flatMap((p, i) => (p ? [i] : []));
     const path = greedyNetwork({ ...s.level, quarters: [{ x: e.x, y: e.y, name: "" }] }, start);
-    if (path && pipesUsed(s) + path.tiles.reduce((a, i) => a + pipeCost(s.level.ground[i]), 0) <= stat(s, "pipes"))
+    if (path && pipesUsed(s) + path.tiles.reduce((a, i) => a + pipeCost(s.level.ground[i]), 0) <= pipeBudget(s))
       for (const i of path.tiles) place(s, i);
   }
 }
@@ -30,6 +30,7 @@ const PLAN: UpgradeId[] = ["water", "pipes", "speed"];
 
 /** Achète des améliorations à tour de rôle. */
 export function autoShop(s: GameState) {
+  if (s.season?.weekly) chooseWeekly(s, PLAN[s.day % 3]);
   for (let k = 0, turn = s.day; k < 6; k++) {
     const id = PLAN[turn % 3];
     const c = upgradeCost(s, id);

@@ -54,7 +54,8 @@ if (!inline.length) {
   console.error("❌ Aucun script du jeu trouvé dans la page embarquée.");
   process.exit(1);
 }
-html = html.replace("</body>", `<script>${inline.join("\n")}</script></body>`);
+// Remplacement par fonction : le code minifié peut contenir « $& » ou « $' », que replace() interpréterait.
+html = html.replace("</body>", () => `<script>${inline.join("\n")}</script></body>`);
 for (const f of fs.readdirSync(path.join(out, "_astro"))) if (f.endsWith(".js")) fs.rmSync(path.join(out, "_astro", f));
 html = html.replace(/<title>([^<]*)<\/title>/, (_, t) => `<title>${t} (v${version})</title>`);
 fs.writeFileSync(path.join(out, "index.html"), html);
