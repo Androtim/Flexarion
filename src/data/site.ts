@@ -10,6 +10,7 @@ export const STUDIO = {
   youtube: "https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q",
   x: "https://x.com/FlexarionStudio",
   itch: "https://flexarion-studio.itch.io/",
+  gamejolt: "https://gamejolt.com/games/veridia/1120816",
   tiktok: "https://www.tiktok.com/@flexarion_studio",
   xHandle: "@FlexarionStudio",
   instagramHandle: "@flexarion",
@@ -19,7 +20,7 @@ export const STUDIO = {
     title: "VERIDIA 2140",
     genre: "Puzzle & stratégie en temps réel",
     businessModel: "Gratuit, sans publicité",
-    platform: "Navigateur web (ordinateur et téléphone), itch.io",
+    platform: "Navigateur web (ordinateur et téléphone), itch.io, Game Jolt",
     status: "Jeu réalisé en cadre universitaire (IUT d'Aix-Marseille)",
   },
 };
@@ -71,7 +72,7 @@ export function buildOrganizationSchema(siteOrigin: string) {
       "City-builder",
       "Simulation systémique",
     ],
-    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.tiktok, STUDIO.itch, STUDIO.githubRepo],
+    sameAs: [STUDIO.instagramMain, STUDIO.youtube, STUDIO.x, STUDIO.tiktok, STUDIO.itch, STUDIO.gamejolt, STUDIO.githubRepo],
   };
 }
 
