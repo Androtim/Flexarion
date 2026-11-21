@@ -11,13 +11,14 @@
 - **YouTube :** https://www.youtube.com/channel/UCBPnOAYTH0rcCcjEtnBVk-Q
 - **X :** https://x.com/FlexarionStudio
 - **TikTok :** https://www.tiktok.com/@flexarion_studio
-- **itch.io :** https://flexarion-studio.itch.io/
+- **itch.io :** https://flexarion-studio.itch.io/ (jeu : https://flexarion-studio.itch.io/veridia-2140)
+- **Game Jolt :** https://gamejolt.com/games/veridia/1120816
 
 ## Jeu Phare : VERIDIA 2140
-- **Type :** City-builder tactique & simulation éco-futuriste solo
+- **Type :** Puzzle & stratégie en temps réel, gratuit, jouable dans le navigateur (https://flexarion.alwaysdata.net/jouer/)
 - **Univers :** Bassin d'Aix-en-Provence et Montagne Sainte-Victoire en 2140
-- **Mécaniques clés :** Architecture de dômes géodésiques en calcaire et verre solaire, simulation de flux hydriques en graphe orienté, régulation thermique par réseaux mycéliens.
-- **Modèle économique envisagé :** Jeu indépendant PC payant sans microtransaction (projet conceptuel universitaire, aucune commercialisation réelle).
+- **Mécaniques clés :** tracer tuyaux et viaducs depuis les sources jusqu'aux quartiers d'Aix, partage équitable de l'eau aux embranchements, urgences chronométrées, améliorations entre les journées, carte du jour identique pour tous.
+- **Modèle économique :** gratuit, sans publicité (projet universitaire, aucune commercialisation réelle).
 
 ## Pages Principales
 - [Accueil Flexarion](/): Présentation du studio et positionnement
