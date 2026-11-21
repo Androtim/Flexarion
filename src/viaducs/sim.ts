@@ -3,8 +3,8 @@
 // Une journée : le joueur pose des tuyaux (préparation), ouvre les vannes, et l'eau avance
 // dans le réseau à la vitesse d'acheminement. Chaque quartier doit recevoir son quota avant
 // la fin de la journée. Des urgences surgissent : il faut y amener de l'eau à temps.
-import { EMERGENCIES, TUNING, UPGRADES, type UpgradeId } from "./content.ts";
-import { N4, dayShape, generateLevel, pipeCost, rng, type Level } from "./level.ts";
+import { EMERGENCIES, SEASON, TUNING, UPGRADES, type UpgradeId } from "./content.ts";
+import { N4, dayShape, generateLevel, generateSeason, pipeCost, rng, seasonPipes, type Level, type Place } from "./level.ts";
 
 export type Phase = "plan" | "run" | "report" | "over";
 
@@ -30,6 +30,18 @@ export interface DayReport {
   sparePipes: number;
   credits: number;
   trustDelta: number;
+  /** Mode saison : variation de la soif (points sur 100). */
+  thirstDelta?: number;
+}
+
+/** Mode saison : la carte et le réseau restent, un quartier de plus chaque jour. */
+export interface Season {
+  /** Tous les quartiers de la saison, dans l'ordre où ils deviennent habités. */
+  pool: Place[];
+  /** Soif de la ville, de 0 à 100 : la saison s'arrête à 100. */
+  thirst: number;
+  /** Une amélioration gratuite attend d'être choisie (tous les 7 jours). */
+  weekly: boolean;
 }
 
 export interface GameState {
@@ -37,6 +49,7 @@ export interface GameState {
   seed: number;
   /** Date (AAAA-MM-JJ) si c'est la carte du jour, commune à tous les joueurs ce jour-là. */
   daily?: string;
+  season?: Season;
   day: number;
   credits: number;
   trust: number;
@@ -67,8 +80,11 @@ export interface GameState {
 export const EMERGENCY_RATE = 4;
 
 export const stat = (s: GameState, id: UpgradeId) => UPGRADES[id].value(s.upgrades[id]);
-export const quota = (s: GameState) => +(dayShape(s.day).rate * TUNING.dayLength * TUNING.quotaShare).toFixed(0);
-export const rate = (s: GameState) => dayShape(s.day).rate;
+/** Consommation d'un quartier : elle monte moins vite en saison, où les quartiers s'accumulent. */
+export const rate = (s: GameState) => (s.season ? 2 + 0.15 * s.day : dayShape(s.day).rate);
+export const quota = (s: GameState) => +(rate(s) * TUNING.dayLength * TUNING.quotaShare).toFixed(0);
+/** Tuyaux disponibles : l'amélioration, plus en saison ceux reçus chaque jour. */
+export const pipeBudget = (s: GameState) => (s.season ? seasonPipes(s.day, stat(s, "pipes")) : stat(s, "pipes"));
 
 export function pipesUsed(s: GameState): number {
   let n = 0;
@@ -99,6 +115,17 @@ export function newGame(seed = (Math.random() * 2 ** 31) >>> 0, daily?: string):
   return s;
 }
 
+/** Nouvelle saison : une grande carte, deux quartiers habités, et un nouveau chaque jour. */
+export function newSeason(seed = (Math.random() * 2 ** 31) >>> 0): GameState {
+  const s = newGame(seed);
+  const { level, pool } = generateSeason(seed, stat(s, "pipes"));
+  s.season = { pool, thirst: 0, weekly: false };
+  s.level = level;
+  s.pipes = new Array(level.w * level.h).fill(0);
+  resetWater(s);
+  s.log = [`Saison, jour 1 : ${level.quarters.length} quartiers habités, ${pool.length - level.quarters.length} chantiers.`];
+  return s;
+}
 /** Prépare la journée `s.day` : nouvelle carte, réseau vide. */
 export function startDay(s: GameState) {
   s.level = generateLevel(s.day, s.seed, stat(s, "pipes"));
@@ -154,8 +181,9 @@ export function canPlace(s: GameState, i: number): string | null {
   if (g === "rock") return "Rocher : impossible de creuser ici.";
   if (g === "pines") return "Pinède protégée : on contourne.";
   if (g === "source" || g === "quarter") return "Case occupée.";
+  if (g === "site") return "Chantier d'un futur quartier : on le contourne.";
   if (emergencyAt(s, i)) return "Il faut amener l'eau à côté de l'urgence.";
-  if (pipesUsed(s) + pipeCost(g) > stat(s, "pipes")) return g === "land" ? "Plus de tuyaux. Retirez-en un ailleurs." : "Un viaduc coûte 2 tuyaux : il n'en reste pas assez.";
+  if (pipesUsed(s) + pipeCost(g) > pipeBudget(s)) return g === "land" ? "Plus de tuyaux. Retirez-en un ailleurs." : "Un viaduc coûte 2 tuyaux : il n'en reste pas assez.";
   return null;
 }
 
@@ -389,7 +417,7 @@ export function endDay(s: GameState) {
   const emergenciesOk = s.emergencies.filter((e) => e.status === "ok" && e.x >= 0).length;
   const emergenciesTotal = s.emergencies.filter((e) => e.x >= 0).length;
   const failedEm = emergenciesTotal - emergenciesOk;
-  const spare = Math.max(0, stat(s, "pipes") - pipesUsed(s));
+  const spare = Math.max(0, pipeBudget(s) - pipesUsed(s));
   const allOk = quartersOk === s.level.quarters.length;
   const perfect = allOk && failedEm === 0;
   let trustDelta = (allOk ? 0 : -1) - failedEm;
@@ -397,7 +425,17 @@ export function endDay(s: GameState) {
   const c = TUNING.credits;
   const credits = quartersOk * c.quarter + emergenciesOk * c.emergency + spare * c.sparePipe + (perfect ? c.perfect : 0);
   s.credits += credits;
-  s.trust = Math.max(0, Math.min(TUNING.trustMax, s.trust + trustDelta));
+  let thirstDelta: number | undefined;
+  if (s.season) {
+    // En saison, pas de confiance : la soif monte avec chaque quartier privé d'eau.
+    const missed = s.level.quarters.length - quartersOk;
+    thirstDelta = missed * SEASON.thirstPerQuarter + failedEm * SEASON.thirstPerEmergency - (perfect ? SEASON.thirstRelief : 0);
+    thirstDelta = Math.max(-s.season.thirst, Math.min(100 - s.season.thirst, thirstDelta));
+    s.season.thirst += thirstDelta;
+    trustDelta = 0;
+    s.trust = s.season.thirst >= 100 ? 0 : TUNING.trustMax;
+    if (s.trust > 0 && s.day % SEASON.weekly === 0) s.season.weekly = true;
+  } else s.trust = Math.max(0, Math.min(TUNING.trustMax, s.trust + trustDelta));
   s.report = {
     day: s.day,
     quartersOk,
@@ -407,12 +445,15 @@ export function endDay(s: GameState) {
     sparePipes: spare,
     credits,
     trustDelta,
+    thirstDelta,
   };
   s.receiving.fill(0);
   s.phase = s.trust <= 0 ? "over" : "report";
   s.log.unshift(
     s.phase === "over"
-      ? `Jour ${s.day} : la ville ne vous fait plus confiance.`
+      ? s.season
+        ? `Jour ${s.day} : la soif l'emporte, la saison s'arrête.`
+        : `Jour ${s.day} : la ville ne vous fait plus confiance.`
       : `Fin du jour ${s.day} : ${quartersOk}/${s.level.quarters.length} quartiers servis.`,
   );
 }
@@ -432,8 +473,35 @@ export function buy(s: GameState, id: UpgradeId): string | null {
   return null;
 }
 
+/** Mode saison : prend l'amélioration gratuite de la semaine. */
+export function chooseWeekly(s: GameState, id: UpgradeId): string | null {
+  if (!s.season?.weekly || s.phase !== "report") return "Pas de choix en attente.";
+  if (upgradeCost(s, id) === null) return "Déjà au maximum.";
+  s.upgrades[id]++;
+  s.season.weekly = false;
+  return null;
+}
+
 export function nextDay(s: GameState) {
   if (s.phase !== "report") return;
   s.day += 1;
-  startDay(s);
+  if (!s.season) return startDay(s);
+  // Saison : même carte, même réseau ; un chantier devient un quartier habité.
+  const se = s.season;
+  se.weekly = false;
+  const l = s.level;
+  const next = se.pool[l.quarters.length];
+  if (next) {
+    const i = next.y * l.w + next.x;
+    l.ground[i] = "quarter";
+    s.pipes[i] = 0;
+    l.quarters = [...l.quarters, next];
+  }
+  l.day = s.day;
+  // Les tuyaux restés en eau pendant la nuit le sont encore au matin.
+  const wet = s.wet.map((v, j) => (s.pipes[j] && v >= 1 ? 1 : 0));
+  resetWater(s);
+  s.wet = wet;
+  s.log.unshift(next ? `Jour ${s.day} : ${next.name} est habité, reliez-le. +${SEASON.pipesPerDay} tuyaux.` : `Jour ${s.day} : la ville a soif, et elle boit davantage.`);
+  if (s.log.length > 8) s.log.length = 8;
 }

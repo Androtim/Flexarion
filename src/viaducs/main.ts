@@ -1,13 +1,14 @@
 // Interface du jeu des viaducs : boucle temps réel, saisie souris/tactile, boutique, sauvegarde locale.
-import { TUNING, UPGRADES, type UpgradeId } from "./content.ts";
+import { SEASON, TUNING, UPGRADES, type UpgradeId } from "./content.ts";
 import { N4, pipeCost } from "./level.ts";
-import { buy, dailySeed, newGame, nextDay, openValves, pipesUsed, place, quota, rate, remove, resetWater, stat, tick, upgradeCost, type GameState } from "./sim.ts";
+import { buy, chooseWeekly, dailySeed, newGame, newSeason, nextDay, openValves, pipeBudget, pipesUsed, place, quota, rate, remove, resetWater, stat, tick, upgradeCost, type GameState } from "./sim.ts";
 import { draw, invalidateTerrain } from "./render.ts";
 import { autoplayTo } from "./demo.ts";
 
 const SAVE_KEY = "veridia-2140-viaducs";
 const BEST_KEY = "veridia-2140-viaducs-record";
 const DAILY_KEY = "veridia-2140-carte-du-jour";
+const SEASON_KEY = "veridia-2140-saison-record";
 const SITE = "https://flexarion.alwaysdata.net/jouer/";
 
 /** Date locale du joueur (AAAA-MM-JJ) : la carte du jour change à minuit. */
@@ -25,7 +26,8 @@ export function boot(root: HTMLElement) {
   // Mode démo (/jouer/?demo=4) : partie jouée automatiquement jusqu'au jour indiqué, sans sauvegarde.
   const demoDay = Number(new URLSearchParams(location.search).get("demo"));
   const demo = Number.isFinite(demoDay) && demoDay > 0;
-  let s: GameState = demo ? newGame(2140) : (load() ?? newGame());
+  const demoSeason = new URLSearchParams(location.search).get("mode") === "saison";
+  let s: GameState = demo ? (demoSeason ? newSeason(2140) : newGame(2140)) : (load() ?? newGame());
   if (demo) autoplayTo(s, Math.min(demoDay, 20));
   let size = 48;
   let hover: number | null = null;
@@ -42,8 +44,9 @@ export function boot(root: HTMLElement) {
     if (demo) return;
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(s));
-      const best = Number(localStorage.getItem(BEST_KEY) ?? 0);
-      if (s.day > best) localStorage.setItem(BEST_KEY, String(s.day));
+      if (s.season) {
+        if (s.day > seasonBest()) localStorage.setItem(SEASON_KEY, String(s.day));
+      } else if (s.day > best()) localStorage.setItem(BEST_KEY, String(s.day));
       if (s.daily === today() && s.day > dailyBest()) localStorage.setItem(DAILY_KEY, JSON.stringify({ date: s.daily, best: s.day }));
     } catch {
       /* stockage indisponible : la partie continue sans sauvegarde */
@@ -67,6 +70,13 @@ export function boot(root: HTMLElement) {
     try {
       const d = JSON.parse(localStorage.getItem(DAILY_KEY) ?? "null") as { date: string; best: number } | null;
       return d && d.date === today() ? d.best : 0;
+    } catch {
+      return 0;
+    }
+  }
+  function seasonBest(): number {
+    try {
+      return Number(localStorage.getItem(SEASON_KEY) ?? 0);
     } catch {
       return 0;
     }
@@ -163,14 +173,17 @@ export function boot(root: HTMLElement) {
   });
   $("[data-clear]").addEventListener("click", () => {
     if (s.phase !== "plan") return;
+    if (s.season && !confirm("Effacer tout le réseau de la saison ?")) return;
     s.pipes.fill(0);
     save();
     ui();
   });
   for (const b of root.querySelectorAll<HTMLButtonElement>("[data-restart]"))
     b.addEventListener("click", () => {
+      // « Rejouer » en fin de partie relance le même mode ; ailleurs, c'est une partie libre.
+      const season = b.dataset.restart === "same" && s.season;
       if (s.phase !== "over" && !confirm("Abandonner cette partie pour une partie libre au jour 1 ?")) return;
-      s = newGame();
+      s = season ? newSeason() : newGame();
       fresh();
     });
   $("[data-start]").addEventListener("click", () => {
@@ -182,12 +195,22 @@ export function boot(root: HTMLElement) {
     fresh();
   };
   $("[data-start-daily]").addEventListener("click", startDaily);
+  const startSeason = () => {
+    s = newSeason();
+    $("[data-intro]").hidden = true;
+    fresh();
+  };
+  $("[data-start-season]").addEventListener("click", startSeason);
+  $("[data-season]").addEventListener("click", () => {
+    if (s.phase !== "over" && (s.day > 1 || s.pipes.some(Boolean)) && !confirm("Abandonner cette partie pour une nouvelle saison ?")) return;
+    startSeason();
+  });
   $("[data-daily]").addEventListener("click", () => {
     if (s.phase !== "over" && (s.day > 1 || s.pipes.some(Boolean)) && !confirm("Abandonner cette partie pour la carte du jour ?")) return;
     startDaily();
   });
   $("[data-share]").addEventListener("click", async () => {
-    const what = s.daily ? `carte du jour du ${dateFr(s.daily)}` : "partie libre";
+    const what = s.season ? "mode saison" : s.daily ? `carte du jour du ${dateFr(s.daily)}` : "partie libre";
     const text = `Veridia 2140 (${what}) : je suis allé jusqu'au jour ${s.day} et j'ai livré ${Math.round(s.total)} m³ d'eau 💧 Et toi ?`;
     try {
       if (navigator.share) await navigator.share({ title: "Veridia 2140", text, url: SITE });
@@ -232,7 +255,7 @@ export function boot(root: HTMLElement) {
         const nx = x + dx, ny = y + dy;
         if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
         const n = ny * w + nx;
-        if (ground[n] === "quarter") out.add(n);
+        if (ground[n] === "quarter") out.add(n); // les chantiers (« site ») ne comptent pas
         if (s.pipes[n] && !seen.has(n)) {
           seen.add(n);
           queue.push(n);
@@ -250,8 +273,12 @@ export function boot(root: HTMLElement) {
     if (s.phase === "plan") {
       const used = s.pipes.some(Boolean);
       const missing = s.level.quarters.length - linked().size;
+      if (s.season && used && missing > 0)
+        return `${missing > 1 ? `${missing} quartiers attendent` : "Un nouveau quartier attend"} : prolongez votre réseau. Les chantiers en pointillés seront habités les jours suivants.`;
       if (!used)
-        return s.day === 1
+        return s.season
+          ? "Mode saison : la carte et votre réseau restent d'un jour à l'autre. Reliez les deux premiers quartiers, en pensant aux chantiers."
+          : s.day === 1
           ? "Glissez depuis la source (en haut) pour poser des tuyaux jusqu'à côté de chaque quartier."
           : "Nouvelle carte. Tracez votre réseau, puis ouvrez les vannes.";
       if (missing > 0) return `Encore ${missing} quartier${missing > 1 ? "s" : ""} à relier. L'eau doit pouvoir aller de la source jusqu'à une case voisine du quartier.`;
@@ -272,7 +299,7 @@ export function boot(root: HTMLElement) {
   function ui(force = false) {
     const l = s.level;
     const q = quota(s);
-    const budget = stat(s, "pipes");
+    const budget = pipeBudget(s);
     const used = pipesUsed(s);
     $("[data-day]").textContent = `Jour ${s.day}`;
     const left = Math.max(0, TUNING.dayLength - s.t);
@@ -282,15 +309,25 @@ export function boot(root: HTMLElement) {
     $("[data-water]").textContent = `${fmt(stat(s, "water"))} m³/s`;
     $("[data-speed]").textContent = `${fmt(stat(s, "speed"))} cases/s`;
     $("[data-credits]").textContent = String(s.credits);
-    $("[data-trust]").innerHTML = Array.from({ length: TUNING.trustMax }, (_, k) => `<i class="${k < s.trust ? "on" : ""}"></i>`).join("");
-    $("[data-trust]").setAttribute("aria-label", `Confiance : ${s.trust} sur ${TUNING.trustMax}`);
+    if (s.season) {
+      const t = s.season.thirst;
+      $("[data-trust-label]").textContent = "Soif";
+      $("[data-trust]").innerHTML = `<span class="thirst${t >= 60 ? " high" : ""}"><span style="width:${t}%"></span></span><b>${t} %</b>`;
+      $("[data-trust]").setAttribute("aria-label", `Soif de la ville : ${t} sur 100`);
+    } else {
+      $("[data-trust-label]").textContent = "Confiance";
+      $("[data-trust]").innerHTML = Array.from({ length: TUNING.trustMax }, (_, k) => `<i class="${k < s.trust ? "on" : ""}"></i>`).join("");
+      $("[data-trust]").setAttribute("aria-label", `Confiance : ${s.trust} sur ${TUNING.trustMax}`);
+    }
     goBtn.textContent = s.phase === "plan" ? "Ouvrir les vannes" : s.phase !== "run" ? "Journée terminée" : paused ? "Reprendre" : "Pause";
     goBtn.disabled = (s.phase !== "plan" && s.phase !== "run") || introOpen();
     goBtn.classList.toggle("btn-sun", s.phase === "plan" || paused);
     fastBtn.setAttribute("aria-pressed", String(fast));
     $<HTMLButtonElement>("[data-clear]").disabled = s.phase !== "plan" || !s.pipes.some(Boolean);
     $("[data-hint]").textContent = hint();
-    $("[data-best]").textContent = [s.daily ? `Carte du jour (${dateFr(s.daily)})` : "Partie libre", best() > 1 ? `record : jour ${best()}` : ""].filter(Boolean).join(" · ");
+    const rec = s.season ? seasonBest() : best();
+    $("[data-best]").textContent = [s.season ? "Mode saison" : s.daily ? `Carte du jour (${dateFr(s.daily)})` : "Partie libre", rec > 1 ? `record : jour ${rec}` : ""].filter(Boolean).join(" · ");
+    $("[data-side-title]").textContent = s.season ? "Quartiers habités" : "Quartiers du jour";
 
     $("[data-quarters]").innerHTML = l.quarters
       .map((p, k) => {
@@ -299,7 +336,10 @@ export function boot(root: HTMLElement) {
         return `<li class="${done ? "done" : ""}"><span class="qn">${p.name}</span><span class="bar"><span style="width:${pct}%"></span></span><span class="num">${done ? "servi" : `${fmt(s.delivered[k])}/${q} m³`}</span></li>`;
       })
       .join("");
-    $("[data-quota]").textContent = `Chaque quartier boit ${fmt(rate(s))} m³/s et doit recevoir ${q} m³ avant la fin de la journée.`;
+    const sites = s.season ? s.season.pool.length - l.quarters.length : 0;
+    $("[data-quota]").textContent =
+      `Chaque quartier boit ${fmt(rate(s))} m³/s et doit recevoir ${q} m³ avant la fin de la journée.` +
+      (sites ? ` Encore ${sites} chantier${sites > 1 ? "s" : ""} : un nouveau quartier chaque jour.` : "");
     $("[data-log]").innerHTML = s.log.map((t) => `<li>${t}</li>`).join("");
 
     // Bilan et boutique.
@@ -316,19 +356,49 @@ export function boot(root: HTMLElement) {
           `<li><span>Quartiers servis</span><b>${r.quartersOk}/${r.quartersTotal}</b></li>`,
           r.emergenciesTotal ? `<li><span>Urgences maîtrisées</span><b>${r.emergenciesOk}/${r.emergenciesTotal}</b></li>` : "",
           `<li><span>Tuyaux non utilisés (sobriété)</span><b>${r.sparePipes}</b></li>`,
-          `<li><span>Confiance</span><b>${r.trustDelta > 0 ? "+1" : r.trustDelta < 0 ? r.trustDelta : "="}</b></li>`,
+          s.season
+            ? `<li><span>Soif de la ville</span><b>${r.thirstDelta ? `${r.thirstDelta > 0 ? "+" : ""}${r.thirstDelta}` : "="} (${s.season.thirst} %)</b></li>`
+            : `<li><span>Confiance</span><b>${r.trustDelta > 0 ? "+1" : r.trustDelta < 0 ? r.trustDelta : "="}</b></li>`,
           `<li class="sum"><span>Crédits gagnés</span><b>+${r.credits}</b></li>`,
         ].join("");
         shop();
+        weekly();
       }
       if (s.phase === "over") {
-        const rec = s.daily ? dailyBest() : best();
-        const where = s.daily ? `sur la carte du ${dateFr(s.daily)}` : "";
+        const rec = s.season ? seasonBest() : s.daily ? dailyBest() : best();
+        const where = s.season ? `en mode saison, avec ${l.quarters.length} quartiers,` : s.daily ? `sur la carte du ${dateFr(s.daily)}` : "";
         $("[data-over-text]").textContent = `Vous avez tenu jusqu'au jour ${s.day} ${where} et livré ${Math.round(s.total)} m³ d'eau. ${rec > s.day ? `Votre record : jour ${rec}.` : "C'est votre record !"}`.replace("  ", " ");
         $("[data-share]").textContent = "Partager mon score";
       }
     }
     void force;
+  }
+
+  /** Mode saison : tous les 7 jours, une amélioration gratuite au choix. */
+  function weekly() {
+    const box = $("[data-weekly]");
+    const open = !!s.season?.weekly && s.phase === "report";
+    box.hidden = !open;
+    if (!open) return;
+    const list = $("[data-weekly-list]");
+    list.innerHTML = "";
+    for (const id of Object.keys(UPGRADES) as UpgradeId[]) {
+      const u = UPGRADES[id];
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.disabled = upgradeCost(s, id) === null;
+      b.textContent = `${u.name} : ${fmt(u.value(s.upgrades[id] + 1))} ${u.unit}`;
+      b.addEventListener("click", () => {
+        if (!chooseWeekly(s, id)) {
+          save();
+          weekly();
+          shop();
+          ui();
+        }
+      });
+      list.append(b);
+    }
   }
 
   function shop() {
@@ -387,4 +457,5 @@ export function boot(root: HTMLElement) {
   ui(true);
   requestAnimationFrame(frame);
   void pipeCost;
+  void SEASON;
 }

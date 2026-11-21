@@ -17,7 +17,7 @@ const gameSchema = {
     "Jeu de puzzle et de stratégie gratuit dans le navigateur : à Aix-en-Provence en 2140, tracez des tuyaux et des viaducs pour amener l'eau aux quartiers, jour après jour, sur des cartes générées de plus en plus difficiles.",
   genre: ["Puzzle", "Strategy"],
   softwareVersion: GAME_VERSION,
-  dateModified: "2026-11-20",
+  dateModified: "2026-11-21",
   gamePlatform: ["Web browser"],
   playMode: "SinglePlayer",
   inLanguage: "fr",
@@ -41,6 +41,11 @@ const faqs = [
     question: "Qu'est-ce que la carte du jour ?",
     answer:
       "Chaque jour, tous les joueurs reçoivent exactement la même suite de cartes, tirée de la date. Vous pouvez donc comparer vos scores : à la fin de la partie, le bouton « Partager mon score » prépare un message avec votre résultat. La carte change à minuit. La partie libre, elle, tire des cartes au hasard.",
+  },
+  {
+    question: "Qu'est-ce que le mode saison ?",
+    answer:
+      "Une seule grande carte pour toute la partie. Votre réseau reste d'un jour à l'autre, et chaque jour un chantier devient un quartier habité qu'il faut relier. Pas de confiance en saison : une jauge de soif monte quand des quartiers restent sans eau, et la saison s'arrête à 100 %. Tous les 7 jours, une amélioration est offerte.",
   },
   {
     question: "Comment l'eau se répartit-elle ?",
@@ -75,7 +80,7 @@ const faqs = [
     <p class="lead narrow">
       Aix-en-Provence, 2140. Chaque jour, une nouvelle carte : tracez tuyaux et viaducs jusqu'aux quartiers,
       ouvrez les vannes, et livrez l'eau en {TUNING.dayLength} secondes. Puis améliorez votre réseau, car
-      demain sera plus dur. Nouveau : la <strong>carte du jour</strong>, la même pour tout le monde.
+      demain sera plus dur. Nouveau : le <strong>mode saison</strong>, où votre réseau grandit avec la ville.
     </p>
   </header>
 
@@ -148,6 +153,7 @@ const faqs = [
       </p>
       <h3 style="margin-top: 1.5rem;">Nouveautés</h3>
       <ul class="plain-list">
+        <li><strong>Version 0.4 (21 novembre) :</strong> le mode saison : une grande carte, un réseau qui reste, un nouveau quartier chaque jour et une jauge de soif. <a href="/devlogs/mode-saison-reseau-persistant/">Le devlog</a>.</li>
         <li><strong>Version 0.3.1 (20 novembre) :</strong> le jeu s'adapte aux petits cadres (itch.io), et la partie ne peut plus démarrer derrière l'écran d'accueil.</li>
         <li><strong>Version 0.3 (20 novembre) :</strong> la carte du jour, identique pour tous les joueurs, et le partage du score. <a href="/devlogs/carte-du-jour-generation-deterministe/">Comment ça marche</a>.</li>
         <li><strong>Version 0.2 (17 novembre) :</strong> le jeu des viaducs remplace notre premier prototype. <a href="/devlogs/pivot-viaducs-generation-procedurale/">Pourquoi ce changement</a>.</li>

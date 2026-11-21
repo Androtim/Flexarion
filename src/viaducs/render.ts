@@ -112,6 +112,19 @@ function drawTerrain(l: Level, S: number, dpr: number): HTMLCanvasElement {
       g.moveTo(x + S * 0.3, y + S * 0.35);
       g.lineTo(x + S * 0.55, y + S * 0.28);
       g.stroke();
+    } else if (l.ground[i] === "site") {
+      // Chantier d'un futur quartier (mode saison) : piquets et cordeau en pointillés.
+      g.strokeStyle = "rgba(196,83,47,0.6)";
+      g.lineWidth = Math.max(1, S * 0.04);
+      g.setLineDash([S * 0.09, S * 0.07]);
+      g.strokeRect(x + S * 0.18, y + S * 0.18, S * 0.64, S * 0.64);
+      g.setLineDash([]);
+      g.fillStyle = "rgba(147,57,31,0.7)";
+      for (const [px, py] of [[0.18, 0.18], [0.82, 0.18], [0.18, 0.82], [0.82, 0.82]]) {
+        g.beginPath();
+        g.arc(x + S * px, y + S * py, S * 0.05, 0, 7);
+        g.fill();
+      }
     } else if (l.ground[i] === "pines") {
       // Pins parasols, vus du dessus.
       for (let k = 0; k < 3; k++) {

@@ -102,3 +102,19 @@ Flexarion is a fictional studio created for a student project (BUT Informatique,
 ## 4. Après la publication
 - Copie l'adresse de la page du jeu et envoie-la-moi : je l'ajoute dans les profils `sameAs` du site (signal de marque pour Google), comme itch.io.
 - Pour chaque nouvelle version : nouvelle release avec le nouveau zip et le numéro de version.
+
+---
+
+## 5. Post Game Jolt v0.4 (21/11)
+Release : nouvelle version `0.4` dans le package, zip `veridia-2140-web-v0.4.zip`. Image : `public/images/devlog-saison.jpg`.
+
+**Titre :** Veridia 2140 v0.4: Season mode, a network that grows with the city
+
+> New way to play: **Season mode**. One big map for the whole run, and your pipes stay from one day to the next. Every morning a construction site becomes a new district you have to connect (you can see the future sites from day 1, so plan your trunk lines). +3 pipes per day, a free upgrade every 7 days, and a **thirst gauge** instead of trust: it rises when districts go dry, and the season ends at 100%.
+>
+> The trap: one pipe carries 7 m³/s. By day 8, the neat network you built on day 3 becomes the city's bottleneck.
+>
+> How we keep every day of a season solvable (French, with details): https://flexarion.alwaysdata.net/devlogs/mode-saison-reseau-persistant/
+> Play: https://flexarion.alwaysdata.net/jouer/
+>
+> How many days do you last?

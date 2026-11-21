@@ -1,7 +1,7 @@
 // Veridia 2140 : réglages du jeu. C'est ici qu'entrent les ajouts du défi « La ville des joueurs ».
 
 /** Version du jeu : +0.1 à chaque ajout du défi. */
-export const GAME_VERSION = "0.3.1";
+export const GAME_VERSION = "0.4";
 
 export const TUNING = {
   /** Durée d'une journée, vannes ouvertes (secondes). */
@@ -14,6 +14,25 @@ export const TUNING = {
   viaductCost: 2,
   trustMax: 3,
   credits: { quarter: 10, emergency: 12, sparePipe: 1, perfect: 5 },
+};
+
+/** Mode saison : une seule grande carte, le réseau du joueur reste d'un jour à l'autre. */
+export const SEASON = {
+  w: 16,
+  h: 11,
+  /** Quartiers en chantier sur la carte : un nouveau devient habité chaque jour. */
+  quarters: 12,
+  sources: 2,
+  /** Quartiers habités au jour 1. */
+  startQuarters: 2,
+  /** Tuyaux supplémentaires reçus chaque nouveau jour. */
+  pipesPerDay: 3,
+  /** Tous les combien de jours le joueur choisit une amélioration gratuite. */
+  weekly: 7,
+  /** Soif de la ville (sur 100) : la saison s'arrête à 100. */
+  thirstPerQuarter: 8,
+  thirstPerEmergency: 10,
+  thirstRelief: 15,
 };
 
 export type UpgradeId = "speed" | "water" | "pipes";
