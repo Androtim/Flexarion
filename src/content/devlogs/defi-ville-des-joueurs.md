@@ -15,6 +15,8 @@ summaryPoints:
   - "Ce qui se passe côté code, du commentaire à la nouvelle version."
 ---
 
+> **Mise à jour du 23 novembre :** le vote tous les deux jours est arrêté. Vos idées restent les bienvenues en commentaire (itch.io, Game Jolt, TikTok, Instagram) : celles qui tiennent dans l'univers entrent dans une prochaine version. Voir [la page du jeu](/jouer/).
+
 Veridia 2140 est jouable depuis quelques jours. Maintenant, on veut que ce soient les joueurs qui décident de la suite. D'où le défi **La ville des joueurs**.
 
 ## Le principe

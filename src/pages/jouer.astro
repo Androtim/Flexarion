@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import FaqSection from "../components/FaqSection.astro";
 import ViaducsApp from "../components/ViaducsApp.astro";
 import { GAME_VERSION, TUNING } from "../viaducs/content";
-import { DEFI_ENTRIES, DEFI_VOTE } from "../data/defi";
+import { DEFI_ENTRIES } from "../data/defi";
 import { STUDIO } from "../data/site";
 
 const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
@@ -60,7 +60,7 @@ const faqs = [
   {
     question: "Le jeu va-t-il évoluer ?",
     answer:
-      "Oui : tous les deux jours, l'idée la plus aimée en commentaire sur nos réseaux est ajoutée au jeu. Suivez @flexarion sur Instagram et @flexarion_studio sur TikTok.",
+      "Oui. Chaque version est annoncée dans nos devlogs, et vos idées laissées en commentaire (itch.io, Game Jolt, TikTok, Instagram) peuvent entrer dans le jeu.",
   },
 ];
 ---
@@ -88,39 +88,24 @@ const faqs = [
 
   <section class="block" aria-labelledby="defi-heading">
     <div class="wrap narrow">
-      <h2 id="defi-heading">Le défi : la ville des joueurs</h2>
+      <h2 id="defi-heading">Vos idées dans le jeu</h2>
       <p class="lead">
-        Tous les deux jours, l'idée la plus aimée en commentaire sur
+        Une idée pour Veridia 2140 : une urgence, un quartier, une règle, un obstacle ? Laissez-la en commentaire sur
+        <a href={`${STUDIO.itch}veridia-2140`} target="_blank" rel="noopener noreferrer">itch.io</a>,
+        <a href={STUDIO.gamejolt} target="_blank" rel="noopener noreferrer">Game Jolt</a>,
         <a href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a> ou
-        <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">Instagram</a> entre dans le
-        jeu : un bâtiment, un événement, une règle. Veridia se construit avec vous.
+        <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer">Instagram</a>. Nous les lisons toutes,
+        et celles qui tiennent dans l'univers entrent dans une prochaine version.
       </p>
-      <div class="vote-box">
-        {
-          DEFI_VOTE.url ? (
-            <>
-              <p><strong>Vote n°{DEFI_VOTE.round} ouvert</strong>{DEFI_VOTE.closes && <> jusqu'au {new Date(DEFI_VOTE.closes).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}</>}.</p>
-              <a class="btn btn-sun" href={DEFI_VOTE.url} target="_blank" rel="noopener noreferrer">Proposer mon idée sur {DEFI_VOTE.platform}</a>
-            </>
-          ) : (
-            <>
-              <p><strong>Le prochain vote arrive bientôt.</strong> Abonnez-vous pour ne pas le manquer.</p>
-              <a class="btn btn-sun" href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer">Suivre Flexarion sur TikTok</a>
-            </>
-          )
-        }
-        <p class="note">Idées faciles à faire entrer : une nouvelle urgence, un quartier, une source, une amélioration, un obstacle, une règle.</p>
-      </div>
       <ul class="plain-list">
-        <li><strong>Comment participer :</strong> commentez sous la vidéo du vote. Le commentaire avec le plus de « j'aime » à la clôture l'emporte.</li>
-        <li><strong>Ce qui compte :</strong> l'idée doit rester dans l'univers de Veridia 2140. Nous gardons un droit de veto sur ce qui est offensant ou hors sujet, et prenons alors l'idée suivante.</li>
+        <li><strong>Ce qui compte :</strong> l'idée doit rester dans l'univers de Veridia 2140 et se jouer en quelques secondes.</li>
         <li><strong>Rien à gagner :</strong> ce n'est pas un concours. Votre idée dans le jeu, c'est tout (et c'est déjà pas mal).</li>
         <li><strong>Vos données :</strong> nous ne citons votre pseudo qu'avec votre accord.</li>
       </ul>
-      <h3 style="margin-top: 2rem;">Les ajouts (version actuelle : {GAME_VERSION})</h3>
+      <h3 style="margin-top: 2rem;">Idées de joueurs ajoutées (version actuelle : {GAME_VERSION})</h3>
       {
         DEFI_ENTRIES.length === 0 ? (
-          <p>Le premier vote arrive bientôt. Suivez-nous pour proposer la première idée.</p>
+          <p>Aucune pour l'instant : la vôtre peut être la première.</p>
         ) : (
           <ol class="timeline">
             {DEFI_ENTRIES.map((e) => (
@@ -177,19 +162,4 @@ const faqs = [
 </BaseLayout>
 
 <style>
-  .vote-box {
-    margin: 1.5rem 0;
-    padding: 1.2rem 1.3rem;
-    border-radius: var(--radius-m);
-    background: var(--chalk);
-    border-left: 4px solid var(--sun);
-  }
-
-  .vote-box p {
-    margin: 0 0 0.8rem;
-  }
-
-  .vote-box .note {
-    margin: 0.9rem 0 0;
-  }
 </style>
