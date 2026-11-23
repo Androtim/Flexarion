@@ -1,5 +1,5 @@
-// Défi « La ville des joueurs » : tous les 2 jours, l'idée la plus aimée en commentaire
-// (TikTok, Instagram) entre dans Veridia 2140. Une entrée par ajout, la plus récente en premier.
+// Idées de joueurs ajoutées à Veridia 2140 (affichées sur /jouer/). Une entrée par ajout, la plus récente en premier.
+// Le défi « La ville des joueurs » à vote tous les deux jours a été abandonné le 23/11 ; DEFI_VOTE n'est plus affiché.
 
 export interface DefiEntry {
   /** Numéro de l'ajout (1, 2, 3…). */
