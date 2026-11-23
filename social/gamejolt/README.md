@@ -75,13 +75,13 @@ Every day brings a new procedurally generated map of the Aix area. Draw pipes fr
 
 **Daily map:** everyone gets the same maps on the same day, so you can compare scores. A free mode with random maps is also available.
 
-**Your ideas in the game:** every two days, the most-liked idea in the comments of our TikTok and Instagram videos is added to the game.
+**Your ideas in the game:** leave them in the comments. We read them all, and the ones that fit the world make it into a future version.
 
 The interface is in **French**, but the game is mostly drag-and-watch.
 
 ---
 
-**Veridia 2140** est un jeu de puzzle et de stratégie gratuit de **Flexarion**, à Aix-en-Provence en 2140 : tracez tuyaux et viaducs, livrez l'eau aux quartiers en 40 secondes, répondez aux urgences et améliorez votre réseau. Carte du jour identique pour tous, partie libre, et vos idées entrent dans le jeu tous les deux jours.
+**Veridia 2140** est un jeu de puzzle et de stratégie gratuit de **Flexarion**, à Aix-en-Provence en 2140 : tracez tuyaux et viaducs, livrez l'eau aux quartiers en 40 secondes, répondez aux urgences et améliorez votre réseau. Carte du jour identique pour tous, mode saison et partie libre.
 
 Flexarion is a fictional studio created for a student project (BUT Informatique, IUT d'Aix-Marseille). Free, no ads, no data collected.
 

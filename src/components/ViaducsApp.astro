@@ -2,9 +2,8 @@
 // Veridia 2140, le jeu des viaducs : partagé par /jouer/ et la version embarquée (itch.io).
 import { GAME_VERSION, TUNING } from "../viaducs/content";
 import { STUDIO } from "../data/site";
-import { DEFI_VOTE } from "../data/defi";
 
-const ideaUrl = DEFI_VOTE.url ?? STUDIO.tiktok;
+const ideaUrl = `${STUDIO.itch}veridia-2140`;
 
 interface Props {
   /** Version compacte pour les cadres de petite taille (itch.io) : la carte s'ajuste aussi à la hauteur. */
@@ -84,7 +83,7 @@ const { compact = false } = Astro.props;
           <div class="overlay-card">
             <h2>La ville a soif</h2>
             <p data-over-text></p>
-            <p>Une idée pour le jeu ? Dites-la en commentaire sur nos réseaux : la plus aimée entre dans Veridia.</p>
+            <p>Une idée pour le jeu ? Dites-la en commentaire sur nos réseaux : nous les lisons toutes.</p>
             <div class="actions">
               <button type="button" class="btn btn-sun" data-share>Partager mon score</button>
               <button type="button" class="btn btn-ghost" data-restart="same">Rejouer</button>

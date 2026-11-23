@@ -50,6 +50,13 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-23 14:40] · Claude Opus 5.5 via Claude Code
+- **Branche :** `content/idees-sans-vote`.
+- **Décision de l'utilisateur :** abandon des vidéos de vote (défi « La ville des joueurs » tous les deux jours), pas de Reddit, pas de version anglaise.
+- **Fait :** le site ne promet plus de vote : section « Vos idées dans le jeu » sur `/jouer/` (commentaires itch.io, Game Jolt, TikTok, Instagram, sans calendrier), FAQ de `/jouer/` et `/jeux/veridia-2140/`, texte de fin de partie, lien « Proposer une idée » vers la page itch. Note de mise à jour en tête du devlog #4. `DEFI_ENTRIES` reste affiché (idées ajoutées) ; `DEFI_VOTE` n'est plus utilisé. Brouillon itch `02-defi…` supprimé, zip v0.4 reconstruit.
+- **Pourquoi :** ne pas laisser sur le site une promesse qui ne sera pas tenue.
+- **À faire ensuite :** si un commentaire propose une bonne idée, l'ajouter (entrée `DEFI_ENTRIES`, version +0.1, devlog).
+
 ### [2026-11-21 19:30] · Claude Opus 5.5 via Claude Code
 - **Branche :** `feat/mode-saison`.
 - **Fait :** jeu v0.4, **mode saison** (inspiré du genre « réseau qui grandit », sans reprendre de jeu existant). `generateSeason` (`src/viaducs/level.ts`) génère une carte 16×11 et 12 quartiers ; l'ordre de `greedyNetwork` (nouveaux champs `order`/`steps`) fixe l'ordre d'apparition, et chaque préfixe doit tenir dans les tuyaux de base (12 + 3/jour, `SEASON` dans `content.ts`). Les quartiers futurs sont au sol `site` (chantier, dessiné en pointillés). `newSeason`, `chooseWeekly`, `pipeBudget` dans `sim.ts` : réseau et eau conservés au jour suivant, jauge de soif (0-100) à la place de la confiance, amélioration offerte tous les 7 jours. Interface : bouton « Mode saison » (accueil + panneau), jauge « Soif », bloc « Choix de la semaine », record de saison séparé (`veridia-2140-saison-record`), `?demo=N&mode=saison`. Tests dans `scripts/viaducs-check.ts` (440 journées de saison jouables, bot 6-9 jours). Devlog #6, FAQ et nouveautés de `/jouer/`. **Correctif** `scripts/build-itch.mjs` : le script intégré était inséré avec `String.replace` sur une chaîne, qui interprète `$&`/`$'` ; le nouveau code minifié en contenait, le jeu ne démarrait plus dans le zip. Remplacement par fonction.

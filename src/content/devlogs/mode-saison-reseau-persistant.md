@@ -45,6 +45,6 @@ Ensuite, il fait les comptes. Au jour *d*, il faut relier les quartiers habités
 
 ## Et ensuite
 
-Le mode saison est fait pour durer plus longtemps qu'une partie normale, mais il finit toujours : les quartiers boivent un peu plus chaque jour. Dites-nous jusqu'où vous allez, et ce qui manque. L'idée la plus aimée en commentaire sur nos réseaux entre dans le jeu.
+Le mode saison est fait pour durer plus longtemps qu'une partie normale, mais il finit toujours : les quartiers boivent un peu plus chaque jour. Dites-nous jusqu'où vous allez, et ce qui manque. Vos idées en commentaire peuvent entrer dans une prochaine version.
 
 [Jouer au mode saison](/jouer/)
