@@ -29,6 +29,7 @@ export const NAV_ITEMS = [
   { label: "Accueil", href: "/" },
   { label: "Le Studio", href: "/studio/" },
   { label: "Veridia 2140", href: "/jeux/veridia-2140/" },
+  { label: "REWIRE", href: "/jeux/rewire/" },
   { label: "Univers", href: "/jeux/veridia-2140/univers/" },
   { label: "Jouer", href: "/jouer/" },
   { label: "Devlogs", href: "/devlogs/" },
