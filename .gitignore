@@ -28,5 +28,6 @@ social/videos/*.mp4
 social/videos/preview-*
 social/rewire/*.mp4
 social/rewire/preview-*
+social/rewire/audio/
 social/itch/build/
 social/itch/*.zip
