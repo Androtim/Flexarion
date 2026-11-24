@@ -5,24 +5,19 @@ import { STUDIO } from "../data/site";
 
 const roles = [
   {
-    role: "Programmation et simulation",
-    who: "Timothée B. (Androtim)",
-    text: "Le moteur de simulation de l'eau et de la chaleur, le site et les outils de test.",
+    role: "Gestion des comptes et développement",
+    who: "Timothée Béghin (Androtim)",
+    text: "Développement du site et du moteur de jeu, déploiement, référencement technique et gestion des comptes.",
   },
   {
-    role: "Game design",
-    who: "Présentation à venir",
-    text: "L'équilibrage des étés, la progression du joueur, les scénarios de crise.",
+    role: "Conception de jeux",
+    who: "Vladislav Dumont",
+    text: "Game design de Veridia 2140, concept des viaducs, progression par journées et équilibrage des urgences.",
   },
   {
-    role: "Direction artistique",
-    who: "Présentation à venir",
-    text: "Le style visuel de Veridia, le logo, les planches de recherche.",
-  },
-  {
-    role: "Écriture et communauté",
-    who: "Présentation à venir",
-    text: "L'univers de 2140, les devlogs, Instagram et les échanges avec la presse.",
+    role: "Promotion du studio",
+    who: "Leny Rossines",
+    text: "Communication, présence sur les réseaux et diffusion du studio et de Veridia 2140.",
   },
 ];
 ---
@@ -70,11 +65,11 @@ const roles = [
       <div class="narrow">
         <h2 id="team-heading">Qui fait quoi</h2>
         <p>
-          Une petite équipe, organisée comme un vrai studio indépendant. Les présentations individuelles
-          arrivent avec la composition définitive du groupe.
+          Une équipe de trois étudiants en BUT Informatique à l'IUT d'Aix-Marseille, organisée comme un petit
+          studio indépendant.
         </p>
       </div>
-      <div class="cards grid-districts">
+      <div class="cards">
         {
           roles.map((r) => (
             <article class="card">
