@@ -1,0 +1,239 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FaqSection from "../../components/FaqSection.astro";
+import ResponsivePicture from "../../components/ResponsivePicture.astro";
+import { STUDIO } from "../../data/site";
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+
+const rewireSchema = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: "REWIRE",
+  url: `${siteOrigin}/jeux/rewire/`,
+  description:
+    "REWIRE est le nouveau jeu de simulation et gestion de Flexarion : transformer une infrastructure électrique brutaliste et polluante en réseau 100 % renouvelable sur des cartes procédurales, construit avec les votes de la communauté en Reels.",
+  genre: ["Simulation", "Strategy", "Puzzle", "Science Fiction"],
+  gamePlatform: ["Web browser"],
+  playMode: "SinglePlayer",
+  isAccessibleForFree: true,
+  inLanguage: "fr",
+  author: { "@id": `${siteOrigin}/#organization` },
+  publisher: { "@id": `${siteOrigin}/#organization` },
+  image: `${siteOrigin}/images/rewire-hero.jpg`,
+};
+
+const rewireFaqs = [
+  {
+    question: "Quelle est la différence entre REWIRE et Veridia 2140 ?",
+    answer:
+      "Veridia 2140 (v0.4, jouable gratuitement sur le site) est centré sur l'eau et les viaducs à Aix-en-Provence. REWIRE est notre deuxième projet : il est strictement centré sur l'électricité — production renouvelable intermittente, transport, stockage, blackouts et réhabilitation d'anciennes centrales brutalistes.",
+  },
+  {
+    question: "Les cartes de REWIRE sont-elles générées de façon procédurale ?",
+    answer:
+      "Oui. Chaque zone industrielle brutaliste, son réseau initial surchargé et ses terrains dégradés sont générés de façon procédurale pour offrir des puzzles de réseau toujours renouvelés.",
+  },
+  {
+    question: "Comment proposer une idée ou voter pour les mécaniques de REWIRE ?",
+    answer:
+      "Tout au long du développement, nous publions des Reels sur Instagram (@flexarion), TikTok (@flexarion_studio) et YouTube Shorts avec un dilemme concret ou une question ouverte. Les idées et votes en commentaire guident directement les mécaniques ajoutées au jeu.",
+  },
+  {
+    question: "REWIRE sera-t-il gratuit ?",
+    answer:
+      "Oui. Comme Veridia 2140, REWIRE est développé dans le cadre de notre projet universitaire à l'IUT d'Aix-Marseille : rien n'est vendu sur ce site.",
+  },
+];
+---
+
+<BaseLayout
+  title="REWIRE : jeu d'électricité verte par Flexarion Studio"
+  description="REWIRE, le nouveau jeu de Flexarion : recâblez une infrastructure électrique brutaliste vers le renouvelable sur des cartes procédurales, co-construit en Reels."
+  preloadHeroBase="/images/rewire-hero"
+  ogImage="/images/rewire-hero.jpg"
+  ogImageAlt="REWIRE par Flexarion : transition d'une centrale électrique brutaliste vers un réseau renouvelable et verdoyant"
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "REWIRE", href: "/jeux/rewire/" },
+  ]}
+  schemas={[rewireSchema]}
+>
+  <header class="wrap page-head split">
+    <div>
+      <h1>REWIRE : recâblez le réseau, libérez le béton.</h1>
+      <p class="lead">
+        Le deuxième jeu de Flexarion. Un jeu de simulation et de gestion 100 % centré sur
+        <strong>l'électricité verte</strong> : débrancher une industrie brutaliste et polluante sans
+        plonger la ville dans le blackout, sur des cartes procédurales.
+      </p>
+      <dl class="facts">
+        <div><dt>Genre</dt><dd>Simulation électrique, stratégie, renaturation</dd></div>
+        <div><dt>Inspirations</dt><dd>Logistique de réseau (Factorio) × restauration (Terra Nil)</dd></div>
+        <div><dt>Cartes</dt><dd>Génération procédurale</dd></div>
+        <div><dt>Statut</dt><dd>En développement participatif (série de Reels)</dd></div>
+      </dl>
+      <div class="actions" style="margin-top: 1.5rem;">
+        <a href="#vote-episode-1" class="btn btn-sun">Voter pour l'épisode 1</a>
+        <a href="/devlogs/annonce-rewire-electricite-verte/" class="btn btn-ghost">Lire le devlog #7</a>
+      </div>
+    </div>
+    <figure class="photo">
+      <ResponsivePicture
+        src="/images/rewire-hero.jpg"
+        alt="REWIRE par Flexarion : d'une centrale brutaliste fumante à un réseau éolien et solaire végétalisé"
+        width={1280}
+        height={720}
+        eager={true}
+      />
+      <figcaption>De la centrale brutaliste surchargée au micro-réseau renouvelable.</figcaption>
+    </figure>
+  </header>
+
+  <section class="block block-chalk" aria-labelledby="pillars-heading">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="pillars-heading">Un jeu 100 % électricité, du brutaliste au vivant</h2>
+        <p class="lead">
+          Après avoir exploré la gestion de l'eau avec <strong>Veridia 2140</strong>, REWIRE place les flux
+          électriques, l'intermittence et la réhabilitation du béton au centre absolu du gameplay.
+        </p>
+      </div>
+
+      <article class="mechanic">
+        <div>
+          <span class="tag">1. Réseau électrique</span>
+          <h3>Équilibrer charge, intermittence et stockage</h3>
+          <p>
+            Solaire, éolien, géothermie et stockage d'énergie remplacent peu à peu les centrales fossiles.
+            Chaque ligne et chaque nœud a sa capacité : un pic de demande mal anticipé, une perte en ligne
+            ou un stockage vide, et c'est le blackout.
+          </p>
+        </div>
+        <figure class="diagram">
+          <svg viewBox="0 0 460 240" width="460" height="240" role="img" aria-label="Schéma du réseau électrique de REWIRE : production renouvelable, stockage et équilibre de charge">
+            <rect width="460" height="240" rx="14" fill="#13262E" />
+            <path d="M75 120 H190 M250 120 H365 M220 55 V92 M220 148 V188" stroke="#1FB5A8" stroke-width="5" stroke-linecap="round" />
+            <circle cx="75" cy="120" r="24" fill="#1E3A44" stroke="#F0A43A" stroke-width="3" />
+            <text x="75" y="125" text-anchor="middle" fill="#EFE6D2" font-size="12" font-weight="700">SOLAIRE</text>
+            <rect x="190" y="92" width="60" height="56" rx="8" fill="#1A4744" stroke="#2AD4A5" stroke-width="3" />
+            <text x="220" y="124" text-anchor="middle" fill="#EFE6D2" font-size="12" font-weight="700">NŒUD</text>
+            <rect x="176" y="22" width="88" height="32" rx="6" fill="#2B343A" stroke="#2AD4A5" stroke-width="2" />
+            <text x="220" y="42" text-anchor="middle" fill="#2AD4A5" font-size="11" font-weight="700">STOCKAGE</text>
+            <rect x="176" y="188" width="88" height="32" rx="6" fill="#3A2825" stroke="#E85D3F" stroke-width="2" />
+            <text x="220" y="208" text-anchor="middle" fill="#F0A43A" font-size="11" font-weight="700">PIC CHARGE</text>
+            <circle cx="385" cy="120" r="26" fill="#1E5242" stroke="#2AD4A5" stroke-width="3" />
+            <text x="385" y="124" text-anchor="middle" fill="#EFE6D2" font-size="12" font-weight="700">VILLE</text>
+          </svg>
+        </figure>
+      </article>
+
+      <article class="mechanic">
+        <div>
+          <span class="tag">2. Brutalisme → Vert</span>
+          <h3>Réhabiliter le béton au lieu de tout raser</h3>
+          <p>
+            On démarre face à des blocs de béton brut, des cheminées fumantes et des sols dégradés.
+            Plutôt que d'effacer le passé industriel, vous convertissez les vieilles tours et sous-stations :
+            à mesure que la part d'électricité propre grimpe, la végétation reconquiert le territoire.
+          </p>
+        </div>
+        <figure class="diagram">
+          <svg viewBox="0 0 460 240" width="460" height="240" role="img" aria-label="Schéma avant-après : bloc de béton brutaliste reconverti en structure verte">
+            <rect width="460" height="240" rx="14" fill="#13262E" />
+            <!-- Avant -->
+            <rect x="40" y="75" width="125" height="120" fill="#4B5359" />
+            <rect x="60" y="38" width="24" height="37" fill="#3A4147" />
+            <rect x="60" y="38" width="24" height="8" fill="#C4532F" />
+            <rect x="58" y="96" width="32" height="58" fill="#202529" />
+            <rect x="108" y="96" width="32" height="58" fill="#202529" />
+            <text x="102" y="216" text-anchor="middle" fill="#B5C3C7" font-size="12">Avant : fossile</text>
+            <!-- Flèche -->
+            <path d="M190 135 H256 M244 123 L258 135 L244 147" fill="none" stroke="#F0A43A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Après -->
+            <rect x="285" y="75" width="125" height="120" fill="#5B676B" />
+            <rect x="303" y="96" width="88" height="22" rx="3" fill="#2AD4A5" />
+            <rect x="303" y="130" width="66" height="22" rx="3" fill="#1FB5A8" />
+            <path d="M285 195 C295 162 325 160 342 175 C362 155 395 162 410 195 Z" fill="#2E8B63" />
+            <circle cx="408" cy="78" r="16" fill="#349E6F" />
+            <text x="348" y="216" text-anchor="middle" fill="#2AD4A5" font-size="12" font-weight="700">Après : réseau vert</text>
+          </svg>
+        </figure>
+      </article>
+
+      <article class="mechanic">
+        <div>
+          <span class="tag">3. Procédural &amp; participatif</span>
+          <h3>Des cartes procédurales, et vos idées dans le jeu</h3>
+          <p>
+            Chaque carte génère une topographie industrielle différente : emplacements des vieilles centrales,
+            corridors de vent, zones d'ensoleillement et quartiers à alimenter. Et les nouvelles mécaniques
+            sont choisies épisode après épisode grâce aux votes de nos Reels.
+          </p>
+        </div>
+        <figure class="diagram">
+          <svg viewBox="0 0 460 240" width="460" height="240" role="img" aria-label="Schéma de la boucle communautaire : Reel interactif, vote en commentaire, prototype mis à jour">
+            <rect width="460" height="240" rx="14" fill="#13262E" />
+            <rect x="30" y="78" width="115" height="76" rx="10" fill="#1B343E" stroke="#F0A43A" stroke-width="2" />
+            <text x="87" y="112" text-anchor="middle" fill="#EFE6D2" font-size="13" font-weight="700">1. REEL</text>
+            <text x="87" y="132" text-anchor="middle" fill="#B5C3C7" font-size="11">Dilemme A / B</text>
+
+            <path d="M152 116 H172" stroke="#2AD4A5" stroke-width="3" stroke-linecap="round" />
+
+            <rect x="175" y="78" width="115" height="76" rx="10" fill="#1B343E" stroke="#2AD4A5" stroke-width="2" />
+            <text x="232" y="112" text-anchor="middle" fill="#EFE6D2" font-size="13" font-weight="700">2. VOTE</text>
+            <text x="232" y="132" text-anchor="middle" fill="#B5C3C7" font-size="11">Commentaires</text>
+
+            <path d="M297 116 H317" stroke="#2AD4A5" stroke-width="3" stroke-linecap="round" />
+
+            <rect x="320" y="78" width="115" height="76" rx="10" fill="#1E5242" stroke="#2AD4A5" stroke-width="2" />
+            <text x="377" y="112" text-anchor="middle" fill="#EFE6D2" font-size="13" font-weight="700">3. EN JEU</text>
+            <text x="377" y="132" text-anchor="middle" fill="#EFE6D2" font-size="11">Ajouté au proto</text>
+          </svg>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section id="vote-episode-1" class="block block-dusk" aria-labelledby="vote-heading">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="vote-heading">Vote Épisode 1 : choisissez la première mécanique de stockage</h2>
+        <p class="lead">
+          Pour lancer la série de Reels participatifs autour de <strong>REWIRE</strong>, la communauté
+          tranche sur la première technologie de stockage électrique à intégrer au jeu :
+        </p>
+      </div>
+      <div class="cards grid-districts" style="margin-top: 2rem;">
+        <article class="card" style="background: rgba(255,255,255,0.06); color: var(--limestone); border-color: rgba(255,255,255,0.14);">
+          <span class="card-role" style="color: var(--sun);">Option A</span>
+          <h3 style="color: #fff;">Stockage gravitaire brutaliste</h3>
+          <p style="color: var(--soft);">
+            Reconvertir les anciennes tours et cheminées en béton en batteries gravitaires qui stockent le
+            surplus renouvelable en soulevant des masses.
+          </p>
+        </article>
+        <article class="card" style="background: rgba(255,255,255,0.06); color: var(--limestone); border-color: rgba(255,255,255,0.14);">
+          <span class="card-role" style="color: #2AD4A5;">Option B</span>
+          <h3 style="color: #fff;">Volants d'inertie géants</h3>
+          <p style="color: var(--soft);">
+            Construire des volants d'inertie haute vitesse capables d'absorber instantanément les pics de
+            charge et de stabiliser la fréquence du réseau.
+          </p>
+        </article>
+      </div>
+      <div class="actions" style="margin-top: 2rem;">
+        <a href={STUDIO.instagramMain} target="_blank" rel="noopener noreferrer" class="btn btn-sun">Voter sur Instagram</a>
+        <a href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer" class="btn btn-water">Voter sur TikTok</a>
+        <a href={STUDIO.youtube} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Voir sur YouTube</a>
+      </div>
+      <p class="note" style="margin-top: 1.5rem; color: var(--soft);">
+        REWIRE est développé par Flexarion Studio (Timothée Béghin, Vladislav Dumont, Leny Rossines) dans le
+        cadre du BUT Informatique à l'IUT d'Aix-Marseille. En attendant le prototype jouable, vous pouvez
+        toujours <a href="/jouer/" style="color: #fff;">jouer gratuitement à Veridia 2140</a>.
+      </p>
+    </div>
+  </section>
+
+  <FaqSection title="Questions fréquentes sur REWIRE" items={rewireFaqs} tone="chalk" />
+</BaseLayout>

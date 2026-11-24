@@ -20,10 +20,16 @@
 - **Mécaniques clés :** tracer tuyaux et viaducs depuis les sources jusqu'aux quartiers d'Aix, partage équitable de l'eau aux embranchements, urgences chronométrées, améliorations entre les journées, carte du jour identique pour tous.
 - **Modèle économique :** gratuit, sans publicité (projet universitaire, aucune commercialisation réelle).
 
+## Nouveau Jeu en Développement : REWIRE
+- **Type :** Simulation électrique & renaturation sur cartes procédurales (100 % électricité verte, brutalisme → vivant)
+- **Format :** Co-construit avec la communauté via une série de Reels interactifs (Instagram, TikTok, YouTube Shorts)
+- **Page dédiée :** https://flexarion.alwaysdata.net/jeux/rewire/
+
 ## Pages Principales
 - [Accueil Flexarion](/): Présentation du studio et positionnement
-- [Le Studio](/studio/): Histoire aixoise, équipe, manifeste Solarpunk et transparence IA
-- [Veridia 2140](/jeux/veridia-2140/): Fiche complète du jeu phare, gameplay et FAQ
+- [Le Studio](/studio/): Histoire aixoise, équipe (Timothée Béghin, Vladislav Dumont, Leny Rossines), manifeste et transparence IA
+- [Veridia 2140](/jeux/veridia-2140/): Fiche complète du premier jeu, gameplay et FAQ
+- [REWIRE](/jeux/rewire/): Fiche du nouveau jeu d'électricité verte et votes Reels
 - [Jouer à Veridia 2140](/jouer/): Jeu gratuit dans le navigateur : puzzle de viaducs en temps réel dans Aix-en-Provence, cartes procédurales, urgences
 - [Devlogs](/devlogs/): Journal de développement technique et artistique
 - [Contact & Kit Presse](/contact/): Demandes presse, partenaires et canaux officiels

@@ -18,9 +18,9 @@ const homeFaqs = [
       "Flexarion est un studio indépendant de jeux vidéo de science-fiction basé à Aix-en-Provence. C'est un studio fictif, créé par des étudiants en BUT Informatique à l'IUT d'Aix-Marseille dans le cadre d'un projet de communication.",
   },
   {
-    question: "Sur quel jeu travaille Flexarion ?",
+    question: "Sur quels jeux travaille Flexarion ?",
     answer:
-      "Flexarion crée Veridia 2140, un jeu de puzzle et de stratégie en temps réel qui se déroule à Aix-en-Provence en 2140. Le joueur trace tuyaux et viaducs pour amener l'eau aux quartiers, jour après jour. Il est jouable gratuitement dans le navigateur.",
+      "Notre premier jeu, Veridia 2140 (v0.4), est un puzzle de viaducs gratuit centré sur l'eau à Aix-en-Provence. Notre deuxième projet en développement, REWIRE, est un jeu procédural 100 % centré sur la transition d'une industrie électrique brutaliste vers l'électricité verte, co-construit en Reels.",
   },
   {
     question: "Où suivre l'actualité de Flexarion ?",
@@ -107,6 +107,38 @@ const homeFaqs = [
       <div class="actions">
         <a href="/jeux/veridia-2140/" class="btn btn-water">La fiche complète du jeu</a>
       </div>
+    </div>
+  </section>
+
+  <section class="block block-dusk" aria-labelledby="rewire-heading">
+    <div class="wrap split">
+      <div>
+        <span class="tag" style="background: rgba(42, 212, 165, 0.16); color: #2AD4A5;">Nouveau jeu en développement</span>
+        <h2 id="rewire-heading">REWIRE : du brutalisme à l'électricité verte</h2>
+        <p class="lead">
+          Maintenant que <strong>Veridia 2140</strong> a atteint sa version 0.4, nous lançons notre deuxième
+          projet : un jeu procédural 100 % centré sur l'électricité, entre logistique de réseau et
+          renaturation du béton.
+        </p>
+        <p>
+          Le développement se fait en ouvert via une série de Reels interactifs où vos votes en commentaire
+          décident des mécaniques ajoutées au jeu.
+        </p>
+        <div class="actions">
+          <a href="/jeux/rewire/" class="btn btn-sun">Découvrir REWIRE</a>
+          <a href="/devlogs/annonce-rewire-electricite-verte/" class="btn btn-ghost">Lire le devlog #7</a>
+        </div>
+      </div>
+      <figure class="photo">
+        <ResponsivePicture
+          src="/images/rewire-hero.jpg"
+          alt="REWIRE par Flexarion : transition d'une centrale brutaliste vers un réseau d'électricité verte"
+          width={1280}
+          height={720}
+          sizes="(max-width: 860px) 100vw, 540px"
+        />
+        <figcaption>REWIRE : recâblez le réseau, libérez le béton.</figcaption>
+      </figure>
     </div>
   </section>
 
