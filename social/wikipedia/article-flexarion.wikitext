@@ -1,0 +1,108 @@
+{{Infobox Société
+ | couleur boîte         = 
+ | titre                 = Flexarion
+ | logo                  = 
+ | taille logo           = 
+ | légende               = 
+ | slogan                = 
+ | forme juridique       = Projet universitaire (studio indépendant fictif)
+ | création              = [[novembre 2026]]
+ | fondateurs            = Timothée Béghin, Leny Rossines, Vladislav Dumont
+ | siège (ville)         = [[Aix-en-Provence]]
+ | siège (pays)          = {{France}}
+ | direction actuelle    = 
+ | secteur d'activité    = [[Industrie vidéoludique|Développement de jeux vidéo]]
+ | produits              = ''Veridia 2140''
+ | société mère          = 
+ | effectif              = 3 (2026)
+ | site web              = {{URL|https://flexarion.alwaysdata.net/}}
+}}
+
+'''Flexarion''' (également désigné sous le nom de '''Flexarion Studio''') est un studio indépendant de développement de [[jeu vidéo|jeux vidéo]] français, fondé en {{date-|novembre 2026}} à [[Aix-en-Provence]] dans le cadre d'un projet universitaire en [[Bachelor universitaire de technologie en informatique|BUT Informatique]] à l'[[Institut universitaire de technologie d'Aix-Marseille|IUT d'Aix-Marseille]]<ref name="studio">{{Lien web |langue=fr |titre=Le Studio Flexarion : Équipe et Histoire à Aix-en-Provence |url=https://flexarion.alwaysdata.net/studio/ |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+Créé par Timothée Béghin (développement et gestion des comptes), Vladislav Dumont (conception de jeux) et Leny Rossines (promotion du studio), le collectif conçoit des jeux de [[science-fiction]] d'inspiration [[solarpunk]] ancrés dans le territoire du [[Pays d'Aix]]. Sa production principale est '''''Veridia 2140''''', un jeu de réflexion et de stratégie en temps réel gratuit, jouable dans un [[navigateur web]], centré sur la gestion et l'acheminement de l'eau à travers des aqueducs et des viaducs<ref name="veridia">{{Lien web |langue=fr |titre=Veridia 2140 : jeu de viaducs gratuit par Flexarion, Aix |url=https://flexarion.alwaysdata.net/jeux/veridia-2140/ |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+== Historique ==
+
+=== Genèse du projet ===
+Flexarion voit le jour en {{date-|novembre 2026}} à l'[[Institut universitaire de technologie d'Aix-Marseille|IUT d'Aix-Marseille]], sur le site d'[[Aix-en-Provence]], dans le cadre du module de communication numérique et de référencement web du BUT Informatique<ref name="studio" />. L'équipe choisit de s'écarter de l'esthétique [[cyberpunk]] traditionnelle au profit d'un univers [[solarpunk]] méditerranéen, mettant en scène les enjeux hydriques et climatiques de la [[Provence]] au {{s-|XXII}}<ref name="devlog1">{{Lien web |langue=fr |titre=Devlog #1 : Pourquoi situer un jeu Solarpunk à Aix-en-Provence en 2140 ? |url=https://flexarion.alwaysdata.net/devlogs/genese-veridia-2140-solarpunk-aix/ |date=16 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+Un premier prototype jouable dans le navigateur, intitulé ''Veridia 2140 : Été 1'' (version 0.1), est mis en ligne le {{date-|16 novembre 2026}}. Il prend la forme d'un jeu de gestion et de construction de ville où le joueur doit alimenter cinq quartiers aixois en eau par gravité au cours d'un été de 90 jours, en gérant un réservoir, des bassins, des dômes solaires et un réseau mycélien<ref name="devlog2">{{Lien web |langue=fr |titre=Devlog #2 : Simuler l'eau et les réseaux mycéliens par graphes orientés |url=https://flexarion.alwaysdata.net/devlogs/simulation-flux-hydriques-graphes/ |date=16 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+=== Pivot vers le jeu de viaducs et évolutions ===
+Le {{date-|17 novembre 2026}}, jugeant le rythme d'''Été 1'' trop lent et peu adapté aux sessions courtes sur téléphone mobile, Flexarion opère un pivot de conception et publie la version 0.2 de ''Veridia 2140''<ref name="devlog3">{{Lien web |langue=fr |titre=Devlog #3 : On abandonne l'Été 1, place aux viaducs |url=https://flexarion.alwaysdata.net/devlogs/pivot-viaducs-generation-procedurale/ |date=17 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>. Le jeu adopte une formule de puzzle et de stratégie en temps réel reposant sur des cartes générées de façon procédurale, des viaducs permettant de franchir les vallons et la rivière de l'[[Arc (fleuve)|Arc]], ainsi que des situations d'urgence chronométrées. Le prototype initial ''Été 1'' reste accessible en ligne à titre d'archive jouable<ref name="devlog3" />.
+
+Le développement se poursuit avec plusieurs mises à jour successives :
+* le {{date-|20 novembre 2026}}, la version 0.3 introduit le mode « Carte du jour », proposant une carte quotidienne identique pour tous les joueurs ainsi qu'une fonction de partage de score<ref name="devlog5">{{Lien web |langue=fr |titre=Devlog #5 : La carte du jour, la même partie pour tout le monde |url=https://flexarion.alwaysdata.net/devlogs/carte-du-jour-generation-deterministe/ |date=20 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>, suivie de la version 0.3.1 optimisant l'affichage embarqué ;
+* le {{date-|21 novembre 2026}}, la version 0.4 ajoute le « Mode saison », dans lequel le réseau hydraulique du joueur est conservé d'un jour à l'autre sur une carte unique qui s'étend progressivement<ref name="devlog6">{{Lien web |langue=fr |titre=Devlog #6 : Le mode saison, un réseau qui grandit avec la ville |url=https://flexarion.alwaysdata.net/devlogs/mode-saison-reseau-persistant/ |date=21 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+Parallèlement à son site officiel, le jeu est diffusé gratuitement sur les plateformes indépendantes [[itch.io]]<ref name="itch">{{Lien web |langue=fr |titre=Veridia 2140 par Flexarion |url=https://flexarion-studio.itch.io/veridia-2140 |site=itch.io |consulté le=24 novembre 2026}}.</ref> et [[Game Jolt]]<ref name="gamejolt">{{Lien web |langue=en |titre=Veridia 2140 |url=https://gamejolt.com/games/veridia/1120816 |site=Game Jolt |consulté le=24 novembre 2026}}.</ref>.
+
+== ''Veridia 2140'' ==
+
+=== Univers ===
+L'action de ''Veridia 2140'' se déroule en [[2140]] dans le [[Pays d'Aix]], entre le [[plateau de l'Arbois]] et la [[montagne Sainte-Victoire]]<ref name="devlog1" />. Le jeu s'appuie sur la géographie et le patrimoine hydraulique réels du territoire aixois :
+* les sources d'approvisionnement portent le nom du [[Canal de Provence]], du [[barrage de Bimont]], de la source de la Torse et du [[barrage Zola]] ;
+* les quartiers à alimenter sont tirés de quatorze quartiers et communes associées d'[[Aix-en-Provence]], parmi lesquels [[Quartier Mazarin|Mazarin]], [[Les Milles]], [[Jas de Bouffan]], [[Encagnane]], [[Pont-de-l'Arc]], [[Puyricard]], [[Luynes (Aix-en-Provence)|Luynes]], [[La Duranne]] ou encore [[Le Tholonet]] ;
+* le franchissement de la rivière de l'[[Arc (fleuve)|Arc]] et des vallons s'inspire de l'architecture de l'[[aqueduc de Roquefavour]]<ref name="veridia" />.
+
+=== Système de jeu ===
+''Veridia 2140'' est un jeu solo dépourvu de combat : l'objectif est d'alimenter en eau l'ensemble des quartiers d'une carte avant la fin d'une journée chronométrée de 40 secondes<ref name="veridia" />.
+
+Le déroulement d'une journée repose sur trois principes :
+# '''Tracé du réseau :''' avant ou pendant l'écoulement, le joueur trace des conduites depuis une ou plusieurs sources vers les quartiers. Les rochers et les pinèdes protégées constituent des obstacles infranchissables, tandis que les vallons et l'Arc nécessitent la construction d'un viaduc coûtant deux unités de tuyaux au lieu d'une<ref name="veridia" />.
+# '''Partage hydraulique :''' une fois les vannes ouvertes, un front d'eau progresse dans le réseau selon la vitesse d'acheminement. À chaque embranchement, le débit se répartit équitablement entre les branches qui en ont besoin, dans la limite d'une capacité maximale de {{unité|7|m3/s}} par tuyau, obligeant à concevoir plusieurs troncs à mesure que les quartiers se multiplient<ref name="veridia" />.
+# '''Urgences et améliorations :''' à partir du deuxième jour, des urgences temporaires (feu de garrigue, départ de feu près de la Sainte-Victoire, hôpital du Pays d'Aix, fontaine de la Rotonde, serres de Luynes) exigent une dérivation rapide de l'eau avant la fin d'un compte à rebours. En fin de journée, les crédits remportés — incluant un bonus de sobriété pour chaque tuyau économisé — permettent d'améliorer la vitesse d'acheminement, le volume d'eau disponible ou le stock de tuyaux<ref name="veridia" /><ref name="devlog3" />.
+
+=== Modes de jeu ===
+À partir de la version 0.4, le jeu propose trois modes principaux<ref name="devlog6" /> :
+* '''Partie libre :''' succession de journées sur des cartes aléatoires de difficulté croissante, avec une jauge de confiance (trois points maximum).
+* '''Carte du jour :''' défi quotidien généré de manière déterministe à partir de la date du jour, permettant à tous les joueurs d'affronter la même séquence de cartes et de comparer leurs scores<ref name="devlog5" />.
+* '''Mode saison :''' mode persistant sur une grande carte unique (16 × 11 cases) comportant deux sources et douze emplacements de quartiers apparaissant jour après jour. Le réseau construit la veille reste en place, la confiance est remplacée par une jauge de soif (0 à 100 %) et une amélioration gratuite est offerte tous les sept jours<ref name="devlog6" />.
+
+=== Historique des versions ===
+{| class="wikitable"
+|-
+! Version !! Date de sortie !! Principaux apports
+|-
+| '''0.1''' (''Été 1'') || {{date-|16 novembre 2026}} || Premier prototype de gestion hydrique par gravité sur 90 jours (désormais archivé)<ref name="devlog3" />.
+|-
+| '''0.2''' || {{date-|17 novembre 2026}} || Refonte en jeu de puzzle/stratégie en temps réel : viaducs, génération procédurale, urgences et boutique d'améliorations<ref name="devlog3" />.
+|-
+| '''0.3 / 0.3.1''' || {{date-|20 novembre 2026}} || Ajout de la « Carte du jour » déterministe, partage du score et mode d'affichage compact pour les portails web<ref name="devlog5" />.
+|-
+| '''0.4''' || {{date-|21 novembre 2026}} || Ajout du « Mode saison » à réseau persistant, jauge de soif et améliorations hebdomadaires<ref name="devlog6" />.
+|}
+
+== Développement et aspects techniques ==
+''Veridia 2140'' est développé en [[TypeScript]] avec un rendu [[Canvas (HTML)|Canvas 2D]] sans moteur de jeu tiers, afin d'assurer un chargement rapide sur ordinateur comme sur mobile et de permettre un fonctionnement hors ligne après téléchargement<ref name="github">{{Lien web |langue=fr |titre=Dépôt GitHub Androtim/Flexarion |url=https://github.com/Androtim/Flexarion |site=GitHub |consulté le=24 novembre 2026}}.</ref>. Le site officiel du studio est construit avec le générateur de sites statiques [[Astro (framework)|Astro]] ; il n'utilise ni cookies publicitaires ni traceurs tiers, la progression du joueur étant conservée localement via le stockage navigateur (<code>localStorage</code>)<ref name="mentions">{{Lien web |langue=fr |titre=Mentions légales et vie privée |url=https://flexarion.alwaysdata.net/mentions-legales/ |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+Sur le plan algorithmique, la génération procédurale repose sur un générateur pseudo-aléatoire ''mulberry32'' couplé à une vérification de solvabilité par arbre de réseau glouton utilisant l'[[algorithme de Dijkstra]] : toute carte dont le coût minimal en tuyaux dépasse le budget du joueur est automatiquement rejetée<ref name="devlog3" />. Pour la « Carte du jour », la graine aléatoire est dérivée de la date courante via une [[fonction de hachage]] [[Fowler-Noll-Vo|FNV-1a]] sans recours à un serveur central<ref name="devlog5" />. Une suite de tests automatisés vérifie à chaque mise à jour la faisabilité de 480 cartes journalières et de 440 journées de mode saison, ainsi que l'équilibrage via un joueur automatisé<ref name="devlog6" />.
+
+Dans le cadre de son module universitaire, l'équipe publie sur [[GitHub]] l'ensemble du code source ainsi qu'un journal public documentant les tâches réalisées avec l'assistance d'outils d'[[intelligence artificielle]]<ref name="studio" /><ref name="github" />.
+
+== Notes et références ==
+{{Références}}
+
+== Voir aussi ==
+
+=== Articles connexes ===
+* [[Solarpunk]]
+* [[Aix-en-Provence]]
+* [[Canal de Provence]]
+* [[Aqueduc de Roquefavour]]
+
+=== Liens externes ===
+* {{Site officiel|https://flexarion.alwaysdata.net/}}
+* [https://flexarion.alwaysdata.net/jouer/ Jouer à ''Veridia 2140'']
+* [https://flexarion-studio.itch.io/veridia-2140 Page itch.io de ''Veridia 2140'']
+* [https://gamejolt.com/games/veridia/1120816 Page Game Jolt de ''Veridia 2140'']
+* [https://github.com/Androtim/Flexarion Code source et documentation sur GitHub]
+
+{{Portail|jeu vidéo|science-fiction|Aix-en-Provence}}
+
+[[Catégorie:Studio de développement de jeux vidéo ayant son siège en France]]
+[[Catégorie:Jeu vidéo indépendant]]
+[[Catégorie:Jeu par navigateur]]
+[[Catégorie:Jeu vidéo de science-fiction]]
+[[Catégorie:Aix-en-Provence]]
