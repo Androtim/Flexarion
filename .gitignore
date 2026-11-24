@@ -23,8 +23,10 @@ Thumbs.db
 !.vscode/extensions.json
 .idea/
 
-# Vidéos générées (npm run video:build)
+# Vidéos générées (npm run video:build / npm run rewire:reel)
 social/videos/*.mp4
 social/videos/preview-*
+social/rewire/*.mp4
+social/rewire/preview-*
 social/itch/build/
 social/itch/*.zip

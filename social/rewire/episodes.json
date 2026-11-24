@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "slug": "ep01-pilote-stockage",
+    "title": "REWIRE Ep. 1 : On transforme une usine brutaliste en réseau vert",
+    "duration": 36,
+    "scenes": [
+      {
+        "type": "brutalist_overload",
+        "start": 0,
+        "end": 4.5,
+        "lines": ["Débrancher cette usine", "sans blackout ?"],
+        "sub": "Transformer le béton en énergie verte"
+      },
+      {
+        "type": "split_concept",
+        "start": 4.5,
+        "end": 12.5,
+        "lines": ["Factorio × Terra Nil", "100 % Électricité"],
+        "sub": "Nouveau jeu Flexarion · Cartes procédurales"
+      },
+      {
+        "type": "grid_stabilize",
+        "start": 12.5,
+        "end": 22.5,
+        "lines": ["Gérer l'intermittence", "= libérer le béton"],
+        "sub": "Solaire, éolien, stockage et renaturation"
+      },
+      {
+        "type": "vote_ab",
+        "start": 22.5,
+        "end": 32.5,
+        "lines": ["Votez en commentaire", "A ou B ?"],
+        "sub": "Votre choix entre dans le jeu",
+        "optionA": {
+          "label": "OPTION A",
+          "title": "Stockage gravitaire",
+          "detail": "Reconvertir les tours brutalistes"
+        },
+        "optionB": {
+          "label": "OPTION B",
+          "title": "Volants d'inertie",
+          "detail": "Absorber les pics de charge"
+        }
+      },
+      {
+        "type": "end_card",
+        "start": 32.5,
+        "end": 36,
+        "title": "REWIRE",
+        "sub": "Recâblez le réseau. Libérez le béton.",
+        "url": "flexarion.alwaysdata.net/jeux/rewire/"
+      }
+    ]
+  }
+]

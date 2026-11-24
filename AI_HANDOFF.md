@@ -50,6 +50,18 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-24 15:45] · Antigravity (Gemini 4 Neon)
+- **Branche :** `feat/rewire-launch-and-reels`
+- **Objectif de la session :** Lancer officiellement le deuxième jeu de Flexarion (**REWIRE**, 100 % électricité verte, brutalisme → renaturation, cartes procédurales, co-construit en Reels) sur le site et mettre en place un workflow vidéo réutilisable pour les épisodes de votes communautaires.
+- **Ce qui a été fait :**
+  - `scripts/build-rewire-assets.mjs` + `public/images/rewire-hero.{jpg,webp,-640.webp}` : illustration vectorielle brutaliste → réseau électrique vert.
+  - `src/pages/jeux/rewire.astro` : nouvelle page `/jeux/rewire/` (schéma `VideoGame`, 3 piliers avec schémas SVG dessinés en code, encart Vote Épisode 1 Option A stockage gravitaire vs Option B volants d'inertie, FAQ).
+  - `src/content/devlogs/annonce-rewire-electricite-verte.md` : Devlog #7 annonçant *REWIRE* après l'aboutissement de *Veridia 2140* v0.4.
+  - `src/data/site.ts`, `src/layouts/BaseLayout.astro`, `src/pages/index.astro`, `public/llms.txt`, `social/wikipedia/article-flexarion.wikitext` : intégration de *REWIRE* dans la navigation, l'accueil, le pied de page, `llms.txt` et l'article Wikipédia.
+  - Workflow vidéo Reels (`scripts/build-rewire-reel.mjs`, `social/rewire/episodes.json`, `social/rewire/README.md`, scripts npm `rewire:assets` et `rewire:reel`, `.gitignore`) : génère les Reels 9:16 depuis un JSON déclaratif, avec support voix off normalisée `-14 LUFS`, format TikTok/Instagram/VLC (`1088×1920` Main `bt709`) et `--youtube` (`1080×1920`).
+- **Vérifications exécutées :** `npm run build` (19 pages), `npm run audit:seo` (0 erreur, 0 avertissement), aperçus et rendu MP4 de l'épisode 1 (`rewire-ep01-pilote-stockage-9x16.mp4`).
+- **À faire ensuite :** publier le Reel #1, récupérer le vote gagnant, ajouter l'épisode 2 dans `social/rewire/episodes.json` (et démarrer le prototype jouable `/jouer/rewire/` quand l'équipe le souhaite).
+
 ### [2026-11-24 15:10] · Antigravity (Gemini 4 Neon)
 - **Branche :** `feat/team-and-site-name`
 - **Objectif de la session :** Rédiger l'article Wikipédia complet (Wikicode MediaWiki) pour Flexarion et *Veridia 2140*, mettre à jour l'équipe réelle et les rôles sur le site, aligner le signal de nom de site (`og:site_name`) pour Google, actualiser le dossier de presse de `/contact/` et analyser l'export Search Console du 24/11.

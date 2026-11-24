@@ -12,7 +12,7 @@
  | siège (pays)          = {{France}}
  | direction actuelle    = 
  | secteur d'activité    = [[Industrie vidéoludique|Développement de jeux vidéo]]
- | produits              = ''Veridia 2140''
+ | produits              = ''Veridia 2140'', ''REWIRE''
  | société mère          = 
  | effectif              = 3 (2026)
  | site web              = {{URL|https://flexarion.alwaysdata.net/}}
@@ -73,6 +73,11 @@ Le déroulement d'une journée repose sur trois principes :
 |-
 | '''0.4''' || {{date-|21 novembre 2026}} || Ajout du « Mode saison » à réseau persistant, jauge de soif et améliorations hebdomadaires<ref name="devlog6" />.
 |}
+
+== ''REWIRE'' ==
+Le {{date-|24 novembre 2026}}, considérant le premier jeu ''Veridia 2140'' comme abouti dans sa version 0.4, Flexarion annonce un deuxième projet intitulé '''''REWIRE''''' (« Recâblez le réseau. Libérez le béton. »)<ref name="rewire">{{Lien web |langue=fr |titre=REWIRE : jeu d'électricité verte par Flexarion Studio |url=https://flexarion.alwaysdata.net/jeux/rewire/ |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+Strictement centré sur l'[[électricité]] et distinct de la thématique hydrique de ''Veridia 2140'', le jeu propose de convertir une infrastructure électrique [[Architecture brutaliste|brutaliste]] et polluante en un réseau renouvelable sur des cartes générées de façon procédurale, mêlant gestion de flux électriques (intermittence, stockage, capacité des lignes, prévention des pannes) et renaturation progressive des zones industrielles<ref name="devlog7">{{Lien web |langue=fr |titre=Devlog #7 : Après Veridia 2140, Flexarion lance REWIRE |url=https://flexarion.alwaysdata.net/devlogs/annonce-rewire-electricite-verte/ |date=24 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>. Le projet est conçu selon une démarche participative appuyée sur une série de courtes vidéos verticales (Reels) dans lesquelles les spectateurs votent pour orienter les mécaniques intégrées au jeu<ref name="rewire" />.
 
 == Développement et aspects techniques ==
 ''Veridia 2140'' est développé en [[TypeScript]] avec un rendu [[Canvas (HTML)|Canvas 2D]] sans moteur de jeu tiers, afin d'assurer un chargement rapide sur ordinateur comme sur mobile et de permettre un fonctionnement hors ligne après téléchargement<ref name="github">{{Lien web |langue=fr |titre=Dépôt GitHub Androtim/Flexarion |url=https://github.com/Androtim/Flexarion |site=GitHub |consulté le=24 novembre 2026}}.</ref>. Le site officiel du studio est construit avec le générateur de sites statiques [[Astro (framework)|Astro]] ; il n'utilise ni cookies publicitaires ni traceurs tiers, la progression du joueur étant conservée localement via le stockage navigateur (<code>localStorage</code>)<ref name="mentions">{{Lien web |langue=fr |titre=Mentions légales et vie privée |url=https://flexarion.alwaysdata.net/mentions-legales/ |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
