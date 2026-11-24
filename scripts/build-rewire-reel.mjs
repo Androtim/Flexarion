@@ -200,6 +200,38 @@ function sceneVoteAB(t, scene) {
   `;
 }
 
+function sceneWinnerFeature(t, scene) {
+  const o = prog(t, scene.start + 0.3, scene.start + 0.9);
+  return `
+    <rect width="${W}" height="${H}" fill="#13262E"/>
+    ${captionBlock(scene.lines, { t, start: scene.start, end: scene.end, y: 330, size: 74, sub: scene.sub })}
+    <g opacity="${o}">
+      <rect x="90" y="690" width="900" height="520" rx="28" fill="#1C313B" stroke="#2AD4A5" stroke-width="6"/>
+      ${textPath(fonts.sans, scene.badge ?? "TOP COMMENTAIRE AJOUTÉ", { x: 145, y: 785, size: 36, fill: "#2AD4A5" }).svg}
+      ${textPath(fonts.display, scene.ideaTitle ?? "Idée de la communauté", { x: 145, y: 895, size: 64, fill: C.limestone }).svg}
+      ${textPath(fonts.sans, scene.ideaDetail ?? "Intégrée dans REWIRE", { x: 145, y: 985, size: 40, fill: C.soft }).svg}
+      ${textPath(fonts.sans, scene.credit ?? "Proposé en commentaire", { x: 145, y: 1125, size: 34, fill: C.sun }).svg}
+    </g>
+  `;
+}
+
+function sceneTopCommentCta(t, scene) {
+  const o = prog(t, scene.start + 0.3, scene.start + 0.9);
+  const pulse = 0.5 + 0.5 * Math.sin(t * 5);
+  return `
+    <rect width="${W}" height="${H}" fill="#13262E"/>
+    ${captionBlock(scene.lines, { t, start: scene.start, end: scene.end, y: 340, size: 76, sub: scene.sub })}
+    <g opacity="${o}">
+      <rect x="90" y="680" width="900" height="580" rx="30" fill="#1C313B" stroke="#F0A43A" stroke-width="${5 + 2 * pulse}"/>
+      ${textPath(fonts.sans, "À VOUS DE PROPOSER", { x: W / 2, y: 790, size: 40, fill: "#F0A43A", anchor: "middle" }).svg}
+      ${textPath(fonts.display, scene.promptLine1 ?? "Quelle mécanique", { x: W / 2, y: 920, size: 70, fill: C.limestone, anchor: "middle" }).svg}
+      ${textPath(fonts.display, scene.promptLine2 ?? "on ajoute ensuite ?", { x: W / 2, y: 1005, size: 70, fill: C.limestone, anchor: "middle" }).svg}
+      ${textPath(fonts.sans, "Le commentaire le plus liké", { x: W / 2, y: 1125, size: 42, fill: "#2AD4A5", anchor: "middle" }).svg}
+      ${textPath(fonts.sans, "entre dans REWIRE !", { x: W / 2, y: 1185, size: 42, fill: "#2AD4A5", anchor: "middle" }).svg}
+    </g>
+  `;
+}
+
 function sceneEndCard(t, scene) {
   const o = prog(t, scene.start, scene.start + 0.5);
   return `
@@ -221,6 +253,8 @@ function renderFrame(t) {
   else if (scene.type === "split_concept") body = sceneSplitConcept(t, scene);
   else if (scene.type === "grid_stabilize") body = sceneGridStabilize(t, scene);
   else if (scene.type === "vote_ab") body = sceneVoteAB(t, scene);
+  else if (scene.type === "winner_feature") body = sceneWinnerFeature(t, scene);
+  else if (scene.type === "top_comment_cta") body = sceneTopCommentCta(t, scene);
   else body = sceneEndCard(t, scene);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${body}</svg>`;
 }
