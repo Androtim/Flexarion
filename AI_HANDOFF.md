@@ -50,6 +50,20 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-24 15:10] · Antigravity (Gemini 4 Neon)
+- **Branche :** `feat/team-and-site-name`
+- **Objectif de la session :** Rédiger l'article Wikipédia complet (Wikicode MediaWiki) pour Flexarion et *Veridia 2140*, mettre à jour l'équipe réelle et les rôles sur le site, aligner le signal de nom de site (`og:site_name`) pour Google, actualiser le dossier de presse de `/contact/` et analyser l'export Search Console du 24/11.
+- **Ce qui a été fait :**
+  - `social/wikipedia/article-flexarion.wikitext` (nouveau) : article Wikipédia complet (Infobox Société, résumé introductif, Historique, *Veridia 2140*, tableau des versions 0.1→0.4, aspects techniques, références `{{Lien web}}`, portails et catégories).
+  - `src/pages/studio.astro` : remplacé les emplacements « Présentation à venir » par les 3 membres réels et leurs rôles (**Timothée Béghin (Androtim)** — Gestion des comptes et développement ; **Vladislav Dumont** — Conception de jeux ; **Leny Rossines** — Promotion du studio) dans une grille 3 colonnes (`.cards`).
+  - `src/layouts/BaseLayout.astro` : aligné `og:site_name` sur `STUDIO.name` (`Flexarion`) pour correspondre à `WebSite.name` et `application-name` (signal Google Site Names).
+  - `src/pages/contact.astro` : mis à jour l'encart Dossier de presse (qui mentionnait encore l'ancien concept city-builder payant sur PC) pour décrire le jeu réel gratuit dans le navigateur.
+- **Pourquoi ces choix :**
+  - Google affichait « Alwaysdata » comme nom de site sur la SERP (comportement fréquent sur sous-domaine hébergeur, aggravé par `og:site_name` différent de `WebSite.name` et un cache de `/` datant du 16/11).
+  - Le lien Indeed est mis en attente (l'annonce a peut-être été supprimée par Indeed).
+- **Vérifications exécutées :** `npm run build && npm run audit:seo` (0 erreur, 0 avertissement).
+- **À faire ensuite :** si l'utilisateur retrouve un lien Indeed stable, ajouter un bloc « Travailler avec nous » ; demander une nouvelle indexation de `/` dans Search Console pour rafraîchir le cache du 16/11.
+
 ### [2026-11-23 14:40] · Claude Opus 5.5 via Claude Code
 - **Branche :** `content/idees-sans-vote`.
 - **Décision de l'utilisateur :** abandon des vidéos de vote (défi « La ville des joueurs » tous les deux jours), pas de Reddit, pas de version anglaise.
