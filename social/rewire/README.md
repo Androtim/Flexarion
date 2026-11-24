@@ -27,13 +27,37 @@ Les épisodes sont décrits dans `social/rewire/episodes.json`.
 
 ---
 
-## 2. Ajouter l'épisode suivant après un vote
+## 2. Ajouter l'épisode suivant (format « top commentaire liké »)
 
-1. Relevez l'option gagnante (ou la meilleure idée de commentaire) sous le Reel précédent.
-2. Dupliquez le bloc de l'épisode 1 dans `social/rewire/episodes.json` avec `"id": 2`, `"slug": "ep02-..."` et mettez à jour les textes (`lines`, `sub`, `optionA`, `optionB`).
-3. Enregistrez la voix off (30–35 s au calme, 15–20 cm du micro) si vous voulez une voix humaine.
-4. Lancez `npm run rewire:reel -- --ep=2` (avec ou sans `--audio=...`).
-5. Publiez sur Instagram Reels (`@flexarion`), TikTok (`@flexarion_studio`) et YouTube Shorts (`@Flexarion-studio`).
+- **Épisode 1 (pilote) :** vote A / B pour lancer le projet.
+- **À partir de l'épisode 2 :** ce sont les spectateurs qui proposent eux-mêmes ! On sélectionne **le commentaire le plus liké** sur nos réseaux (TikTok / Instagram / YouTube Shorts) pour l'intégrer dans REWIRE.
+
+Pour générer l'épisode suivant :
+1. Relevez le **commentaire le plus liké** sous le Reel précédent.
+2. Ajoutez un objet `"id": 2` dans `social/rewire/episodes.json` en utilisant les scènes `winner_feature` (affiche l'idée gagnante ajoutée au jeu) puis `top_comment_cta` (appelle la communauté à proposer la prochaine idée en commentaire) :
+   ```json
+   {
+     "type": "winner_feature",
+     "start": 0,
+     "end": 10,
+     "lines": ["Vous l'avez demandé,", "on l'a ajouté !"],
+     "sub": "REWIRE · Épisode 2",
+     "ideaTitle": "Nom de l'idée gagnante",
+     "ideaDetail": "Courte explication de la mécanique",
+     "credit": "Top commentaire sur TikTok / Instagram"
+   },
+   {
+     "type": "top_comment_cta",
+     "start": 20,
+     "end": 32,
+     "lines": ["À vous de jouer !"],
+     "sub": "Proposez votre idée en commentaire",
+     "promptLine1": "Quelle mécanique",
+     "promptLine2": "on ajoute ensuite ?"
+   }
+   ```
+3. Lancez `npm run rewire:reel -- --ep=2` (ajoutez `--audio=/chemin/voix.m4a` si vous avez enregistré une voix off).
+4. Publiez sur Instagram Reels (`@flexarion`), TikTok (`@flexarion_studio`) et YouTube Shorts (`@Flexarion-studio`).
 
 ---
 

@@ -31,9 +31,11 @@ Dans *Veridia 2140*, tout tournait autour de l'eau et des viaducs du Pays d'Aix.
 
 Nous avions mis en pause le format de votes sur *Veridia 2140* faute de temps pour tout mener de front. Nous reprenons cette idée proprement **dès le premier jour sur REWIRE**, autour d'une série de **Reels interactifs** sur Instagram, TikTok et YouTube Shorts.
 
-Chaque épisode montrera une mécanique concrète ou un dilemme de design et laissera la communauté trancher en commentaire. Pour l'épisode pilote, le premier vote porte sur la mécanique de stockage :
+Pour l'épisode pilote, nous lançons un premier vote sur la mécanique de stockage :
 
 - **Option A :** reconvertir les vieilles tours brutalistes en **stockage gravitaire**.
 - **Option B :** construire des **volants d'inertie géants** pour absorber les pics de charge.
 
-La fiche du jeu est déjà en ligne sur [/jeux/rewire/](/jeux/rewire/) : venez voter sur nos réseaux et proposer vos idées pour la suite !
+À partir de l'épisode 2, ce ne sera plus à nous de proposer : **le commentaire le plus liké sur nos réseaux** choisira directement la prochaine mécanique ajoutée à REWIRE.
+
+La fiche du jeu est déjà en ligne sur [/jeux/rewire/](/jeux/rewire/) : venez voter et proposer vos idées en commentaire !
