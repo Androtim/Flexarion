@@ -1,38 +1,42 @@
 ---
-import { REWIRE_VERSION, TOOLS } from "../rewire/content";
+import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
 ---
 
 <div class="rewire-app" data-rewire-root>
-  <div class="rw-hud" aria-label="Tableau de bord du réseau électrique">
-    <div class="rw-stat">
-      <span class="rw-k">Production / Demande</span>
-      <strong data-prod>0 / 0 MW</strong>
-    </div>
-    <div class="rw-stat">
-      <span class="rw-k">Stockage</span>
-      <strong data-storage>0 / 0 MWh</strong>
-    </div>
-    <div class="rw-stat">
-      <span class="rw-k">Mix vert</span>
-      <strong data-green>0 %</strong>
-    </div>
-    <div class="rw-stat">
-      <span class="rw-k">Renaturation</span>
-      <strong data-renature>0 %</strong>
-    </div>
-    <div class="rw-stat">
-      <span class="rw-k">Fréquence</span>
-      <strong data-freq>50.0 Hz</strong>
-    </div>
-    <div class="rw-stat">
-      <span class="rw-k">Crédits</span>
-      <strong data-credits>75 cr.</strong>
-    </div>
-    <div class="rw-stat">
-      <span class="rw-k">Heure · Fossiles</span>
-      <strong><span data-clock>08:00</span> · <span data-fossil>2</span></strong>
+  <div class="rw-top-bar">
+    <button type="button" class="rw-clicker" data-generate>
+      <span class="rw-clicker-title">⚡ Générer du courant</span>
+      <span class="rw-clicker-gain" data-click-gain>+2 cr. · +2 MWh</span>
+    </button>
+    <div class="rw-hud" aria-label="Tableau de bord du réseau électrique">
+      <div class="rw-stat">
+        <span class="rw-k">Production / Demande</span>
+        <strong data-prod>0 / 0 MW</strong>
+      </div>
+      <div class="rw-stat">
+        <span class="rw-k">Stockage</span>
+        <strong data-storage>0 / 0 MWh</strong>
+      </div>
+      <div class="rw-stat">
+        <span class="rw-k">Mix vert · Renaturation</span>
+        <strong><span data-green>0 %</span> · <span data-renature>0 %</span></strong>
+      </div>
+      <div class="rw-stat">
+        <span class="rw-k">Fréquence · Heure</span>
+        <strong><span data-freq>50.0 Hz</span> · <span data-clock>08:00</span></strong>
+      </div>
+      <div class="rw-stat">
+        <span class="rw-k">Crédits</span>
+        <strong data-credits>18 cr. (+0.0/s)</strong>
+      </div>
+      <div class="rw-stat">
+        <span class="rw-k">Fossiles · Secteur</span>
+        <strong><span data-fossil>2</span> · <span data-sector>Secteur 1 (×1.00)</span></strong>
+      </div>
     </div>
   </div>
+
+  <div class="rw-event" data-event-banner hidden role="alert"></div>
 
   <div class="rw-layout">
     <div class="rw-stage">
@@ -40,30 +44,50 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
         <canvas data-canvas aria-label="Carte interactive du réseau électrique REWIRE"></canvas>
         <div class="rw-overlay" data-end-overlay hidden>
           <div class="rw-modal">
-            <h2 data-end-title>Transition réussie</h2>
+            <h2 data-end-title>Secteur renaturé !</h2>
             <p data-end-desc></p>
             <div class="rw-modal-actions">
-              <button type="button" class="btn btn-sun" data-new-map>Nouvelle carte procédurale</button>
-              <button type="button" class="btn btn-ghost" data-retry>Rejouer cette carte</button>
+              <button type="button" class="btn btn-sun" data-next-sector>Secteur suivant (+25 % prestige)</button>
+              <button type="button" class="btn btn-water" data-retry>Rejouer ce secteur</button>
+              <button type="button" class="btn btn-ghost" data-new-map>Nouvelle partie (Secteur 1)</button>
             </div>
           </div>
         </div>
       </div>
       <p class="rw-msg" data-msg role="status" aria-live="polite">
-        Posez du solaire, des éoliennes et du stockage, puis reconvertissez les centrales brutalistes.
+        Cliquez sur ⚡ Générer, optimisez vos emplacements et reconvertissez les centrales brutalistes.
       </p>
+
+      <div class="rw-upgrades-box">
+        <h3>Améliorations incrémentales (Tech Tree)</h3>
+        <div class="rw-upgrades-grid">
+          {
+            TECH_UPGRADES.map((u) => (
+              <button type="button" class="rw-upg" data-upgrade={u.id}>
+                <span class="rw-upg-top">
+                  <strong>{u.name}</strong>
+                  <span class="rw-upg-badge">
+                    <span data-upg-lvl={u.id}>0/{u.maxLevel}</span> · <strong data-upg-cost={u.id}>{u.baseCost} cr.</strong>
+                  </span>
+                </span>
+                <small>{u.help}</small>
+              </button>
+            ))
+          }
+        </div>
+      </div>
     </div>
 
     <aside class="rw-panel" aria-label="Outils et modificateurs">
       <div class="rw-box">
-        <h3>Outils</h3>
+        <h3>Outils (prix croissant)</h3>
         <div class="rw-tools">
           {
             TOOLS.map((t) => (
               <button type="button" class="rw-tool" data-tool={t.id} title={t.help}>
                 <span class="rw-tool-top">
                   <strong>{t.name}</strong>
-                  <span>{t.cost > 0 ? `${t.cost} cr.` : "50 %"}</span>
+                  <span data-tool-cost={t.id}>{t.baseCost > 0 ? `${t.baseCost} cr.` : "50 %"}</span>
                 </span>
                 <small>{t.help}</small>
               </button>
@@ -76,22 +100,22 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
         <h3>Modificateurs (Vote Épisode 1)</h3>
         <label class="rw-check">
           <input type="checkbox" data-mod-gravity checked />
-          <span><strong>Option A :</strong> Stockage gravitaire (centrale reconvertie = 90 MWh)</span>
+          <span><strong>Option A :</strong> Stockage gravitaire (centrale reconvertie = 110 MWh)</span>
         </label>
         <label class="rw-check">
           <input type="checkbox" data-mod-flywheels />
-          <span><strong>Option B :</strong> Volants d'inertie (absorbe mieux les pics et stabilise 50 Hz)</span>
+          <span><strong>Option B :</strong> Volants d'inertie (absorbe les pics et stabilise 50 Hz)</span>
         </label>
       </div>
 
       <div class="rw-box rw-controls">
         <button type="button" class="rw-btn" data-pause>Pause</button>
         <button type="button" class="rw-btn" data-speed>×2</button>
-        <button type="button" class="rw-btn" data-new-map>Nouvelle carte</button>
+        <button type="button" class="rw-btn" data-new-map>Reset</button>
       </div>
 
       <p class="rw-meta">
-        REWIRE prototype v{REWIRE_VERSION} · Carte <span data-seed>#—</span> · Zones renaturées : <strong data-wins>0</strong>
+        REWIRE v{REWIRE_VERSION} · Record : Secteur <strong data-best-sector>1</strong>
       </p>
     </aside>
   </div>
@@ -110,29 +134,82 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
     padding: 1.15rem;
     border: 1px solid rgba(255, 255, 255, 0.12);
   }
+  .rw-top-bar {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+    align-items: stretch;
+  }
+  .rw-clicker {
+    background: linear-gradient(135deg, #f0a43a, #e27d29);
+    color: #13262e;
+    border: none;
+    border-radius: 12px;
+    padding: 0.7rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+    font: inherit;
+    box-shadow: 0 4px 14px rgba(240, 164, 58, 0.3);
+    transition: transform 0.08s ease;
+  }
+  .rw-clicker:active,
+  .rw-clicker.rw-pop {
+    transform: scale(0.96);
+  }
+  .rw-clicker-title {
+    font-weight: 800;
+    font-size: 1rem;
+  }
+  .rw-clicker-gain {
+    font-size: 0.82rem;
+    font-weight: 700;
+    opacity: 0.9;
+  }
   .rw-hud {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.6rem;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 0.55rem;
   }
   .rw-stat {
     background: rgba(255, 255, 255, 0.06);
     border-radius: 10px;
-    padding: 0.55rem 0.75rem;
+    padding: 0.5rem 0.7rem;
   }
   .rw-k {
     display: block;
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     color: var(--soft);
   }
   .rw-stat strong {
-    font-size: 0.98rem;
+    font-size: 0.92rem;
     color: #fff;
+  }
+  .rw-event {
+    margin-bottom: 0.85rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: rgba(240, 164, 58, 0.16);
+    border: 1px solid #f0a43a;
+    color: #f9d59b;
+  }
+  .rw-event[data-tone="danger"] {
+    background: rgba(232, 93, 63, 0.18);
+    border-color: #e85d3f;
+    color: #ffb4a2;
+  }
+  .rw-event[hidden] {
+    display: none;
   }
   .rw-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-columns: minmax(0, 1fr) 310px;
     gap: 1rem;
     align-items: start;
   }
@@ -153,7 +230,7 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
   .rw-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(13, 24, 30, 0.86);
+    background: rgba(13, 24, 30, 0.88);
     display: grid;
     place-items: center;
     padding: 1rem;
@@ -163,7 +240,7 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
     display: none;
   }
   .rw-modal {
-    max-width: 440px;
+    max-width: 460px;
     background: #1b313b;
     border: 1px solid #2ad4a5;
     border-radius: 14px;
@@ -185,9 +262,58 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
     justify-content: center;
   }
   .rw-msg {
-    margin: 0.65rem 0 0;
-    font-size: 0.92rem;
+    margin: 0.6rem 0 0.9rem;
+    font-size: 0.9rem;
     color: #2ad4a5;
+  }
+  .rw-upgrades-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 0.85rem;
+  }
+  .rw-upgrades-box h3 {
+    margin: 0 0 0.65rem;
+    font-size: 0.98rem;
+    color: #fff;
+  }
+  .rw-upgrades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.5rem;
+  }
+  .rw-upg {
+    text-align: left;
+    background: rgba(42, 212, 165, 0.1);
+    border: 1.5px solid rgba(42, 212, 165, 0.35);
+    border-radius: 9px;
+    padding: 0.55rem 0.7rem;
+    color: var(--limestone);
+    cursor: pointer;
+    font: inherit;
+  }
+  .rw-upg:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .rw-upg-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.4rem;
+    font-size: 0.86rem;
+    color: #fff;
+  }
+  .rw-upg-badge {
+    font-size: 0.78rem;
+    color: #2ad4a5;
+    white-space: nowrap;
+  }
+  .rw-upg small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--soft);
+    margin-top: 0.2rem;
   }
   .rw-panel {
     display: grid;
@@ -205,33 +331,37 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
   }
   .rw-tools {
     display: grid;
-    gap: 0.45rem;
+    gap: 0.42rem;
   }
   .rw-tool {
     text-align: left;
     background: rgba(255, 255, 255, 0.06);
     border: 1.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 9px;
-    padding: 0.5rem 0.65rem;
+    padding: 0.48rem 0.65rem;
     color: var(--limestone);
     cursor: pointer;
     font: inherit;
   }
+  .rw-tool[data-afford="false"] {
+    opacity: 0.58;
+  }
   .rw-tool[data-active="true"] {
     border-color: #2ad4a5;
     background: rgba(42, 212, 165, 0.16);
+    opacity: 1;
   }
   .rw-tool-top {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: #fff;
   }
   .rw-tool small {
     display: block;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     color: var(--soft);
-    margin-top: 0.15rem;
+    margin-top: 0.12rem;
   }
   .rw-check {
     display: flex;
@@ -274,6 +404,7 @@ import { REWIRE_VERSION, TOOLS } from "../rewire/content";
     text-align: center;
   }
   @media (max-width: 960px) {
+    .rw-top-bar,
     .rw-layout {
       grid-template-columns: 1fr;
     }

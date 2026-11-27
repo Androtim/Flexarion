@@ -50,16 +50,19 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
-### [2026-11-27 09:10] · Antigravity (Gemini 4 Neon)
-- **Branche :** `feat/rewire-playable-prototype`
-- **Objectif de la session :** Créer un premier prototype jouable de **REWIRE** (v0.1) sur `/jouer/rewire/` pour que les visiteurs puissent tester le concept (100 % électricité, cartes procédurales, brutalisme → renaturation, modificateurs du Vote Épisode 1) et générer des clics/engagement.
+### [2026-11-27 09:25] · Antigravity (Gemini 4 Neon)
+- **Branche :** `feat/rewire-playable-prototype` + `feat/rewire-v02-incremental-grid`
+- **Objectif de la session :** Créer le prototype jouable de **REWIRE** sur `/jouer/rewire/`, puis suite au playtest utilisateur (« trop facile, fini en 1 min en spammant ») le refondre en **v0.2 : jeu incrémental (Cookie Clicker) × optimisation de réseau électrique**.
 - **Ce qui a été fait :**
-  - `src/rewire/` (`content.ts`, `level.ts`, `sim.ts`, `render.ts`, `main.ts`) : moteur complet en TypeScript + Canvas 2D (génération procédurale 14×10 avec 2 centrales brutalistes, 3 quartiers, zones solaires/vent, cycle jour/nuit, soleil/vent/pics du soir, BFS électrique, stockage MWh, fréquence Hz, blackout, reconversion en tour gravitaire, renaturation visuelle case par case, modificateurs Option A / Option B testables en direct).
-  - `src/components/RewireApp.astro` + `src/pages/jouer/rewire.astro` : page dédiée `/jouer/rewire/` (schéma `VideoGame`, prise en main rapide, FAQ).
-  - `scripts/rewire-check.ts` ajouté à `npm run game:check` : teste 100 cartes procédurales, le blackout sans renouvelable et la victoire 100 % verte.
-  - Liens « Jouer au prototype » ajoutés sur `/jeux/rewire/`, `/` (bloc REWIRE), pied de page et `public/llms.txt`.
+  - `src/rewire/` (`content.ts`, `level.ts`, `sim.ts`, `render.ts`, `main.ts`) + `src/components/RewireApp.astro` + `src/pages/jouer/rewire.astro` :
+    - Bouton actif **⚡ Générer du courant** (crédits + MWh instantanés, améliorable).
+    - **Coûts exponentiels** sur chaque bâtiment (empêche le spam) + reconversion des centrales brutalistes en jalons coûteux (`85 / 178 / 375 cr.`) + taxe carbone sur les centrales actives.
+    - **Optimisation spatiale & surcharges** : bonus `+50 %` sur dalles solaires / couloirs de vent, `+20 %` solaire près stockage, **turbulence `-25 %`** si deux éoliennes se touchent, nouvel outil **Poste HT** (`+25 %` sources voisines + soulage les surcharges de câbles), câbles en surcharge rouges.
+    - **Tech Tree à 6 améliorations incrémentales** (Alternateur manuel, Cellules pérovskites, Pales aérodynamiques, Câbles supraconducteurs, Smart Grid, Bio-mousse) + **événements réseau** (Mistral, nuages, pic de chaleur) + **progression multi-secteurs avec prestige (`+25 %`/secteur)**.
+    - Modificateurs du **Vote Épisode 1** (Option A tours gravitaires / Option B volants d'inertie) testables en direct.
+  - `scripts/rewire-check.ts` ajouté à `npm run game:check` : teste 90 cartes multi-secteurs, clicker, coûts croissants, tech tree, blackout et victoire 100 % verte.
 - **Vérifications exécutées :** `npm run game:check`, `npm run build` (20 pages), `npm run audit:seo` (0 erreur, 0 avertissement).
-- **À faire ensuite :** soumettre `https://flexarion.alwaysdata.net/jouer/rewire/` dans Search Console ; intégrer le top commentaire gagnant de la communauté dans la v0.2.
+- **À faire ensuite :** soumettre `/jouer/rewire/` dans Search Console ; intégrer le top commentaire gagnant de la communauté en v0.3.
 
 ### [2026-11-24 15:45] · Antigravity (Gemini 4 Neon)
 - **Branche :** `feat/rewire-launch-and-reels`
