@@ -5,12 +5,13 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
 <div class="rewire-app" data-rewire-root>
   <div class="rw-top-bar">
     <button type="button" class="rw-clicker" data-generate>
-      <span class="rw-clicker-title">⚡ Générer du courant</span>
-      <span class="rw-clicker-gain" data-click-gain>+2 cr. · +2 MWh</span>
+      <span class="rw-clicker-title">⚡ Dynamo d'urgence</span>
+      <span class="rw-clicker-gain" data-click-gain>+2 cr. · +6 MW</span>
+      <span class="rw-heat-track" aria-hidden="true"><span class="rw-heat-fill" data-heat-fill></span></span>
     </button>
     <div class="rw-hud" aria-label="Tableau de bord du réseau électrique">
       <div class="rw-stat">
-        <span class="rw-k">Production / Demande</span>
+        <span class="rw-k">Livré / Demande</span>
         <strong data-prod>0 / 0 MW</strong>
       </div>
       <div class="rw-stat">
@@ -18,22 +19,28 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
         <strong data-storage>0 / 0 MWh</strong>
       </div>
       <div class="rw-stat">
-        <span class="rw-k">Mix vert · Renaturation</span>
+        <span class="rw-k">Vert · Renaturation</span>
         <strong><span data-green>0 %</span> · <span data-renature>0 %</span></strong>
       </div>
       <div class="rw-stat">
         <span class="rw-k">Fréquence · Heure</span>
-        <strong><span data-freq>50.0 Hz</span> · <span data-clock>08:00</span></strong>
+        <strong><span data-freq>50.0 Hz</span> · <span data-clock>07:00</span></strong>
       </div>
       <div class="rw-stat">
         <span class="rw-k">Crédits</span>
-        <strong data-credits>18 cr. (+0.0/s)</strong>
+        <strong data-credits>40 cr. (+0.0/s)</strong>
       </div>
       <div class="rw-stat">
-        <span class="rw-k">Fossiles · Secteur</span>
-        <strong><span data-fossil>2</span> · <span data-sector>Secteur 1 (×1.00)</span></strong>
+        <span class="rw-k">Carte · Quartiers</span>
+        <strong><span data-zone>Zone 1/5 (7×7)</span> · <span data-cities>1/2 · 1 foss.</span></strong>
       </div>
     </div>
+  </div>
+
+  <div class="rw-expand-bar">
+    <button type="button" class="rw-expand-btn" data-expand disabled>
+      🔒 Extension : Reconvertissez encore 1 centrale(s)
+    </button>
   </div>
 
   <div class="rw-event" data-event-banner hidden role="alert"></div>
@@ -41,25 +48,24 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
   <div class="rw-layout">
     <div class="rw-stage">
       <div class="rw-canvas-wrap">
-        <canvas data-canvas aria-label="Carte interactive du réseau électrique REWIRE"></canvas>
+        <canvas data-canvas aria-label="Carte évolutive du réseau électrique REWIRE"></canvas>
         <div class="rw-overlay" data-end-overlay hidden>
           <div class="rw-modal">
-            <h2 data-end-title>Secteur renaturé !</h2>
+            <h2 data-end-title>Blackout généralisé</h2>
             <p data-end-desc></p>
             <div class="rw-modal-actions">
-              <button type="button" class="btn btn-sun" data-next-sector>Secteur suivant (+25 % prestige)</button>
-              <button type="button" class="btn btn-water" data-retry>Rejouer ce secteur</button>
-              <button type="button" class="btn btn-ghost" data-new-map>Nouvelle partie (Secteur 1)</button>
+              <button type="button" class="btn btn-sun" data-retry>Réessayer cette carte</button>
+              <button type="button" class="btn btn-ghost" data-new-map>Nouvelle carte procédurale</button>
             </div>
           </div>
         </div>
       </div>
       <p class="rw-msg" data-msg role="status" aria-live="polite">
-        Cliquez sur ⚡ Générer, optimisez vos emplacements et reconvertissez les centrales brutalistes.
+        Zone 1 (7×7) : reliez le 2e quartier, préparez le pic du soir (19 h) et reconvertissez la centrale pour étendre la carte !
       </p>
 
       <div class="rw-upgrades-box">
-        <h3>Améliorations incrémentales (Tech Tree)</h3>
+        <h3>Améliorations (Tech Tree)</h3>
         <div class="rw-upgrades-grid">
           {
             TECH_UPGRADES.map((u) => (
@@ -100,7 +106,7 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
         <h3>Modificateurs (Vote Épisode 1)</h3>
         <label class="rw-check">
           <input type="checkbox" data-mod-gravity checked />
-          <span><strong>Option A :</strong> Stockage gravitaire (centrale reconvertie = 110 MWh)</span>
+          <span><strong>Option A :</strong> Stockage gravitaire (centrale reconvertie = 120 MWh)</span>
         </label>
         <label class="rw-check">
           <input type="checkbox" data-mod-flywheels />
@@ -111,11 +117,11 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
       <div class="rw-box rw-controls">
         <button type="button" class="rw-btn" data-pause>Pause</button>
         <button type="button" class="rw-btn" data-speed>×2</button>
-        <button type="button" class="rw-btn" data-new-map>Reset</button>
+        <button type="button" class="rw-btn" data-new-map>Nouvelle carte</button>
       </div>
 
       <p class="rw-meta">
-        REWIRE v{REWIRE_VERSION} · Record : Secteur <strong data-best-sector>1</strong>
+        REWIRE v{REWIRE_VERSION} · Meilleure extension : Zone <strong data-best-zone>1/5</strong>
       </p>
     </aside>
   </div>
@@ -138,7 +144,7 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
     display: grid;
     grid-template-columns: 220px minmax(0, 1fr);
     gap: 0.75rem;
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.7rem;
     align-items: stretch;
   }
   .rw-clicker {
@@ -146,16 +152,22 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
     color: #13262e;
     border: none;
     border-radius: 12px;
-    padding: 0.7rem 0.9rem;
+    padding: 0.65rem 0.85rem;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.25rem;
     font: inherit;
-    box-shadow: 0 4px 14px rgba(240, 164, 58, 0.3);
+    box-shadow: 0 4px 14px rgba(240, 164, 58, 0.28);
     transition: transform 0.08s ease;
+  }
+  .rw-clicker:disabled {
+    background: #4f3a34;
+    color: #ffb4a2;
+    box-shadow: none;
+    cursor: not-allowed;
   }
   .rw-clicker:active,
   .rw-clicker.rw-pop {
@@ -163,22 +175,37 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
   }
   .rw-clicker-title {
     font-weight: 800;
-    font-size: 1rem;
+    font-size: 0.96rem;
   }
   .rw-clicker-gain {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 700;
     opacity: 0.9;
   }
+  .rw-heat-track {
+    width: 100%;
+    height: 6px;
+    border-radius: 99px;
+    background: rgba(19, 38, 46, 0.35);
+    overflow: hidden;
+    margin-top: 0.15rem;
+  }
+  .rw-heat-fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: #c43721;
+    transition: width 0.1s linear;
+  }
   .rw-hud {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-    gap: 0.55rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
   }
   .rw-stat {
     background: rgba(255, 255, 255, 0.06);
     border-radius: 10px;
-    padding: 0.5rem 0.7rem;
+    padding: 0.48rem 0.7rem;
   }
   .rw-k {
     display: block;
@@ -186,22 +213,43 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
     color: var(--soft);
   }
   .rw-stat strong {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     color: #fff;
   }
+  .rw-expand-bar {
+    margin-bottom: 0.75rem;
+  }
+  .rw-expand-btn {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid #2ad4a5;
+    background: rgba(42, 212, 165, 0.18);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .rw-expand-btn:disabled {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--soft);
+    cursor: not-allowed;
+  }
   .rw-event {
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.8rem;
     padding: 0.55rem 0.85rem;
     border-radius: 10px;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 600;
     background: rgba(240, 164, 58, 0.16);
     border: 1px solid #f0a43a;
     color: #f9d59b;
   }
   .rw-event[data-tone="danger"] {
-    background: rgba(232, 93, 63, 0.18);
-    border-color: #e85d3f;
+    background: rgba(232, 93, 63, 0.2);
+    border-color: #ff4d3d;
     color: #ffb4a2;
   }
   .rw-event[hidden] {
@@ -216,9 +264,9 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
   .rw-canvas-wrap {
     position: relative;
     overflow-x: auto;
-    background: #1a2026;
+    background: #12181d;
     border-radius: 12px;
-    padding: 2px;
+    padding: 4px;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .rw-canvas-wrap canvas {
@@ -240,7 +288,7 @@ import { REWIRE_VERSION, TECH_UPGRADES, TOOLS } from "../rewire/content";
     display: none;
   }
   .rw-modal {
-    max-width: 460px;
+    max-width: 440px;
     background: #1b313b;
     border: 1px solid #2ad4a5;
     border-radius: 14px;
