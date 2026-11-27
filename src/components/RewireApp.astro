@@ -1,0 +1,281 @@
+---
+import { REWIRE_VERSION, TOOLS } from "../rewire/content";
+---
+
+<div class="rewire-app" data-rewire-root>
+  <div class="rw-hud" aria-label="Tableau de bord du réseau électrique">
+    <div class="rw-stat">
+      <span class="rw-k">Production / Demande</span>
+      <strong data-prod>0 / 0 MW</strong>
+    </div>
+    <div class="rw-stat">
+      <span class="rw-k">Stockage</span>
+      <strong data-storage>0 / 0 MWh</strong>
+    </div>
+    <div class="rw-stat">
+      <span class="rw-k">Mix vert</span>
+      <strong data-green>0 %</strong>
+    </div>
+    <div class="rw-stat">
+      <span class="rw-k">Renaturation</span>
+      <strong data-renature>0 %</strong>
+    </div>
+    <div class="rw-stat">
+      <span class="rw-k">Fréquence</span>
+      <strong data-freq>50.0 Hz</strong>
+    </div>
+    <div class="rw-stat">
+      <span class="rw-k">Crédits</span>
+      <strong data-credits>75 cr.</strong>
+    </div>
+    <div class="rw-stat">
+      <span class="rw-k">Heure · Fossiles</span>
+      <strong><span data-clock>08:00</span> · <span data-fossil>2</span></strong>
+    </div>
+  </div>
+
+  <div class="rw-layout">
+    <div class="rw-stage">
+      <div class="rw-canvas-wrap">
+        <canvas data-canvas aria-label="Carte interactive du réseau électrique REWIRE"></canvas>
+        <div class="rw-overlay" data-end-overlay hidden>
+          <div class="rw-modal">
+            <h2 data-end-title>Transition réussie</h2>
+            <p data-end-desc></p>
+            <div class="rw-modal-actions">
+              <button type="button" class="btn btn-sun" data-new-map>Nouvelle carte procédurale</button>
+              <button type="button" class="btn btn-ghost" data-retry>Rejouer cette carte</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="rw-msg" data-msg role="status" aria-live="polite">
+        Posez du solaire, des éoliennes et du stockage, puis reconvertissez les centrales brutalistes.
+      </p>
+    </div>
+
+    <aside class="rw-panel" aria-label="Outils et modificateurs">
+      <div class="rw-box">
+        <h3>Outils</h3>
+        <div class="rw-tools">
+          {
+            TOOLS.map((t) => (
+              <button type="button" class="rw-tool" data-tool={t.id} title={t.help}>
+                <span class="rw-tool-top">
+                  <strong>{t.name}</strong>
+                  <span>{t.cost > 0 ? `${t.cost} cr.` : "50 %"}</span>
+                </span>
+                <small>{t.help}</small>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="rw-box">
+        <h3>Modificateurs (Vote Épisode 1)</h3>
+        <label class="rw-check">
+          <input type="checkbox" data-mod-gravity checked />
+          <span><strong>Option A :</strong> Stockage gravitaire (centrale reconvertie = 90 MWh)</span>
+        </label>
+        <label class="rw-check">
+          <input type="checkbox" data-mod-flywheels />
+          <span><strong>Option B :</strong> Volants d'inertie (absorbe mieux les pics et stabilise 50 Hz)</span>
+        </label>
+      </div>
+
+      <div class="rw-box rw-controls">
+        <button type="button" class="rw-btn" data-pause>Pause</button>
+        <button type="button" class="rw-btn" data-speed>×2</button>
+        <button type="button" class="rw-btn" data-new-map>Nouvelle carte</button>
+      </div>
+
+      <p class="rw-meta">
+        REWIRE prototype v{REWIRE_VERSION} · Carte <span data-seed>#—</span> · Zones renaturées : <strong data-wins>0</strong>
+      </p>
+    </aside>
+  </div>
+</div>
+
+<script>
+  import { bootRewire } from "../rewire/main";
+  document.querySelectorAll<HTMLElement>("[data-rewire-root]").forEach(bootRewire);
+</script>
+
+<style>
+  .rewire-app {
+    background: #13262e;
+    color: var(--limestone);
+    border-radius: 18px;
+    padding: 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .rw-hud {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .rw-stat {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+  }
+  .rw-k {
+    display: block;
+    font-size: 0.74rem;
+    color: var(--soft);
+  }
+  .rw-stat strong {
+    font-size: 0.98rem;
+    color: #fff;
+  }
+  .rw-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 1rem;
+    align-items: start;
+  }
+  .rw-canvas-wrap {
+    position: relative;
+    overflow-x: auto;
+    background: #1a2026;
+    border-radius: 12px;
+    padding: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .rw-canvas-wrap canvas {
+    display: block;
+    margin: 0 auto;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  .rw-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 24, 30, 0.86);
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  .rw-overlay[hidden] {
+    display: none;
+  }
+  .rw-modal {
+    max-width: 440px;
+    background: #1b313b;
+    border: 1px solid #2ad4a5;
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .rw-modal h2 {
+    margin: 0 0 0.5rem;
+    color: #fff;
+  }
+  .rw-modal p {
+    margin: 0 0 1.1rem;
+    color: var(--soft);
+  }
+  .rw-modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+  }
+  .rw-msg {
+    margin: 0.65rem 0 0;
+    font-size: 0.92rem;
+    color: #2ad4a5;
+  }
+  .rw-panel {
+    display: grid;
+    gap: 0.85rem;
+  }
+  .rw-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 0.85rem;
+  }
+  .rw-box h3 {
+    margin: 0 0 0.6rem;
+    font-size: 0.98rem;
+    color: #fff;
+  }
+  .rw-tools {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .rw-tool {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    padding: 0.5rem 0.65rem;
+    color: var(--limestone);
+    cursor: pointer;
+    font: inherit;
+  }
+  .rw-tool[data-active="true"] {
+    border-color: #2ad4a5;
+    background: rgba(42, 212, 165, 0.16);
+  }
+  .rw-tool-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+  .rw-tool small {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--soft);
+    margin-top: 0.15rem;
+  }
+  .rw-check {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: var(--soft);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+  }
+  .rw-check:last-child {
+    margin-bottom: 0;
+  }
+  .rw-check strong {
+    color: #fff;
+  }
+  .rw-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+  .rw-btn {
+    flex: 1 1 auto;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.45rem 0.7rem;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .rw-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+  .rw-meta {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--soft);
+    text-align: center;
+  }
+  @media (max-width: 960px) {
+    .rw-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

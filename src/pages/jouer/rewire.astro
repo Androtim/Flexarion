@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FaqSection from "../../components/FaqSection.astro";
+import RewireApp from "../../components/RewireApp.astro";
+import { REWIRE_VERSION } from "../../rewire/content";
+import { STUDIO } from "../../data/site";
+
+const siteOrigin = Astro.site ? Astro.site.origin : "https://flexarion.alwaysdata.net";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: "REWIRE",
+  softwareVersion: REWIRE_VERSION,
+  dateModified: "2026-11-27",
+  url: `${siteOrigin}/jouer/rewire/`,
+  description:
+    "Prototype jouable gratuit de REWIRE par Flexarion : remplacez deux centrales brutalistes par du solaire, de l'éolien et du stockage, évitez le blackout et renaturez le béton sur des cartes procédurales.",
+  genre: ["Simulation", "Strategy", "Puzzle"],
+  gamePlatform: ["Web browser"],
+  playMode: "SinglePlayer",
+  isAccessibleForFree: true,
+  inLanguage: "fr",
+  author: { "@id": `${siteOrigin}/#organization` },
+  publisher: { "@id": `${siteOrigin}/#organization` },
+  image: `${siteOrigin}/images/rewire-hero.jpg`,
+};
+
+const faqs = [
+  {
+    question: "Comment gagner une partie dans ce prototype de REWIRE ?",
+    answer:
+      "Posez des panneaux solaires, des éoliennes et du stockage reliés par câbles aux quartiers. Quand votre production verte et votre stockage suffisent à tenir la nuit et les pics du soir, utilisez l'outil « Reconvertir » sur les deux centrales brutalistes : la fumée disparaît et le béton se couvre de verdure jusqu'à la victoire.",
+  },
+  {
+    question: "À quoi servent les modificateurs « Vote Épisode 1 » sous la carte ?",
+    answer:
+      "Ils permettent de tester dès maintenant les deux options soumises à la communauté dans notre premier Reel : l'Option A transforme chaque centrale brutaliste reconvertie en tour de stockage gravitaire (90 MWh), et l'Option B active les volants d'inertie qui amortissent les pics de charge.",
+  },
+  {
+    question: "Comment proposer une mécanique pour la version 0.2 ?",
+    answer:
+      "Commentez nos Reels REWIRE sur TikTok (@flexarion_studio), Instagram (@flexarion) ou YouTube Shorts : à partir de l'épisode 2, le commentaire le plus liké entre directement dans le jeu.",
+  },
+];
+---
+
+<BaseLayout
+  title="Jouer à REWIRE (prototype v0.1) : électricité verte | Flexarion"
+  description="Testez le premier prototype jouable de REWIRE par Flexarion : cartes procédurales, solaire, éolien, stockage, blackouts et renaturation du béton brutaliste."
+  ogImage="/images/rewire-hero.jpg"
+  ogImageAlt="Prototype jouable de REWIRE par Flexarion Studio"
+  breadcrumbs={[
+    { name: "Accueil", href: "/" },
+    { name: "REWIRE", href: "/jeux/rewire/" },
+    { name: "Jouer", href: "/jouer/rewire/" },
+  ]}
+  schemas={[schema]}
+>
+  <header class="wrap page-head" style="padding-bottom: 1.5rem;">
+    <h1>Jouer à REWIRE (prototype v{REWIRE_VERSION}).</h1>
+    <p class="lead narrow">
+      Remplacez les deux centrales brutalistes par un réseau <strong>100 % électricité verte</strong> sans
+      provoquer de blackout, puis regardez la nature reconquérir le béton.
+    </p>
+  </header>
+
+  <section class="wrap" style="padding-bottom: 3rem;">
+    <RewireApp />
+  </section>
+
+  <section class="block block-chalk" aria-labelledby="guide-heading">
+    <div class="wrap narrow">
+      <h2 id="guide-heading">Prise en main rapide</h2>
+      <ol class="plain-list" style="display: grid; gap: 0.65rem; list-style: decimal; padding-left: 1.25rem;">
+        <li><strong>Connectez du renouvelable :</strong> posez des panneaux solaires (bonus sur les dalles dorées) et des éoliennes (bonus sur les couloirs bleutés) au contact des câbles existants.</li>
+        <li><strong>Prévoyez la nuit :</strong> le solaire tombe à 0 MW après 19 h et la demande grimpe le soir — ajoutez du <strong>Stockage</strong> pour garder le réseau à 50,0 Hz.</li>
+        <li><strong>Reconvertissez le béton :</strong> sélectionnez <strong>Reconvertir</strong> et cliquez sur les deux centrales fumantes pour basculer en 100 % vert et lancer la renaturation.</li>
+      </ol>
+      <div class="actions" style="margin-top: 1.5rem;">
+        <a href="/jeux/rewire/" class="btn btn-water">Présentation de REWIRE</a>
+        <a href={STUDIO.tiktok} target="_blank" rel="noopener noreferrer" class="btn btn-sun">Proposer une idée (TikTok)</a>
+        <a href="/jouer/" class="btn btn-ghost">Jouer à Veridia 2140</a>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection title="Questions sur le prototype REWIRE" items={faqs} />
+</BaseLayout>
