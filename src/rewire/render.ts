@@ -108,8 +108,9 @@ export function renderRewire(
         const nk = idx(w, nx, ny);
         if (s.cells[nk] === "empty") continue;
 
-        ctx.strokeStyle = on ? wireColor : "#56616B";
-        ctx.lineWidth = Math.max(3, cellSize * 0.11);
+        const hot = s.overloaded[k] || s.overloaded[nk];
+        ctx.strokeStyle = !on ? "#56616B" : hot ? "#FF4D3D" : wireColor;
+        ctx.lineWidth = Math.max(3, cellSize * (hot ? 0.14 : 0.11));
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(cx, cy);
@@ -244,6 +245,26 @@ export function renderRewire(
         const barW = cellSize * 0.48 * fillRatio;
         ctx.fillStyle = "#2AD4A5";
         ctx.fillRect(px + cellSize * 0.26, py + cellSize * 0.36, barW, cellSize * 0.28);
+      } else if (kind === "substation") {
+        // Poste HT / Transformateur (booste les sources adjacentes et soulage les lignes)
+        ctx.fillStyle = "#1E303A";
+        ctx.strokeStyle = "#F0A43A";
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.roundRect(px + cellSize * 0.12, py + cellSize * 0.14, cellSize * 0.76, cellSize * 0.72, 7);
+        ctx.fill();
+        ctx.stroke();
+        // Éclair doré central
+        ctx.fillStyle = "#F0A43A";
+        ctx.beginPath();
+        ctx.moveTo(cx + cellSize * 0.04, py + cellSize * 0.24);
+        ctx.lineTo(cx - cellSize * 0.14, cy + cellSize * 0.04);
+        ctx.lineTo(cx, cy + cellSize * 0.04);
+        ctx.lineTo(cx - cellSize * 0.06, py + cellSize * 0.76);
+        ctx.lineTo(cx + cellSize * 0.14, cy - cellSize * 0.04);
+        ctx.lineTo(cx, cy - cellSize * 0.04);
+        ctx.closePath();
+        ctx.fill();
       } else if (kind === "city") {
         // Quartier / sous-station urbaine
         const ok = s.powered[k] && s.stability > 25;
