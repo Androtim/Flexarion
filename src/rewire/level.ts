@@ -1,26 +1,27 @@
-// Génération procédurale des secteurs brutalistes de REWIRE (difficulté croissante par secteur).
-import { DISTRICT_NAMES, REWIRE_RULES } from "./content";
+// Génération procédurale du monde complet 23×23 de REWIRE découpé en 5 anneaux concentriques.
+import { DISTRICT_NAMES, WORLD_CENTER, WORLD_SIZE, ZONES } from "./content";
 
 export type Terrain = "concrete" | "solar_zone" | "wind_zone" | "rubble";
 
 export interface PlantInit {
   x: number;
   y: number;
+  zone: number;
+  mw: number;
   name: string;
 }
 
 export interface CityInit {
   x: number;
   y: number;
-  name: string;
+  zone: number;
   baseDemand: number;
+  name: string;
 }
 
-export interface RewireLevel {
+export interface RewireWorld {
   seed: number;
-  sector: number;
-  w: number;
-  h: number;
+  size: number;
   terrain: Terrain[];
   plants: PlantInit[];
   cities: CityInit[];
@@ -38,127 +39,127 @@ export function mulberry32(seed: number): () => number {
   };
 }
 
-export function idx(w: number, x: number, y: number): number {
-  return y * w + x;
+export function idx(x: number, y: number): number {
+  return y * WORLD_SIZE + x;
+}
+
+export function cellZone(x: number, y: number): number {
+  const dist = Math.max(Math.abs(x - WORLD_CENTER), Math.abs(y - WORLD_CENTER));
+  for (const z of ZONES) {
+    if (dist <= z.radius) return z.zone;
+  }
+  return ZONES[ZONES.length - 1].zone;
 }
 
 function manhattan(ax: number, ay: number, bx: number, by: number): number {
   return Math.abs(ax - bx) + Math.abs(ay - by);
 }
 
-/** Génère un secteur industriel brutaliste. Les secteurs supérieurs ont plus de centrales et de demande. */
-export function generateRewireMap(seed: number, sector = 1): RewireLevel {
-  const rand = mulberry32(seed + sector * 7919);
-  const { w, h } = REWIRE_RULES;
-  const terrain: Terrain[] = new Array(w * h).fill("concrete");
+/** Génère un monde 23×23 complet avec centrales, quartiers et zones de ressources répartis par anneau. */
+export function generateRewireWorld(seed: number): RewireWorld {
+  const rand = mulberry32(seed);
+  const N = WORLD_SIZE;
+  const terrain: Terrain[] = new Array(N * N).fill("concrete");
 
-  // Zones de vent et dalles solaires
-  for (let i = 0; i < 4; i++) {
-    const cx = 1 + Math.floor(rand() * (w - 2));
-    const cy = 1 + Math.floor(rand() * (h - 2));
+  // Zones solaires & couloirs de vent répartis sur tout le monde
+  for (let i = 0; i < 24; i++) {
+    const cx = 1 + Math.floor(rand() * (N - 2));
+    const cy = 1 + Math.floor(rand() * (N - 2));
     const kind: Terrain = i % 2 === 0 ? "wind_zone" : "solar_zone";
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {
         const nx = cx + dx;
         const ny = cy + dy;
-        if (nx >= 0 && nx < w && ny >= 0 && ny < h && rand() < 0.65) {
-          terrain[idx(w, nx, ny)] = kind;
+        if (nx >= 0 && ny >= 0 && nx < N && ny < N && rand() < 0.62) {
+          terrain[idx(nx, ny)] = kind;
         }
       }
     }
   }
 
-  // Gravats brutalistes infranchissables
-  const rubbleCount = 8 + Math.min(8, sector * 2) + Math.floor(rand() * 4);
-  for (let i = 0; i < rubbleCount; i++) {
-    const rx = 1 + Math.floor(rand() * (w - 2));
-    const ry = 1 + Math.floor(rand() * (h - 2));
-    terrain[idx(w, rx, ry)] = "rubble";
+  // Gravats brutalistes infranchissables (créent de vrais couloirs de routage)
+  for (let i = 0; i < 42; i++) {
+    const rx = Math.floor(rand() * N);
+    const ry = Math.floor(rand() * N);
+    if (Math.abs(rx - WORLD_CENTER) <= 1 && Math.abs(ry - WORLD_CENTER) <= 1) continue;
+    terrain[idx(rx, ry)] = "rubble";
   }
 
   const occupied = new Set<number>();
-  const reserve = (x: number, y: number) => {
-    occupied.add(idx(w, x, y));
-    terrain[idx(w, x, y)] = "concrete";
-  };
-
-  // 2 centrales au secteur 1, 3 centrales à partir du secteur 2
-  const plantCount = sector >= 2 ? 3 : 2;
-  const plantNames = ["Centrale Monolithe A", "Centrale Thermique B", "Fonderie Charbon C"];
   const plants: PlantInit[] = [];
-  for (let i = 0; i < plantCount; i++) {
-    const px = 1 + Math.floor(rand() * 3);
-    const py =
-      plantCount === 2
-        ? i === 0
-          ? 1 + Math.floor(rand() * 3)
-          : h - 4 + Math.floor(rand() * 3)
-        : 1 + i * 3 + Math.floor(rand() * 2);
-    const clampedY = Math.min(h - 2, Math.max(1, py));
-    reserve(px, clampedY);
-    plants.push({ x: px, y: clampedY, name: plantNames[i] });
-  }
-
-  // 3 quartiers au secteur 1, 4 à partir du secteur 2
-  const cityCount = sector >= 2 ? 4 : 3;
   const cities: CityInit[] = [];
-  const shuffledNames = [...DISTRICT_NAMES].sort(() => rand() - 0.5);
-  const demandScale = 1 + (sector - 1) * 0.25;
+  let cityNameIdx = 0;
+  let plantIdx = 1;
 
-  for (let i = 0; i < cityCount; i++) {
-    const bandY0 = Math.floor((i * (h - 2)) / cityCount) + 1;
-    const bandY1 = Math.min(h - 2, Math.floor(((i + 1) * (h - 2)) / cityCount));
-    let cx = w - 3;
-    let cy = bandY0;
-    for (let tries = 0; tries < 30; tries++) {
-      const tx = 6 + Math.floor(rand() * (w - 7));
-      const ty = bandY0 + Math.floor(rand() * Math.max(1, bandY1 - bandY0 + 1));
-      const tooClose = [...plants, ...cities].some((p) => manhattan(p.x, p.y, tx, ty) < 3);
-      if (!tooClose && !occupied.has(idx(w, tx, ty))) {
-        cx = tx;
-        cy = ty;
-        break;
+  const pickCellInZone = (zone: number, minDist: number): [number, number] => {
+    const zDef = ZONES[zone - 1];
+    const prevR = zone === 1 ? -1 : ZONES[zone - 2].radius;
+    const candidates: Array<[number, number]> = [];
+    for (let y = WORLD_CENTER - zDef.radius; y <= WORLD_CENTER + zDef.radius; y++) {
+      for (let x = WORLD_CENTER - zDef.radius; x <= WORLD_CENTER + zDef.radius; x++) {
+        const d = Math.max(Math.abs(x - WORLD_CENTER), Math.abs(y - WORLD_CENTER));
+        if (d <= prevR || d > zDef.radius) continue;
+        if (occupied.has(idx(x, y))) continue;
+        const tooClose = [...plants, ...cities].some((p) => manhattan(p.x, p.y, x, y) < minDist);
+        if (!tooClose) candidates.push([x, y]);
       }
     }
-    reserve(cx, cy);
-    cities.push({
-      x: cx,
-      y: cy,
-      name: shuffledNames[i],
-      baseDemand: Math.round((8 + (i % 2) * 2) * demandScale),
-    });
-  }
-
-  // Réseau initial minimal (1 tronc commun → crée un vrai besoin d'optimisation et de lignes parallèles)
-  const cableSet = new Set<number>();
-  const carveLine = (ax: number, ay: number, bx: number, by: number) => {
-    let x = ax;
-    let y = ay;
-    while (x !== bx) {
-      x += x < bx ? 1 : -1;
-      const k = idx(w, x, y);
-      if (terrain[k] === "rubble") terrain[k] = "concrete";
-      if (!occupied.has(k)) cableSet.add(k);
+    if (candidates.length === 0) {
+      // Fallback avec distance réduite
+      for (let y = WORLD_CENTER - zDef.radius; y <= WORLD_CENTER + zDef.radius; y++) {
+        for (let x = WORLD_CENTER - zDef.radius; x <= WORLD_CENTER + zDef.radius; x++) {
+          const d = Math.max(Math.abs(x - WORLD_CENTER), Math.abs(y - WORLD_CENTER));
+          if (d > prevR && d <= zDef.radius && !occupied.has(idx(x, y))) candidates.push([x, y]);
+        }
+      }
     }
-    while (y !== by) {
-      y += y < by ? 1 : -1;
-      const k = idx(w, x, y);
-      if (terrain[k] === "rubble") terrain[k] = "concrete";
-      if (!occupied.has(k)) cableSet.add(k);
-    }
+    const [px, py] = candidates[Math.floor(rand() * candidates.length)];
+    occupied.add(idx(px, py));
+    terrain[idx(px, py)] = "concrete";
+    return [px, py];
   };
 
-  for (let i = 1; i < plants.length; i++) {
-    carveLine(plants[i - 1].x, plants[i - 1].y, plants[i].x, plants[i].y);
-  }
-  for (const c of cities) {
-    let nearest = plants[0];
-    for (const p of plants) {
-      if (manhattan(c.x, c.y, p.x, p.y) < manhattan(c.x, c.y, nearest.x, nearest.y)) nearest = p;
+  for (const zDef of ZONES) {
+    for (let i = 0; i < zDef.newPlants; i++) {
+      const [px, py] = pickCellInZone(zDef.zone, 3);
+      plants.push({
+        x: px,
+        y: py,
+        zone: zDef.zone,
+        mw: zDef.plantMw,
+        name: `Centrale Monolithe #${plantIdx++}`,
+      });
     }
-    carveLine(nearest.x, nearest.y, c.x, c.y);
+    for (let i = 0; i < zDef.newCities; i++) {
+      const [cx, cy] = pickCellInZone(zDef.zone, 3);
+      cities.push({
+        x: cx,
+        y: cy,
+        zone: zDef.zone,
+        baseDemand: zDef.cityDemand + (i % 2),
+        name: DISTRICT_NAMES[cityNameIdx++ % DISTRICT_NAMES.length],
+      });
+    }
   }
 
-  const initialCables: Array<[number, number]> = [...cableSet].map((k) => [k % w, Math.floor(k / w)]);
-  return { seed, sector, w, h, terrain, plants, cities, initialCables };
+  // En Zone 1 : on relie SEULEMENT la 1re ville à la centrale de départ (la 2e ville est à câbler soi-même !)
+  const initialCables: Array<[number, number]> = [];
+  const p0 = plants[0];
+  const c0 = cities[0];
+  let x = p0.x;
+  let y = p0.y;
+  while (x !== c0.x) {
+    x += x < c0.x ? 1 : -1;
+    const k = idx(x, y);
+    if (terrain[k] === "rubble") terrain[k] = "concrete";
+    if (!occupied.has(k)) initialCables.push([x, y]);
+  }
+  while (y !== c0.y) {
+    y += y < c0.y ? 1 : -1;
+    const k = idx(x, y);
+    if (terrain[k] === "rubble") terrain[k] = "concrete";
+    if (!occupied.has(k)) initialCables.push([x, y]);
+  }
+
+  return { seed, size: N, terrain, plants, cities, initialCables };
 }

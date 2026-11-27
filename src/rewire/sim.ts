@@ -1,6 +1,6 @@
-// Simulation électrique incrémentale de REWIRE v0.2 (coûts croissants, surcharges, synergies, tech tree, événements).
-import { REWIRE_RULES, TECH_UPGRADES, TOOLS, type ToolId, type UpgradeId } from "./content";
-import { generateRewireMap, idx, type RewireLevel } from "./level";
+// Simulation REWIRE v0.3 : monde qui s'agrandit (5 zones), flux réel par câble avec goulots MW, smog, dynamo à surchauffe.
+import { REWIRE_RULES, TECH_UPGRADES, TOOLS, WORLD_CENTER, WORLD_SIZE, ZONES, type ToolId, type UpgradeId } from "./content";
+import { cellZone, generateRewireWorld, idx, type RewireWorld } from "./level";
 
 export type CellKind =
   | "empty"
@@ -29,33 +29,44 @@ export interface ActiveEvent {
 
 export interface RewireState {
   seed: number;
-  sector: number;
-  prestigeMult: number;
-  level: RewireLevel;
+  world: RewireWorld;
+  unlockedZone: number; // 1..5
   cells: CellKind[];
+  plantMwMap: number[];
   green: number[];
+  smog: boolean[];
   powered: boolean[];
+  /** Flux réel transitant sur chaque case câble (en MW). */
+  cableFlow: number[];
+  /** Capacité maximale (en MW) de chaque case câble. */
+  cableCap: number[];
   overloaded: boolean[];
   upgrades: Record<UpgradeId, number>;
   convertedCount: number;
   credits: number;
   incomeRate: number;
-  totalClicks: number;
+  /** Dynamo manuelle (anti-cheese : jauge de chauffe 0..100). */
+  dynamoHeat: number;
+  dynamoLocked: boolean;
+  dynamoBoostMw: number;
+  dynamoBoostTimer: number;
   timeSec: number;
   hour: number;
   sunFactor: number;
   windFactor: number;
   demandMw: number;
+  deliveredMw: number;
   fossilMw: number;
   greenMw: number;
-  totalProdMw: number;
+  wastedMw: number;
   storageMwh: number;
   storageCapMwh: number;
   greenShare: number;
   frequencyHz: number;
   stability: number;
   renature: number;
-  overloadRatio: number;
+  overloadedCables: number;
+  unlockedCities: number;
   poweredCities: number;
   fossilRemaining: number;
   activeEvent: ActiveEvent | null;
@@ -73,78 +84,103 @@ const N4 = [
 ];
 
 const EVENTS: Array<Omit<ActiveEvent, "timeLeft">> = [
-  { name: "Rafale de Mistral", desc: "Éoliennes +60 % pendant 14 s !", sunMult: 1, windMult: 1.6, demandMult: 1 },
-  { name: "Couverture nuageuse", desc: "Solaire −55 % pendant 14 s : comptez sur le stockage.", sunMult: 0.45, windMult: 1.1, demandMult: 1 },
-  { name: "Pic de chaleur", desc: "Demande urbaine +28 % pendant 14 s !", sunMult: 1.15, windMult: 0.85, demandMult: 1.28 },
+  { name: "Pic de canicule", desc: "Demande urbaine +32 % pendant 14 s !", sunMult: 1.15, windMult: 0.75, demandMult: 1.32 },
+  { name: "Front nuageux", desc: "Solaire −60 % pendant 14 s : préparez les batteries.", sunMult: 0.4, windMult: 1.15, demandMult: 1.05 },
+  { name: "Mistral fort", desc: "Éoliennes +55 % pendant 14 s !", sunMult: 1, windMult: 1.55, demandMult: 1 },
 ];
 
-export function newRewireGame(
-  seed: number,
-  modifiers: Modifiers = { gravityTowers: true, flywheels: false },
-  sector = 1,
-): RewireState {
-  const level = generateRewireMap(seed, sector);
-  const total = level.w * level.h;
+export function isUnlocked(s: RewireState, x: number, y: number): boolean {
+  return cellZone(x, y) <= s.unlockedZone;
+}
+
+export function unlockedBounds(zone: number): { min: number; max: number; span: number } {
+  const r = ZONES[zone - 1].radius;
+  return { min: WORLD_CENTER - r, max: WORLD_CENTER + r, span: r * 2 + 1 };
+}
+
+export function newRewireGame(seed: number, modifiers: Modifiers = { gravityTowers: true, flywheels: false }): RewireState {
+  const world = generateRewireWorld(seed);
+  const total = WORLD_SIZE * WORLD_SIZE;
   const cells: CellKind[] = new Array(total).fill("empty");
-  for (const p of level.plants) cells[idx(level.w, p.x, p.y)] = "fossil";
-  for (const c of level.cities) cells[idx(level.w, c.x, c.y)] = "city";
-  for (const [cx, cy] of level.initialCables) cells[idx(level.w, cx, cy)] = "cable";
+  const plantMwMap = new Array(total).fill(0);
+
+  for (const p of world.plants) {
+    const k = idx(p.x, p.y);
+    cells[k] = "fossil";
+    plantMwMap[k] = p.mw;
+  }
+  for (const c of world.cities) {
+    cells[idx(c.x, c.y)] = "city";
+  }
+  for (const [cx, cy] of world.initialCables) {
+    cells[idx(cx, cy)] = "cable";
+  }
 
   const state: RewireState = {
     seed,
-    sector,
-    prestigeMult: 1 + (sector - 1) * 0.25,
-    level,
+    world,
+    unlockedZone: 1,
     cells,
+    plantMwMap,
     green: new Array(total).fill(0),
+    smog: new Array(total).fill(false),
     powered: new Array(total).fill(false),
+    cableFlow: new Array(total).fill(0),
+    cableCap: new Array(total).fill(REWIRE_RULES.baseCableCapMw),
     overloaded: new Array(total).fill(false),
-    upgrades: { click: 0, solar: 0, wind: 0, cables: 0, smartgrid: 0, biomoss: 0 },
+    upgrades: { dynamo: 0, cables: 0, solar: 0, wind: 0, smartgrid: 0, biomoss: 0 },
     convertedCount: 0,
     credits: REWIRE_RULES.startCredits,
     incomeRate: 0,
-    totalClicks: 0,
-    timeSec: 8 * (REWIRE_RULES.dayDurationSec / 24),
-    hour: 8,
-    sunFactor: 0.7,
+    dynamoHeat: 0,
+    dynamoLocked: false,
+    dynamoBoostMw: 0,
+    dynamoBoostTimer: 0,
+    timeSec: 7 * (REWIRE_RULES.dayDurationSec / 24),
+    hour: 7,
+    sunFactor: 0.5,
     windFactor: 0.65,
     demandMw: 0,
+    deliveredMw: 0,
     fossilMw: 0,
     greenMw: 0,
-    totalProdMw: 0,
+    wastedMw: 0,
     storageMwh: 0,
     storageCapMwh: 0,
     greenShare: 0,
     frequencyHz: 50,
     stability: 100,
     renature: 0,
-    overloadRatio: 0,
-    poweredCities: level.cities.length,
-    fossilRemaining: level.plants.length,
+    overloadedCables: 0,
+    unlockedCities: 2,
+    poweredCities: 1,
+    fossilRemaining: 1,
     activeEvent: null,
-    nextEventIn: 24,
+    nextEventIn: 28,
     phase: "play",
     modifiers: { ...modifiers },
-    message: `Secteur ${sector} : cliquez sur ⚡ Générer, optimisez vos emplacements et reconvertissez les centrales.`,
+    message: "Zone 1 (7×7) : reliez le 2e quartier, préparez le pic du soir (19 h) et reconvertissez la centrale pour étendre la carte !",
   };
   evaluateGrid(state, 0);
   return state;
 }
 
-export function countKind(s: RewireState, kind: CellKind): number {
+export function countKindUnlocked(s: RewireState, kind: CellKind): number {
   let n = 0;
-  for (const c of s.cells) if (c === kind) n++;
+  for (let y = 0; y < WORLD_SIZE; y++) {
+    for (let x = 0; x < WORLD_SIZE; x++) {
+      if (isUnlocked(s, x, y) && s.cells[idx(x, y)] === kind) n++;
+    }
+  }
   return n;
 }
 
 export function currentToolCost(s: RewireState, tool: ToolId): number {
   const def = TOOLS.find((t) => t.id === tool);
   if (!def || def.baseCost === 0) return 0;
-  if (tool === "convert") {
-    return Math.round(def.baseCost * Math.pow(def.growth, s.convertedCount));
-  }
+  if (tool === "convert") return Math.round(def.baseCost * Math.pow(def.growth, s.convertedCount));
   if (tool === "cable") return def.baseCost;
-  const count = countKind(s, tool as CellKind);
+  const count = countKindUnlocked(s, tool as CellKind);
   return Math.round(def.baseCost * Math.pow(def.growth, count));
 }
 
@@ -158,8 +194,7 @@ export function upgradeCost(s: RewireState, id: UpgradeId): number {
 export function buyUpgrade(s: RewireState, id: UpgradeId): boolean {
   if (s.phase !== "play") return false;
   const def = TECH_UPGRADES.find((u) => u.id === id);
-  if (!def) return false;
-  if (s.upgrades[id] >= def.maxLevel) return false;
+  if (!def || s.upgrades[id] >= def.maxLevel) return false;
   const cost = upgradeCost(s, id);
   if (s.credits < cost) {
     s.message = `Il faut ${cost} cr. pour ${def.name}.`;
@@ -167,40 +202,75 @@ export function buyUpgrade(s: RewireState, id: UpgradeId): boolean {
   }
   s.credits -= cost;
   s.upgrades[id]++;
-  s.message = `Amélioration débloquée : ${def.name} (niv. ${s.upgrades[id]}).`;
+  s.message = `Tech débloquée : ${def.name} (niv. ${s.upgrades[id]}).`;
   evaluateGrid(s, 0);
   return true;
 }
 
-export function clickPower(s: RewireState): { credits: number; mwh: number } {
-  const lvl = s.upgrades.click;
-  const baseCr = [2, 5, 11, 22, 42][lvl] ?? 42;
+export function canExpand(s: RewireState): { ok: boolean; cost: number; reason: string } {
+  if (s.unlockedZone >= ZONES.length) return { ok: false, cost: 0, reason: "Monde complet débloqué" };
+  const next = ZONES[s.unlockedZone];
+  if (s.fossilRemaining > 0) return { ok: false, cost: next.unlockCost, reason: `Reconvertissez encore ${s.fossilRemaining} centrale(s)` };
+  if (s.poweredCities < s.unlockedCities) return { ok: false, cost: next.unlockCost, reason: "Reliez tous les quartiers" };
+  if (s.renature < REWIRE_RULES.expandMinRenature) {
+    return { ok: false, cost: next.unlockCost, reason: `Renaturation ${Math.round(s.renature * 100)} % / ${Math.round(REWIRE_RULES.expandMinRenature * 100)} %` };
+  }
+  if (s.credits < next.unlockCost) return { ok: false, cost: next.unlockCost, reason: `Il faut ${next.unlockCost} cr.` };
+  return { ok: true, cost: next.unlockCost, reason: `Débloquer Zone ${next.zone} (${next.radius * 2 + 1}×${next.radius * 2 + 1})` };
+}
+
+export function expandWorld(s: RewireState): boolean {
+  if (s.phase !== "play") return false;
+  const check = canExpand(s);
+  if (!check.ok) {
+    s.message = check.reason;
+    return false;
+  }
+  s.credits -= check.cost;
+  s.unlockedZone++;
+  const z = ZONES[s.unlockedZone - 1];
+  s.message = `🗺️ Zone ${z.zone} (${z.radius * 2 + 1}×${z.radius * 2 + 1}) débloquée ! +${z.newCities} quartiers et +${z.newPlants} centrale(s) brutaliste(s) à gérer.`;
+  evaluateGrid(s, 0);
+  return true;
+}
+
+export function dynamoStats(s: RewireState): { credits: number; mw: number; heatPerClick: number } {
+  const lvl = s.upgrades.dynamo;
   return {
-    credits: Math.round(baseCr * s.prestigeMult),
-    mwh: 2 + lvl * 2.5,
+    credits: [2, 4, 9, 18, 34][lvl] ?? 34,
+    mw: [6, 10, 16, 24, 36][lvl] ?? 36,
+    heatPerClick: Math.max(11, 20 - lvl * 2),
   };
 }
 
-/** Action Cookie Clicker : génère des crédits immédiats + injecte du courant dans le stockage / stabilise le réseau. */
-export function clickGenerate(s: RewireState): void {
-  if (s.phase !== "play") return;
-  const p = clickPower(s);
-  s.credits += p.credits;
-  s.totalClicks++;
+/** Dynamo manuelle avec jauge de surchauffe (utile en urgence et au démarrage, impossible à spammer à l'infini). */
+export function clickDynamo(s: RewireState): boolean {
+  if (s.phase !== "play" || s.dynamoLocked) return false;
+  const st = dynamoStats(s);
+  s.dynamoHeat = Math.min(100, s.dynamoHeat + st.heatPerClick);
+  if (s.dynamoHeat >= 100) {
+    s.dynamoLocked = true;
+    s.message = "🔥 Dynamo en surchauffe ! Attendez le refroidissement.";
+  }
+  s.credits += st.credits;
+  s.dynamoBoostMw = st.mw;
+  s.dynamoBoostTimer = 2.2;
   if (s.storageCapMwh > 0) {
-    s.storageMwh = Math.min(s.storageCapMwh, s.storageMwh + p.mwh);
+    s.storageMwh = Math.min(s.storageCapMwh, s.storageMwh + st.mw * 0.25);
   }
-  if (s.stability < 100) {
-    s.stability = Math.min(100, s.stability + 1.8);
-  }
+  return true;
 }
 
 export function applyTool(s: RewireState, tool: ToolId, x: number, y: number): boolean {
   if (s.phase !== "play") return false;
-  if (x < 0 || y < 0 || x >= s.level.w || y >= s.level.h) return false;
-  const k = idx(s.level.w, x, y);
+  if (x < 0 || y < 0 || x >= WORLD_SIZE || y >= WORLD_SIZE) return false;
+  if (!isUnlocked(s, x, y)) {
+    s.message = "Zone encore verrouillée : nettoyez la zone actuelle puis étendez la carte.";
+    return false;
+  }
+  const k = idx(x, y);
   const cur = s.cells[k];
-  const ter = s.level.terrain[k];
+  const ter = s.world.terrain[k];
   const cost = currentToolCost(s, tool);
 
   if (tool === "erase") {
@@ -224,19 +294,17 @@ export function applyTool(s: RewireState, tool: ToolId, x: number, y: number): b
     s.convertedCount++;
     s.cells[k] = s.modifiers.gravityTowers ? "gravity_tower" : "cable";
     s.message = s.modifiers.gravityTowers
-      ? `Centrale reconvertie en tour gravitaire (+${REWIRE_RULES.gravityTowerCapMwh} MWh) !`
-      : "Centrale brutaliste débranchée ! Tenez le réseau avec le renouvelable.";
+      ? `Centrale brutaliste convertie en tour gravitaire (+${REWIRE_RULES.gravityTowerCapMwh} MWh) !`
+      : "Centrale brutaliste débranchée ! Le smog se dissipe.";
     evaluateGrid(s, 0);
     return true;
   }
 
-  if (ter === "rubble") return false;
-  if (cur !== "empty") return false;
+  if (ter === "rubble" || cur !== "empty") return false;
   if (s.credits < cost) {
-    s.message = `Crédits insuffisants (${cost} cr. requis pour ${TOOLS.find((t) => t.id === tool)?.name}).`;
+    s.message = `Crédits insuffisants (${cost} cr. requis).`;
     return false;
   }
-
   s.credits -= cost;
   s.cells[k] = tool;
   evaluateGrid(s, 0);
@@ -247,36 +315,43 @@ function isConductive(c: CellKind): boolean {
   return c !== "empty";
 }
 
-function neighborsOf(s: RewireState, k: number): CellKind[] {
-  const { w, h } = s.level;
-  const x = k % w;
-  const y = Math.floor(k / w);
-  const out: CellKind[] = [];
+function neighborsUnlocked(s: RewireState, x: number, y: number): number[] {
+  const out: number[] = [];
   for (const [dx, dy] of N4) {
     const nx = x + dx;
     const ny = y + dy;
-    if (nx >= 0 && ny >= 0 && nx < w && ny < h) out.push(s.cells[idx(w, nx, ny)]);
+    if (nx >= 0 && ny >= 0 && nx < WORLD_SIZE && ny < WORLD_SIZE && isUnlocked(s, nx, ny)) {
+      out.push(idx(nx, ny));
+    }
   }
   return out;
 }
 
 function evaluateGrid(s: RewireState, dt: number): void {
-  const { w, h } = s.level;
+  const N = WORLD_SIZE;
   const dayFrac = (s.timeSec % REWIRE_RULES.dayDurationSec) / REWIRE_RULES.dayDurationSec;
   s.hour = dayFrac * 24;
 
-  // Événements réseau dynamiques
+  // Refroidissement dynamo
   if (dt > 0) {
+    const coolRate = 20 + s.upgrades.dynamo * 5;
+    s.dynamoHeat = Math.max(0, s.dynamoHeat - coolRate * dt);
+    if (s.dynamoLocked && s.dynamoHeat <= 35) s.dynamoLocked = false;
+    if (s.dynamoBoostTimer > 0) {
+      s.dynamoBoostTimer = Math.max(0, s.dynamoBoostTimer - dt);
+      if (s.dynamoBoostTimer === 0) s.dynamoBoostMw = 0;
+    }
+
     if (s.activeEvent) {
       s.activeEvent.timeLeft -= dt;
       if (s.activeEvent.timeLeft <= 0) {
         s.activeEvent = null;
-        s.nextEventIn = 26;
+        s.nextEventIn = 28;
       }
     } else {
       s.nextEventIn -= dt;
       if (s.nextEventIn <= 0) {
-        const ev = EVENTS[Math.floor(Math.abs(Math.sin(s.timeSec + s.seed)) * EVENTS.length) % EVENTS.length];
+        const ev = EVENTS[Math.floor(Math.abs(Math.sin(s.timeSec * 1.3 + s.seed)) * EVENTS.length) % EVENTS.length];
         s.activeEvent = { ...ev, timeLeft: 14 };
         s.message = `⚡ Événement : ${ev.name} — ${ev.desc}`;
       }
@@ -289,231 +364,311 @@ function evaluateGrid(s: RewireState, dt: number): void {
 
   const sunRaw = Math.sin(((s.hour - 6) / 13) * Math.PI);
   s.sunFactor = s.hour >= 6 && s.hour <= 19 ? Math.max(0, sunRaw) * evSun : 0;
-  s.windFactor = (0.52 + 0.36 * Math.sin(s.timeSec * 0.24 + s.seed) + 0.14 * Math.cos(s.timeSec * 0.57)) * evWind;
-  s.windFactor = Math.max(0.18, Math.min(1.6, s.windFactor));
+  s.windFactor = (0.48 + 0.36 * Math.sin(s.timeSec * 0.25 + s.seed) + 0.14 * Math.cos(s.timeSec * 0.59)) * evWind;
+  s.windFactor = Math.max(0.15, Math.min(1.6, s.windFactor));
 
-  // La demande grimpe doucement avec le temps + pics matin/soir
-  const timeCreep = 1 + Math.min(0.45, s.timeSec / 260);
-  const eveningPeak = Math.exp(-Math.pow((s.hour - 19.5) / 2.5, 2)) * 0.38;
-  const morningPeak = Math.exp(-Math.pow((s.hour - 9) / 2.0, 2)) * 0.14;
-  const demandMult = (0.85 + eveningPeak + morningPeak) * evDem * timeCreep;
+  const eveningPeak = Math.exp(-Math.pow((s.hour - 19.5) / 2.6, 2)) * 0.45;
+  const morningPeak = Math.exp(-Math.pow((s.hour - 8.5) / 2.0, 2)) * 0.15;
+  const demandMult = (0.85 + eveningPeak + morningPeak) * evDem;
 
   const solarTech = 1 + s.upgrades.solar * 0.35;
-  const windTech = 1 + s.upgrades.wind * 0.3;
-  const lineCap = REWIRE_RULES.baseLineCapMw * (1 + s.upgrades.cables * 0.55);
+  const windTech = 1 + s.upgrades.wind * 0.35;
+  const baseCap = REWIRE_RULES.baseCableCapMw * (1 + s.upgrades.cables * 0.5);
 
-  const visited = new Uint8Array(w * h);
+  // 1. Calcul du smog (rayon 3 autour de chaque centrale fossile active dans les zones débloquées)
+  s.smog.fill(false);
+  const activeFossils: Array<[number, number]> = [];
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      if (!isUnlocked(s, x, y)) continue;
+      if (s.cells[idx(x, y)] === "fossil") activeFossils.push([x, y]);
+    }
+  }
+  for (const [fx, fy] of activeFossils) {
+    for (let dy = -3; dy <= 3; dy++) {
+      for (let dx = -3; dx <= 3; dx++) {
+        if (Math.abs(dx) + Math.abs(dy) > 3) continue;
+        const nx = fx + dx;
+        const ny = fy + dy;
+        if (nx >= 0 && ny >= 0 && nx < N && ny < N) s.smog[idx(nx, ny)] = true;
+      }
+    }
+  }
+
+  // 2. Calcul capacité de chaque case câble (doublée si adjacente à un Poste HT)
   s.powered.fill(false);
+  s.cableFlow.fill(0);
   s.overloaded.fill(false);
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const k = idx(x, y);
+      if (!isUnlocked(s, x, y)) continue;
+      const hasSub = neighborsUnlocked(s, x, y).some((nk) => s.cells[nk] === "substation");
+      s.cableCap[k] = baseCap * (hasSub ? 2.0 : 1.0);
+    }
+  }
 
+  // 3. Production individuelle + Demande des villes débloquées
+  const cityDemand = new Map<number, number>();
+  let unlockedCityTotal = 0;
+  for (const c of s.world.cities) {
+    if (c.zone <= s.unlockedZone) {
+      cityDemand.set(idx(c.x, c.y), c.baseDemand * demandMult);
+      unlockedCityTotal++;
+    }
+  }
+
+  const visited = new Uint8Array(N * N);
   let totalFossil = 0;
   let totalGreen = 0;
   let totalDemand = 0;
-  let totalCap = 0;
-  let fossilCount = 0;
+  let totalDelivered = 0;
+  let totalWasted = 0;
+  let totalCapMwh = 0;
   let poweredCityCount = 0;
   let overloadedCables = 0;
-  let totalCables = 0;
+  let upkeepBuildings = 0;
 
-  const cityDemandMap = new Map<number, number>();
-  for (const c of s.level.cities) {
-    cityDemandMap.set(idx(w, c.x, c.y), c.baseDemand * demandMult);
-  }
+  // 4. Parcours par composante connexe avec calcul réel de flux par câble (arbre BFS depuis les sources vers les villes)
+  for (let y0 = 0; y0 < N; y0++) {
+    for (let x0 = 0; x0 < N; x0++) {
+      const startK = idx(x0, y0);
+      if (!isUnlocked(s, x0, y0) || visited[startK] || !isConductive(s.cells[startK])) continue;
 
-  const components: number[][] = [];
-  for (let i = 0; i < w * h; i++) {
-    if (visited[i] || !isConductive(s.cells[i])) continue;
-    const comp: number[] = [];
-    const q = [i];
-    visited[i] = 1;
-    while (q.length > 0) {
-      const cur = q.pop()!;
-      comp.push(cur);
-      const cx = cur % w;
-      const cy = Math.floor(cur / w);
-      for (const [dx, dy] of N4) {
-        const nx = cx + dx;
-        const ny = cy + dy;
-        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-        const nk = idx(w, nx, ny);
-        if (!visited[nk] && isConductive(s.cells[nk])) {
-          visited[nk] = 1;
-          q.push(nk);
+      const comp: number[] = [];
+      const q = [startK];
+      visited[startK] = 1;
+      while (q.length > 0) {
+        const cur = q.pop()!;
+        comp.push(cur);
+        for (const nk of neighborsUnlocked(s, cur % N, Math.floor(cur / N))) {
+          if (!visited[nk] && isConductive(s.cells[nk])) {
+            visited[nk] = 1;
+            q.push(nk);
+          }
         }
       }
+
+      const sources: number[] = [];
+      const citiesInComp: number[] = [];
+      let compFossil = 0;
+      let compGreen = 0;
+      let compCapMwh = 0;
+
+      for (const k of comp) {
+        const c = s.cells[k];
+        const x = k % N;
+        const y = Math.floor(k / N);
+        const ter = s.world.terrain[k];
+        const nbs = neighborsUnlocked(s, x, y).map((nk) => s.cells[nk]);
+        const hasSub = nbs.includes("substation");
+
+        if (c === "fossil") {
+          compFossil += s.plantMwMap[k] || 14;
+          sources.push(k);
+        } else if (c === "solar") {
+          const zB = ter === "solar_zone" ? 1.6 : 1.0;
+          const smogPen = s.smog[k] ? 0.6 : 1.0;
+          const subB = hasSub ? 1.35 : 1.0;
+          const out = REWIRE_RULES.solarPeakMw * s.sunFactor * zB * smogPen * subB * solarTech;
+          compGreen += out;
+          if (out > 0.1) sources.push(k);
+          upkeepBuildings++;
+        } else if (c === "wind") {
+          const zB = ter === "wind_zone" ? 1.6 : 1.0;
+          const adjWinds = nbs.filter((n) => n === "wind").length;
+          const turb = Math.max(0.35, 1 - adjWinds * 0.35);
+          const subB = hasSub ? 1.35 : 1.0;
+          const out = REWIRE_RULES.windBaseMw * s.windFactor * zB * turb * subB * windTech;
+          compGreen += out;
+          if (out > 0.1) sources.push(k);
+          upkeepBuildings++;
+        } else if (c === "battery") {
+          compCapMwh += REWIRE_RULES.batteryCapMwh;
+          sources.push(k);
+          upkeepBuildings++;
+        } else if (c === "gravity_tower") {
+          compCapMwh += REWIRE_RULES.gravityTowerCapMwh;
+          sources.push(k);
+        } else if (c === "substation") {
+          upkeepBuildings++;
+        } else if (c === "city") {
+          citiesInComp.push(k);
+        }
+      }
+
+      const compRawProd = compFossil + compGreen + (citiesInComp.length > 0 ? s.dynamoBoostMw : 0);
+      const hasPower = compRawProd > 0.1 || compCapMwh > 0;
+
+      if (hasPower) {
+        for (const k of comp) s.powered[k] = true;
+        poweredCityCount += citiesInComp.length;
+      }
+
+      // Arbre BFS multi-source pour calculer le goulot de flux sur chaque câble menant aux villes
+      const parent = new Int32Array(N * N).fill(-1);
+      const seen = new Uint8Array(N * N);
+      const bfs: number[] = [];
+      for (const sk of sources) {
+        seen[sk] = 1;
+        bfs.push(sk);
+      }
+      for (let bi = 0; bi < bfs.length; bi++) {
+        const cur = bfs[bi];
+        for (const nk of neighborsUnlocked(s, cur % N, Math.floor(cur / N))) {
+          if (!seen[nk] && isConductive(s.cells[nk])) {
+            seen[nk] = 1;
+            parent[nk] = cur;
+            bfs.push(nk);
+          }
+        }
+      }
+
+      // On remonte la demande de chaque ville le long des câbles jusqu'aux sources
+      let compDemand = 0;
+      const rawLoad = new Map<number, number>();
+      for (const ck of citiesInComp) {
+        const dem = cityDemand.get(ck) ?? 8;
+        compDemand += dem;
+        let cur = parent[ck];
+        while (cur !== -1) {
+          if (s.cells[cur] === "cable") {
+            rawLoad.set(cur, (rawLoad.get(cur) ?? 0) + dem);
+          }
+          cur = parent[cur];
+        }
+      }
+
+      // Si un câble dépasse sa capacité MW (goulot !), il sature et limite le courant livré en aval
+      let bottleneckFactor = 1.0;
+      for (const [ck, load] of rawLoad) {
+        s.cableFlow[ck] = load;
+        const cap = s.cableCap[ck];
+        if (load > cap) {
+          s.overloaded[ck] = true;
+          overloadedCables++;
+          bottleneckFactor = Math.min(bottleneckFactor, cap / load);
+        }
+      }
+
+      const maxDeliverableByGrid = compDemand * bottleneckFactor;
+      const deliveredHere = hasPower ? Math.min(maxDeliverableByGrid, compRawProd) : 0;
+      if (compDemand > maxDeliverableByGrid) {
+        totalWasted += compDemand - maxDeliverableByGrid;
+      }
+
+      totalFossil += compFossil;
+      totalGreen += compGreen;
+      totalDemand += compDemand;
+      totalDelivered += deliveredHere;
+      totalCapMwh += compCapMwh;
     }
-    components.push(comp);
   }
 
-  for (const comp of components) {
-    let compFossil = 0;
-    let compGreen = 0;
-    let compCap = 0;
-    let compSubstations = 0;
-    const compCables: number[] = [];
-    const compCities: number[] = [];
-
-    for (const k of comp) {
-      const c = s.cells[k];
-      const ter = s.level.terrain[k];
-      const nb = neighborsOf(s, k);
-      const hasSubstation = nb.includes("substation");
-
-      if (c === "fossil") {
-        compFossil += REWIRE_RULES.fossilOutputMw;
-        fossilCount++;
-      } else if (c === "solar") {
-        const zoneBonus = ter === "solar_zone" ? 1.5 : 1.0;
-        const batBonus = nb.includes("battery") || nb.includes("gravity_tower") ? 1.2 : 1.0;
-        const subBonus = hasSubstation ? 1.25 : 1.0;
-        compGreen += REWIRE_RULES.solarPeakMw * s.sunFactor * zoneBonus * batBonus * subBonus * solarTech;
-      } else if (c === "wind") {
-        const zoneBonus = ter === "wind_zone" ? 1.5 : 1.0;
-        const adjWinds = nb.filter((n) => n === "wind").length;
-        const turbulence = adjWinds > 0 ? Math.max(0.5, 1 - adjWinds * 0.25) : 1.0;
-        const subBonus = hasSubstation ? 1.25 : 1.0;
-        compGreen += REWIRE_RULES.windBaseMw * s.windFactor * zoneBonus * turbulence * subBonus * windTech;
-      } else if (c === "battery") {
-        compCap += REWIRE_RULES.batteryCapMwh;
-      } else if (c === "gravity_tower") {
-        compCap += REWIRE_RULES.gravityTowerCapMwh;
-      } else if (c === "substation") {
-        compSubstations++;
-      } else if (c === "cable") {
-        compCables.push(k);
-      } else if (c === "city") {
-        compCities.push(k);
-      }
-    }
-
-    const compProd = compFossil + compGreen;
-    // Vérification surcharge de ligne : si un réseau pousse beaucoup de MW sur trop peu de câbles/postes
-    const effectiveLineCap = lineCap * (1 + compSubstations * 0.45);
-    const loadPerPath = compCables.length > 0 ? compProd / Math.max(1, compCables.length * 0.22) : 0;
-    const isOverloaded = compProd > effectiveLineCap && loadPerPath > effectiveLineCap * 1.15;
-
-    if (isOverloaded) {
-      for (const ck of compCables) {
-        s.overloaded[ck] = true;
-        overloadedCables++;
-      }
-      // Perte par effet Joule sur réseau surchargé
-      compGreen *= 0.78;
-      compFossil *= 0.85;
-    }
-    totalCables += compCables.length;
-
-    const hasSource = compFossil + compGreen > 0.1 || compCap > 0;
-    if (hasSource) {
-      for (const k of comp) s.powered[k] = true;
-      poweredCityCount += compCities.length;
-    }
-
-    totalFossil += compFossil;
-    totalGreen += compGreen;
-    totalCap += compCap;
-    for (const ck of compCities) totalDemand += cityDemandMap.get(ck) ?? 8;
-  }
-
-  for (const [ck, dem] of cityDemandMap) {
+  // Ajoute la demande des villes non encore reliées
+  for (const [ck, dem] of cityDemand) {
     if (!s.powered[ck]) totalDemand += dem;
   }
 
   s.fossilMw = totalFossil;
   s.greenMw = totalGreen;
   s.demandMw = totalDemand;
-  s.storageCapMwh = totalCap;
-  s.storageMwh = Math.min(s.storageMwh, totalCap);
-  s.fossilRemaining = fossilCount;
+  s.storageCapMwh = totalCapMwh;
+  s.storageMwh = Math.min(s.storageMwh, totalCapMwh);
+  s.unlockedCities = unlockedCityTotal;
   s.poweredCities = poweredCityCount;
-  s.overloadRatio = totalCables > 0 ? overloadedCables / totalCables : 0;
+  s.fossilRemaining = activeFossils.length;
+  s.overloadedCables = overloadedCables;
+  s.wastedMw = totalWasted;
 
-  const rawProd = totalFossil + totalGreen;
-  const balance = rawProd - totalDemand;
+  // Charge / Décharge du stockage
+  const rawTotal = totalFossil + totalGreen + s.dynamoBoostMw;
   const flywheelMult = s.modifiers.flywheels ? 1.85 : 1.0;
-  let effectiveProd = rawProd;
+  let effectiveDelivered = totalDelivered;
 
   if (dt > 0) {
-    if (balance >= 0 && totalCap > 0) {
-      const chargeMw = Math.min(balance, REWIRE_RULES.batteryRateMw * flywheelMult);
-      s.storageMwh = Math.min(totalCap, s.storageMwh + chargeMw * (dt / 3.6));
-    } else if (balance < 0 && s.storageMwh > 0) {
-      const neededMw = -balance;
-      const maxDeliverMw = Math.min(neededMw, REWIRE_RULES.batteryRateMw * flywheelMult);
-      const maxEnergyMwh = maxDeliverMw * (dt / 3.6);
-      const drawn = Math.min(s.storageMwh, maxEnergyMwh);
+    const surplus = rawTotal - totalDemand;
+    if (surplus > 0 && totalCapMwh > 0) {
+      const chargeMw = Math.min(surplus, REWIRE_RULES.batteryRateMw * flywheelMult);
+      s.storageMwh = Math.min(totalCapMwh, s.storageMwh + chargeMw * (dt / 3.6));
+    } else if (effectiveDelivered < totalDemand && s.storageMwh > 0 && overloadedCables === 0) {
+      const gap = totalDemand - effectiveDelivered;
+      const maxRate = Math.min(gap, REWIRE_RULES.batteryRateMw * flywheelMult);
+      const drawn = Math.min(s.storageMwh, maxRate * (dt / 3.6));
       s.storageMwh -= drawn;
-      effectiveProd += drawn / (dt / 3.6);
+      effectiveDelivered += drawn / (dt / 3.6);
     }
   }
 
-  s.totalProdMw = effectiveProd;
-  const denom = totalFossil + totalGreen;
-  s.greenShare = denom > 0.01 ? totalGreen / denom : s.fossilRemaining === 0 && s.storageMwh > 0 ? 1 : 0;
+  s.deliveredMw = effectiveDelivered;
+  const prodDenom = totalFossil + totalGreen;
+  s.greenShare = prodDenom > 0.01 ? totalGreen / prodDenom : s.fossilRemaining === 0 && s.storageMwh > 0 ? 1 : 0;
 
-  const allCitiesConnected = poweredCityCount === s.level.cities.length;
-  const deficitRatio = totalDemand > 0 ? Math.max(0, (totalDemand - effectiveProd) / totalDemand) : 0;
-
-  // Revenus incrémentaux (MW verts rapportent beaucoup plus, centrales fossiles paient une taxe carbone)
-  const smartMult = 1 + s.upgrades.smartgrid * 0.4;
-  const greenIncome = Math.min(totalDemand, totalGreen) * REWIRE_RULES.baseRevenuePerMw * 1.45 * smartMult;
-  const fossilIncome = Math.min(totalDemand, totalFossil) * REWIRE_RULES.baseRevenuePerMw * 0.5;
-  const carbonTax = fossilCount * REWIRE_RULES.fossilTaxPerSec;
-  const netRate = allCitiesConnected && deficitRatio <= 0.05 ? Math.max(0.3, (greenIncome + fossilIncome - carbonTax) * s.prestigeMult) : 0;
+  // Revenus nets (uniquement sur l'électricité RÉELLEMENT livrée aux villes !)
+  const smartMult = 1 + s.upgrades.smartgrid * 0.35;
+  const greenDelivered = effectiveDelivered * s.greenShare;
+  const fossilDelivered = effectiveDelivered * (1 - s.greenShare);
+  const grossRev =
+    greenDelivered * REWIRE_RULES.basePricePerMwGreen * smartMult +
+    fossilDelivered * REWIRE_RULES.basePricePerMwFossil;
+  const costs = s.fossilRemaining * REWIRE_RULES.fossilTaxPerSec + upkeepBuildings * REWIRE_RULES.buildingUpkeepPerSec;
+  const netRate = grossRev - costs;
   s.incomeRate = netRate;
 
+  // Stabilité & Fréquence (blackout réel si déficit ou goulot sévère ou villes déconnectées)
+  const deficitRatio = totalDemand > 0 ? Math.max(0, (totalDemand - effectiveDelivered) / totalDemand) : 0;
+
   if (dt > 0) {
-    const overloadDrain = s.overloadRatio > 0.35 ? 3.5 : 0;
-    if (!allCitiesConnected || deficitRatio > 0.05) {
-      const penalty = (!allCitiesConnected ? 0.55 : deficitRatio) * REWIRE_RULES.stabilityDrainPerSec + overloadDrain;
+    s.credits = Math.max(0, s.credits + netRate * dt);
+    const overloadPenalty = overloadedCables > 0 ? 4.5 : 0;
+
+    if (deficitRatio > 0.08 || overloadedCables > 0) {
+      const drain = deficitRatio * REWIRE_RULES.stabilityDrainPerSec + overloadPenalty;
       const damp = s.modifiers.flywheels ? 0.65 : 1.0;
-      s.stability = Math.max(0, s.stability - penalty * damp * dt);
-      s.frequencyHz = Math.max(47.2, 50 - (100 - s.stability) * 0.025);
+      s.stability = Math.max(0, s.stability - drain * damp * dt);
+      s.frequencyHz = Math.max(47.0, 50 - (100 - s.stability) * 0.028);
     } else {
-      const rec = REWIRE_RULES.stabilityRecoverPerSec * (s.modifiers.flywheels ? 1.5 : 1.0) - overloadDrain;
-      s.stability = Math.max(0, Math.min(100, s.stability + rec * dt));
+      const rec = REWIRE_RULES.stabilityRecoverPerSec * (s.modifiers.flywheels ? 1.45 : 1.0);
+      s.stability = Math.min(100, s.stability + rec * dt);
       s.frequencyHz = Math.min(50, 50 - (100 - s.stability) * 0.015);
-      s.credits += netRate * dt;
     }
 
+    // Renaturation uniquement sur les cases débloquées hors smog
     const mossMult = 1 + s.upgrades.biomoss * 0.8;
     const cleanDrive =
-      s.fossilRemaining === 0 && allCitiesConnected && s.stability > 50
+      s.fossilRemaining === 0 && s.poweredCities === s.unlockedCities && s.stability > 40
         ? 1.0 * mossMult
-        : Math.max(0, (s.greenShare - 0.5) * 0.55 * mossMult);
+        : Math.max(0, (s.greenShare - 0.55) * 0.45 * mossMult);
 
     let greenSum = 0;
-    for (let i = 0; i < w * h; i++) {
-      if (s.level.terrain[i] === "rubble") continue;
-      const x = i % w;
-      const y = Math.floor(i / w);
-      let polluted = false;
-      for (let j = 0; j < w * h; j++) {
-        if (s.cells[j] === "fossil") {
-          const fx = j % w;
-          const fy = Math.floor(j / w);
-          if (Math.abs(fx - x) + Math.abs(fy - y) <= 3) {
-            polluted = true;
-            break;
-          }
+    let countPlayable = 0;
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < N; x++) {
+        if (!isUnlocked(s, x, y)) continue;
+        const k = idx(x, y);
+        if (s.world.terrain[k] === "rubble") continue;
+        countPlayable++;
+        if (s.smog[k]) {
+          s.green[k] = Math.max(0, s.green[k] - 0.14 * dt);
+        } else if (cleanDrive > 0) {
+          s.green[k] = Math.min(1, s.green[k] + cleanDrive * REWIRE_RULES.renatureRatePerSec * dt);
         }
+        greenSum += s.green[k];
       }
-      if (polluted) {
-        s.green[i] = Math.max(0, s.green[i] - 0.12 * dt);
-      } else if (cleanDrive > 0 && (s.powered[i] || s.fossilRemaining === 0)) {
-        s.green[i] = Math.min(1, s.green[i] + cleanDrive * REWIRE_RULES.renatureRatePerSec * dt);
-      }
-      greenSum += s.green[i];
     }
-    const playableCells = s.level.terrain.filter((t) => t !== "rubble").length;
-    s.renature = playableCells > 0 ? greenSum / playableCells : 0;
+    s.renature = countPlayable > 0 ? greenSum / countPlayable : 0;
 
     if (s.stability <= 0) {
       s.phase = "blackout";
-      s.message = "Blackout ! Développez votre stockage, vos postes HT et vos améliorations avant de couper les centrales.";
-    } else if (s.fossilRemaining === 0 && allCitiesConnected && s.renature >= REWIRE_RULES.victoryRenature) {
+      s.message = "Blackout ! Un goulot de câbles ou un manque de stockage nocturne a fait décrocher le réseau.";
+    } else if (
+      s.unlockedZone === ZONES.length &&
+      s.fossilRemaining === 0 &&
+      s.poweredCities === s.unlockedCities &&
+      s.renature >= 0.9
+    ) {
       s.phase = "won";
-      s.message = `Secteur ${s.sector} renaturé à 100 % ! Passez au Secteur ${s.sector + 1} (+25 % prestige).`;
+      s.message = "Victoire totale ! Les 5 zones (23×23) sont 100 % renouvelables et renaturées.";
     }
   }
 }

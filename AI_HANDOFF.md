@@ -50,6 +50,16 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-27 09:36] · Antigravity (Gemini 4 Neon)
+- **Branche :** `feat/rewire-v03-expanding-world`
+- **Objectif de la session :** Refonte totale de **REWIRE en v0.3** : monde persistant qui **s'agrandit au fil de la progression (`7×7 → 11×11 → 15×15 → 19×19 → 23×23`)** et vraie difficulté stratégique (impossible à terminer en 1 min).
+- **Ce qui a été fait :**
+  - `src/rewire/content.ts` + `src/rewire/level.ts` : génération d'un monde brutaliste complet `23×23` découpé en 5 zones concentriques (`ZONES`), avec un 2e quartier non relié dès la Zone 1 et de nouvelles centrales/quartiers révélés à chaque extension.
+  - `src/rewire/sim.ts` : calcul réel du flux MW par case de câble (`cableFlow` / `cableCap`, goulot à 18 MW qui sature et perd l'excédent), smog autour des centrales actives (`−40 %` solaire), dynamo manuelle avec jauge de surchauffe anti-spam, entretien des bâtiments, revenus uniquement sur l'électricité livrée, bouton d'extension débloqué après nettoyage + renaturation `≥ 75 %` + coût (`220 / 700 / 2 000 / 5 500 cr.`).
+  - `src/rewire/render.ts` + `src/rewire/main.ts` + `src/components/RewireApp.astro` : caméra qui dézoome dynamiquement à chaque extension avec 1 case de brouillard autour laissant deviner la prochaine zone, goulots rouges, halo de smog, barre de chauffe dynamo et bouton d'extension de carte.
+  - `scripts/rewire-check.ts` : vérifie 40 mondes `23×23`, la surchauffe dynamo, le blackout si inactif en Zone 1 et l'extension Zone 1 → Zone 2.
+- **Vérifications exécutées :** `npm run game:check`, `npm run build` (20 pages), `npm run audit:seo` (0 erreur, 0 avertissement).
+
 ### [2026-11-27 09:25] · Antigravity (Gemini 4 Neon)
 - **Branche :** `feat/rewire-playable-prototype` + `feat/rewire-v02-incremental-grid`
 - **Objectif de la session :** Créer le prototype jouable de **REWIRE** sur `/jouer/rewire/`, puis suite au playtest utilisateur (« trop facile, fini en 1 min en spammant ») le refondre en **v0.2 : jeu incrémental (Cookie Clicker) × optimisation de réseau électrique**.
