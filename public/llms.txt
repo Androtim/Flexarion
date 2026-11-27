@@ -23,6 +23,7 @@
 ## Nouveau Jeu en Développement : REWIRE
 - **Type :** Simulation électrique & renaturation sur cartes procédurales (100 % électricité verte, brutalisme → vivant)
 - **Format :** Co-construit avec la communauté via une série de Reels interactifs (Instagram, TikTok, YouTube Shorts)
+- **Prototype jouable (v0.1) :** https://flexarion.alwaysdata.net/jouer/rewire/
 - **Page dédiée :** https://flexarion.alwaysdata.net/jeux/rewire/
 
 ## Pages Principales

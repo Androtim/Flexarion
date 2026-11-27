@@ -1,0 +1,57 @@
+{{Infobox Jeu vidéo
+ | titre             = REWIRE
+ | image             = 
+ | légende           = 
+ | développeur       = [[Flexarion]]
+ | éditeur           = Flexarion
+ | concepteur        = Vladislav Dumont, Timothée Béghin, Leny Rossines
+ | date de sortie    = En développement (annoncé le {{date-|24 novembre 2026}})
+ | genre             = [[Jeu de simulation|Simulation]], [[jeu de gestion]], [[jeu de réflexion|puzzle]]
+ | mode de jeu       = [[Solo (jeu vidéo)|Solo]]
+ | plate-forme       = [[Navigateur web]]
+ | langue            = Français
+ | site web          = {{URL|https://flexarion.alwaysdata.net/jeux/rewire/}}
+}}
+
+'''''REWIRE''''' (sous-titré ''Recâblez le réseau. Libérez le béton.'') est un [[jeu vidéo]] indépendant de simulation et de gestion en développement chez le studio étudiant français [[Flexarion]], annoncé le {{date-|24 novembre 2026}}<ref name="rewire">{{Lien web |langue=fr |titre=REWIRE : jeu d'électricité verte par Flexarion Studio |url=https://flexarion.alwaysdata.net/jeux/rewire/ |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+Deuxième projet du studio après ''[[Veridia 2140]]'', ''REWIRE'' est strictement centré sur la transition d'une infrastructure électrique [[Architecture brutaliste|brutaliste]] et polluante vers un réseau d'[[électricité]] 100 % renouvelable sur des cartes générées de façon procédurale<ref name="devlog7">{{Lien web |langue=fr |titre=Devlog #7 : Après Veridia 2140, Flexarion lance REWIRE |url=https://flexarion.alwaysdata.net/devlogs/annonce-rewire-electricite-verte/ |date=24 novembre 2026 |site=flexarion.alwaysdata.net |consulté le=24 novembre 2026}}.</ref>.
+
+== Concept et univers ==
+Conçu par le collectif aixois Flexarion (Timothée Béghin, Vladislav Dumont et Leny Rossines), ''REWIRE'' repose sur un contraste visuel et systémique entre un héritage industriel brutaliste — blocs de béton brut, cheminées fumantes, lignes électriques rigides et sols dégradés — et une reconquête écologique progressive<ref name="rewire" />.
+
+Contrairement à ''Veridia 2140'', qui place la gestion de l'eau au cœur de son fonctionnement, ''REWIRE'' écarte la ressource hydrique pour concentrer l'ensemble de la simulation sur les flux électriques et la réhabilitation des infrastructures existantes<ref name="devlog7" />.
+
+== Système de jeu ==
+Le jeu associe deux familles de mécaniques inspirées des jeux de logistique industrielle (à la manière de ''[[Factorio]]'') et de restauration environnementale (à la manière de ''[[Terra Nil]]'')<ref name="devlog7" /> :
+* '''Gestion du réseau électrique :''' le joueur déploie des sources d'énergie renouvelable intermittentes ([[énergie solaire]], [[énergie éolienne]], [[géothermie]]), trace des lignes et des nœuds à capacité limitée, gère le stockage d'énergie et absorbe les pics de charge pour éviter les pannes généralisées (''blackouts'')<ref name="rewire" /> ;
+* '''Réhabilitation et renaturation :''' plutôt que de raser systématiquement le passé industriel, les anciennes centrales et tours brutalistes peuvent être converties ; à mesure que la part d'électricité propre augmente et que les émissions diminuent, la végétation reconquiert les sols et le béton<ref name="rewire" /> ;
+* '''Génération procédurale :''' chaque carte industrielle est générée de manière procédurale, renouvelant la disposition des centrales fossiles, des zones dégradées et des contraintes de réseau<ref name="rewire" />.
+
+== Développement participatif ==
+Annoncé après l'aboutissement de la version 0.4 de ''Veridia 2140'', ''REWIRE'' est développé de manière ouverte à travers une série de courtes vidéos verticales (Reels sur [[Instagram]], [[TikTok]] et [[YouTube Shorts]])<ref name="devlog7" />.
+
+Le premier épisode pilote propose un vote communautaire entre deux mécaniques de stockage électrique : la reconversion des tours brutalistes en stockage gravitaire (option A) ou la construction de volants d'inertie géants pour absorber les pics de charge (option B). Pour les épisodes suivants, le studio adopte un principe de co-conception ouverte où le commentaire le plus aimé par les spectateurs sur les réseaux sociaux détermine directement la mécanique ajoutée au jeu<ref name="rewire" /><ref name="devlog7" />.
+
+== Notes et références ==
+{{Références}}
+
+== Voir aussi ==
+=== Articles connexes ===
+* [[Flexarion]]
+* [[Veridia 2140]]
+* [[Architecture brutaliste]]
+* [[Transition énergétique]]
+
+=== Liens externes ===
+* {{Site officiel|https://flexarion.alwaysdata.net/jeux/rewire/}}
+* [https://flexarion.alwaysdata.net/devlogs/annonce-rewire-electricite-verte/ Devlog #7 : annonce officielle de ''REWIRE'']
+* [https://github.com/Androtim/Flexarion Dépôt GitHub de Flexarion]
+
+{{Portail|jeu vidéo|science-fiction|énergie}}
+
+[[Catégorie:Jeu vidéo en développement]]
+[[Catégorie:Jeu de gestion]]
+[[Catégorie:Jeu vidéo indépendant]]
+[[Catégorie:Jeu par navigateur]]
+[[Catégorie:Jeu vidéo développé en France]]

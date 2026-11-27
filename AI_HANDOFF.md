@@ -50,6 +50,17 @@ Chaque agent IA intervenant sur ce projet (depuis n'importe quel PC ou outil) do
 
 ## Historique des Interventions IA
 
+### [2026-11-27 09:10] · Antigravity (Gemini 4 Neon)
+- **Branche :** `feat/rewire-playable-prototype`
+- **Objectif de la session :** Créer un premier prototype jouable de **REWIRE** (v0.1) sur `/jouer/rewire/` pour que les visiteurs puissent tester le concept (100 % électricité, cartes procédurales, brutalisme → renaturation, modificateurs du Vote Épisode 1) et générer des clics/engagement.
+- **Ce qui a été fait :**
+  - `src/rewire/` (`content.ts`, `level.ts`, `sim.ts`, `render.ts`, `main.ts`) : moteur complet en TypeScript + Canvas 2D (génération procédurale 14×10 avec 2 centrales brutalistes, 3 quartiers, zones solaires/vent, cycle jour/nuit, soleil/vent/pics du soir, BFS électrique, stockage MWh, fréquence Hz, blackout, reconversion en tour gravitaire, renaturation visuelle case par case, modificateurs Option A / Option B testables en direct).
+  - `src/components/RewireApp.astro` + `src/pages/jouer/rewire.astro` : page dédiée `/jouer/rewire/` (schéma `VideoGame`, prise en main rapide, FAQ).
+  - `scripts/rewire-check.ts` ajouté à `npm run game:check` : teste 100 cartes procédurales, le blackout sans renouvelable et la victoire 100 % verte.
+  - Liens « Jouer au prototype » ajoutés sur `/jeux/rewire/`, `/` (bloc REWIRE), pied de page et `public/llms.txt`.
+- **Vérifications exécutées :** `npm run game:check`, `npm run build` (20 pages), `npm run audit:seo` (0 erreur, 0 avertissement).
+- **À faire ensuite :** soumettre `https://flexarion.alwaysdata.net/jouer/rewire/` dans Search Console ; intégrer le top commentaire gagnant de la communauté dans la v0.2.
+
 ### [2026-11-24 15:45] · Antigravity (Gemini 4 Neon)
 - **Branche :** `feat/rewire-launch-and-reels`
 - **Objectif de la session :** Lancer officiellement le deuxième jeu de Flexarion (**REWIRE**, 100 % électricité verte, brutalisme → renaturation, cartes procédurales, co-construit en Reels) sur le site et mettre en place un workflow vidéo réutilisable pour les épisodes de votes communautaires.

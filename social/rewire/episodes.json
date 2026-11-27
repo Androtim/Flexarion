@@ -10,28 +10,32 @@
         "start": 0,
         "end": 4.5,
         "lines": ["Débrancher cette usine", "sans blackout ?"],
-        "sub": "Transformer le béton en énergie verte"
+        "sub": "Transformer le béton en énergie verte",
+        "narration": "Et si on devait débrancher cette usine polluante, sans plonger toute la ville dans le noir ?"
       },
       {
         "type": "split_concept",
         "start": 4.5,
         "end": 12.5,
         "lines": ["Factorio × Terra Nil", "100 % Électricité"],
-        "sub": "Nouveau jeu Flexarion · Cartes procédurales"
+        "sub": "Nouveau jeu Flexarion · Cartes procédurales",
+        "narration": "On est Flexarion, un petit studio indépendant, et on lance notre nouveau jeu : REWIRE. Un mix entre Factorio et Terra Nil, cent pour cent centré sur l'électricité, sur des cartes procédurales."
       },
       {
         "type": "grid_stabilize",
         "start": 12.5,
         "end": 22.5,
         "lines": ["Gérer l'intermittence", "= libérer le béton"],
-        "sub": "Solaire, éolien, stockage et renaturation"
+        "sub": "Solaire, éolien, stockage et renaturation",
+        "narration": "Le défi : remplacer le béton brutaliste par du renouvelable, gérer les pics de charge, éviter le blackout, et voir la nature reprendre ses droits."
       },
       {
         "type": "vote_ab",
         "start": 22.5,
         "end": 32.5,
         "lines": ["Votez en commentaire", "A ou B ?"],
-        "sub": "Votre choix entre dans le jeu",
+        "sub": "Ép. 2+ : le top commentaire liké gagne !",
+        "narration": "Et ce jeu, on le construit avec vous. Pour l'épisode un, votez en commentaire : A, reconvertir les tours brutalistes en stockage gravitaire, ou B, des volants d'inertie géants. Pour la suite, c'est le commentaire le plus liké qui entre dans le jeu !",
         "optionA": {
           "label": "OPTION A",
           "title": "Stockage gravitaire",
@@ -49,7 +53,8 @@
         "end": 36,
         "title": "REWIRE",
         "sub": "Recâblez le réseau. Libérez le béton.",
-        "url": "flexarion.alwaysdata.net/jeux/rewire/"
+        "url": "flexarion.alwaysdata.net/jeux/rewire/",
+        "narration": "REWIRE, par Flexarion."
       }
     ]
   }
