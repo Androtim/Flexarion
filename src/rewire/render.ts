@@ -1,7 +1,7 @@
-// Rendu Canvas 2D de REWIRE : dalles brutalistes qui verdissent, câbles électriques animés, éoliennes et fumées.
+// Rendu Canvas 2D de REWIRE v0.3 : caméra dynamique qui dézoome à chaque extension (7×7 → 23×23), smog, goulots rouges.
+import { WORLD_SIZE, ZONES, type ToolId } from "./content";
 import { idx } from "./level";
-import type { CellKind, RewireState } from "./sim";
-import type { ToolId } from "./content";
+import { isUnlocked, unlockedBounds, type CellKind, type RewireState } from "./sim";
 
 function mixColor(a: [number, number, number], b: [number, number, number], t: number): string {
   const c = Math.max(0, Math.min(1, t));
@@ -12,64 +12,99 @@ function mixColor(a: [number, number, number], b: [number, number, number], t: n
 }
 
 const CONCRETE_RGB: [number, number, number] = [48, 55, 61];
-const GREEN_RGB: [number, number, number] = [34, 114, 80];
-const SOLAR_RGB: [number, number, number] = [66, 63, 52];
-const WIND_RGB: [number, number, number] = [44, 62, 72];
+const GREEN_RGB: [number, number, number] = [34, 118, 82];
+const SOLAR_RGB: [number, number, number] = [74, 68, 52];
+const WIND_RGB: [number, number, number] = [42, 66, 78];
+
+export interface ViewTransform {
+  minX: number;
+  minY: number;
+  span: number;
+  cellSize: number;
+}
+
+export function computeView(s: RewireState, canvasCssSize: number): ViewTransform {
+  const b = unlockedBounds(s.unlockedZone);
+  // Affiche 1 case de brouillard autour pour laisser deviner la prochaine extension
+  const margin = s.unlockedZone < ZONES.length ? 1 : 0;
+  const minX = Math.max(0, b.min - margin);
+  const maxX = Math.min(WORLD_SIZE - 1, b.max + margin);
+  const span = maxX - minX + 1;
+  const cellSize = canvasCssSize / span;
+  return { minX, minY: minX, span, cellSize };
+}
 
 export function renderRewire(
   ctx: CanvasRenderingContext2D,
   s: RewireState,
-  cellSize: number,
+  view: ViewTransform,
   hover: { x: number; y: number } | null,
   activeTool: ToolId,
   animT: number,
 ): void {
-  const { w, h, terrain } = s.level;
-  const W = w * cellSize;
-  const H = h * cellSize;
+  const { minX, minY, span, cellSize } = view;
+  const sizePx = span * cellSize;
+  ctx.clearRect(0, 0, sizePx, sizePx);
 
-  ctx.clearRect(0, 0, W, H);
+  const cityLookup = new Map<number, string>();
+  for (const c of s.world.cities) cityLookup.set(idx(c.x, c.y), c.name);
 
-  // 1. Dalles de terrain (béton brutaliste → renaturation verte)
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const k = idx(w, x, y);
-      const ter = terrain[k];
+  // 1. Dalles de terrain (débloquées + bordure verrouillée dans le brouillard)
+  for (let vy = 0; vy < span; vy++) {
+    for (let vx = 0; vx < span; vx++) {
+      const wx = minX + vx;
+      const wy = minY + vy;
+      const k = idx(wx, wy);
+      const px = vx * cellSize;
+      const py = vy * cellSize;
+      const unlocked = isUnlocked(s, wx, wy);
+
+      if (!unlocked) {
+        ctx.fillStyle = "#12181D";
+        ctx.fillRect(px, py, cellSize, cellSize);
+        ctx.strokeStyle = "rgba(255,255,255,0.04)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px + 0.5, py + 0.5, cellSize - 1, cellSize - 1);
+        // Silhouette discrète des structures qui attendent dans le brouillard
+        if (s.cells[k] === "city" || s.cells[k] === "fossil") {
+          ctx.fillStyle = s.cells[k] === "fossil" ? "rgba(196, 83, 47, 0.25)" : "rgba(42, 212, 165, 0.2)";
+          ctx.fillRect(px + cellSize * 0.22, py + cellSize * 0.22, cellSize * 0.56, cellSize * 0.56);
+        }
+        continue;
+      }
+
+      const ter = s.world.terrain[k];
       const g = s.green[k];
-      const px = x * cellSize;
-      const py = y * cellSize;
 
       if (ter === "rubble") {
-        ctx.fillStyle = "#20252A";
+        ctx.fillStyle = "#1E2429";
         ctx.fillRect(px, py, cellSize, cellSize);
-        ctx.fillStyle = "#3A4248";
-        ctx.fillRect(px + cellSize * 0.14, py + cellSize * 0.18, cellSize * 0.38, cellSize * 0.34);
-        ctx.fillRect(px + cellSize * 0.46, py + cellSize * 0.46, cellSize * 0.4, cellSize * 0.36);
+        ctx.fillStyle = "#3A4249";
+        ctx.fillRect(px + cellSize * 0.14, py + cellSize * 0.18, cellSize * 0.36, cellSize * 0.34);
+        ctx.fillRect(px + cellSize * 0.48, py + cellSize * 0.46, cellSize * 0.38, cellSize * 0.36);
       } else {
         const base = ter === "solar_zone" ? SOLAR_RGB : ter === "wind_zone" ? WIND_RGB : CONCRETE_RGB;
         ctx.fillStyle = mixColor(base, GREEN_RGB, g);
         ctx.fillRect(px, py, cellSize, cellSize);
 
-        // Motifs zones spéciales (subtils)
-        if (ter === "solar_zone" && g < 0.7) {
-          ctx.strokeStyle = "rgba(240, 164, 58, 0.25)";
+        if (ter === "solar_zone" && g < 0.75) {
+          ctx.strokeStyle = "rgba(240, 164, 58, 0.35)";
           ctx.lineWidth = 1.5;
-          ctx.strokeRect(px + 5, py + 5, cellSize - 10, cellSize - 10);
+          ctx.strokeRect(px + 4, py + 4, cellSize - 8, cellSize - 8);
         } else if (ter === "wind_zone") {
-          ctx.strokeStyle = "rgba(130, 224, 214, 0.28)";
+          ctx.strokeStyle = "rgba(130, 224, 214, 0.35)";
           ctx.lineWidth = 1.5;
-          const shift = ((animT * 18) % cellSize) * 0.4;
+          const shift = ((animT * 18) % cellSize) * 0.35;
           ctx.beginPath();
-          ctx.moveTo(px + 6 + shift * 0.3, py + cellSize * 0.35);
+          ctx.moveTo(px + 5 + shift * 0.3, py + cellSize * 0.35);
           ctx.lineTo(px + cellSize * 0.65 + shift * 0.3, py + cellSize * 0.35);
           ctx.moveTo(px + cellSize * 0.25 + shift * 0.3, py + cellSize * 0.68);
-          ctx.lineTo(px + cellSize * 0.85 + shift * 0.3, py + cellSize * 0.68);
+          ctx.lineTo(px + cellSize * 0.82 + shift * 0.3, py + cellSize * 0.68);
           ctx.stroke();
         }
 
-        // Touffes d'herbe / petits arbres quand la renaturation progresse
         if (g > 0.35 && s.cells[k] === "empty") {
-          const r = (g - 0.3) * cellSize * 0.26;
+          const r = (g - 0.3) * cellSize * 0.24;
           ctx.fillStyle = "#349E6F";
           ctx.beginPath();
           ctx.arc(px + cellSize * 0.32, py + cellSize * 0.62, r, 0, Math.PI * 2);
@@ -78,83 +113,104 @@ export function renderRewire(
         }
       }
 
-      // Jointure béton subtile
+      // Halo de smog autour des centrales brutalistes actives
+      if (s.smog[k]) {
+        ctx.fillStyle = "rgba(92, 68, 56, 0.28)";
+        ctx.fillRect(px, py, cellSize, cellSize);
+      }
+
       ctx.strokeStyle = "rgba(15, 22, 26, 0.45)";
       ctx.lineWidth = 1;
       ctx.strokeRect(px + 0.5, py + 0.5, cellSize - 1, cellSize - 1);
     }
   }
 
-  // 2. Câbles électriques connectés
+  // Bordure lumineuse de la zone actuellement débloquée
+  if (s.unlockedZone < ZONES.length) {
+    const b = unlockedBounds(s.unlockedZone);
+    const bx = (b.min - minX) * cellSize;
+    const by = (b.min - minY) * cellSize;
+    const bw = b.span * cellSize;
+    ctx.strokeStyle = "rgba(42, 212, 165, 0.45)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 6]);
+    ctx.strokeRect(bx + 1, by + 1, bw - 2, bw - 2);
+    ctx.setLineDash([]);
+  }
+
+  // 2. Câbles électriques connectés (avec goulots rouges surchargés)
   const wireColor =
     s.stability < 45 ? "#E85D3F" : s.greenShare >= 0.75 ? "#2AD4A5" : s.greenShare >= 0.35 ? "#F0A43A" : "#C97846";
 
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const k = idx(w, x, y);
+  for (let vy = 0; vy < span; vy++) {
+    for (let vx = 0; vx < span; vx++) {
+      const wx = minX + vx;
+      const wy = minY + vy;
+      if (!isUnlocked(s, wx, wy)) continue;
+      const k = idx(wx, wy);
       if (s.cells[k] === "empty") continue;
-      const cx = (x + 0.5) * cellSize;
-      const cy = (y + 0.5) * cellSize;
+
+      const cx = (vx + 0.5) * cellSize;
+      const cy = (vy + 0.5) * cellSize;
       const on = s.powered[k];
 
-      const dirs: Array<[number, number]> = [
+      for (const [dx, dy] of [
         [1, 0],
         [0, 1],
-      ];
-      for (const [dx, dy] of dirs) {
-        const nx = x + dx;
-        const ny = y + dy;
-        if (nx >= w || ny >= h) continue;
-        const nk = idx(w, nx, ny);
+      ]) {
+        const nx = wx + dx;
+        const ny = wy + dy;
+        if (nx >= WORLD_SIZE || ny >= WORLD_SIZE || !isUnlocked(s, nx, ny)) continue;
+        const nk = idx(nx, ny);
         if (s.cells[nk] === "empty") continue;
 
         const hot = s.overloaded[k] || s.overloaded[nk];
-        ctx.strokeStyle = !on ? "#56616B" : hot ? "#FF4D3D" : wireColor;
-        ctx.lineWidth = Math.max(3, cellSize * (hot ? 0.14 : 0.11));
+        ctx.strokeStyle = !on ? "#56616B" : hot ? "#FF3B30" : wireColor;
+        ctx.lineWidth = Math.max(2.5, cellSize * (hot ? 0.16 : 0.11));
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(cx, cy);
-        ctx.lineTo((nx + 0.5) * cellSize, (ny + 0.5) * cellSize);
+        ctx.lineTo((vx + dx + 0.5) * cellSize, (vy + dy + 0.5) * cellSize);
         ctx.stroke();
 
         if (on) {
-          ctx.strokeStyle = "rgba(255,255,255,0.65)";
+          ctx.strokeStyle = hot ? "#FFE066" : "rgba(255,255,255,0.65)";
           ctx.lineWidth = 1.5;
-          ctx.setLineDash([4, 10]);
-          ctx.lineDashOffset = -animT * 36;
+          ctx.setLineDash([4, 9]);
+          ctx.lineDashOffset = -animT * (hot ? 65 : 34);
           ctx.beginPath();
           ctx.moveTo(cx, cy);
-          ctx.lineTo((nx + 0.5) * cellSize, (ny + 0.5) * cellSize);
+          ctx.lineTo((vx + dx + 0.5) * cellSize, (vy + dy + 0.5) * cellSize);
           ctx.stroke();
           ctx.setLineDash([]);
         }
       }
 
       if (s.cells[k] === "cable") {
-        ctx.fillStyle = on ? wireColor : "#6B7680";
+        ctx.fillStyle = s.overloaded[k] ? "#FF3B30" : on ? wireColor : "#6B7680";
         ctx.beginPath();
-        ctx.arc(cx, cy, Math.max(3, cellSize * 0.1), 0, Math.PI * 2);
+        ctx.arc(cx, cy, Math.max(2.5, cellSize * 0.1), 0, Math.PI * 2);
         ctx.fill();
       }
     }
   }
 
-  // 3. Bâtiments (centrales brutalistes, tours gravitaires, solaire, éoliennes, stockages, quartiers)
-  const cityLookup = new Map<number, string>();
-  for (const c of s.level.cities) cityLookup.set(idx(w, c.x, c.y), c.name);
-
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const k = idx(w, x, y);
+  // 3. Bâtiments
+  for (let vy = 0; vy < span; vy++) {
+    for (let vx = 0; vx < span; vx++) {
+      const wx = minX + vx;
+      const wy = minY + vy;
+      if (!isUnlocked(s, wx, wy)) continue;
+      const k = idx(wx, wy);
       const kind: CellKind = s.cells[k];
       if (kind === "empty" || kind === "cable") continue;
-      const px = x * cellSize;
-      const py = y * cellSize;
+
+      const px = vx * cellSize;
+      const py = vy * cellSize;
       const cx = px + cellSize * 0.5;
       const cy = py + cellSize * 0.5;
 
       if (kind === "fossil") {
-        // Bloc brutaliste massif + cheminée fumante
         ctx.fillStyle = "#5B636A";
         ctx.fillRect(px + cellSize * 0.1, py + cellSize * 0.28, cellSize * 0.8, cellSize * 0.62);
         ctx.fillStyle = "#768088";
@@ -163,19 +219,16 @@ export function renderRewire(
         ctx.fillRect(px + cellSize * 0.2, py + cellSize * 0.08, cellSize * 0.18, cellSize * 0.24);
         ctx.fillStyle = "#C4532F";
         ctx.fillRect(px + cellSize * 0.2, py + cellSize * 0.08, cellSize * 0.18, cellSize * 0.07);
-        // Fumée animée
-        const puff = (animT * 14 + x * 7) % 18;
+        const puff = (animT * 14 + wx * 7) % 18;
         ctx.fillStyle = `rgba(140, 148, 156, ${Math.max(0.1, 0.55 - puff / 32)})`;
         ctx.beginPath();
         ctx.arc(px + cellSize * 0.3 + puff * 0.35, py + cellSize * 0.04 - puff * 0.35, cellSize * 0.14, 0, Math.PI * 2);
         ctx.fill();
-        // Voyant rouge
         ctx.fillStyle = "#E85D3F";
         ctx.beginPath();
         ctx.arc(px + cellSize * 0.72, py + cellSize * 0.56, cellSize * 0.09, 0, Math.PI * 2);
         ctx.fill();
       } else if (kind === "gravity_tower") {
-        // Tour brutaliste reconvertie en stockage gravitaire + mousse verte
         ctx.fillStyle = "#626E73";
         ctx.fillRect(px + cellSize * 0.16, py + cellSize * 0.12, cellSize * 0.68, cellSize * 0.78);
         const fillRatio = s.storageCapMwh > 0 ? s.storageMwh / s.storageCapMwh : 0;
@@ -190,26 +243,16 @@ export function renderRewire(
         ctx.arc(px + cellSize * 0.78, py + cellSize * 0.84, cellSize * 0.12, 0, Math.PI * 2);
         ctx.fill();
       } else if (kind === "solar") {
-        // Panneau solaire incliné
         ctx.fillStyle = s.sunFactor > 0.15 ? "#17566B" : "#1B2C36";
-        ctx.strokeStyle = s.sunFactor > 0.15 ? "#F0A43A" : "#4E626E";
+        ctx.strokeStyle = s.smog[k] ? "#9E6B4F" : s.sunFactor > 0.15 ? "#F0A43A" : "#4E626E";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(px + cellSize * 0.14, py + cellSize * 0.22, cellSize * 0.72, cellSize * 0.56, 5);
+        ctx.roundRect(px + cellSize * 0.14, py + cellSize * 0.22, cellSize * 0.72, cellSize * 0.56, 4);
         ctx.fill();
         ctx.stroke();
-        ctx.strokeStyle = "rgba(42, 212, 165, 0.5)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(cx, py + cellSize * 0.22);
-        ctx.lineTo(cx, py + cellSize * 0.78);
-        ctx.moveTo(px + cellSize * 0.14, cy);
-        ctx.lineTo(px + cellSize * 0.86, cy);
-        ctx.stroke();
       } else if (kind === "wind") {
-        // Éolienne à pales tournantes
         ctx.strokeStyle = "#EFE6D2";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = Math.max(2, cellSize * 0.06);
         ctx.beginPath();
         ctx.moveTo(cx, py + cellSize * 0.88);
         ctx.lineTo(cx, cy - cellSize * 0.06);
@@ -219,7 +262,7 @@ export function renderRewire(
         ctx.translate(cx, cy - cellSize * 0.06);
         ctx.rotate(rot);
         ctx.strokeStyle = "#EFE6D2";
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = Math.max(1.8, cellSize * 0.05);
         for (let b = 0; b < 3; b++) {
           ctx.rotate((Math.PI * 2) / 3);
           ctx.beginPath();
@@ -230,31 +273,27 @@ export function renderRewire(
         ctx.restore();
         ctx.fillStyle = "#2AD4A5";
         ctx.beginPath();
-        ctx.arc(cx, cy - cellSize * 0.06, 4, 0, Math.PI * 2);
+        ctx.arc(cx, cy - cellSize * 0.06, Math.max(2.5, cellSize * 0.08), 0, Math.PI * 2);
         ctx.fill();
       } else if (kind === "battery") {
-        // Module de stockage électrique
         const fillRatio = s.storageCapMwh > 0 ? s.storageMwh / s.storageCapMwh : 0;
         ctx.fillStyle = "#182D35";
         ctx.strokeStyle = s.modifiers.flywheels ? "#F0A43A" : "#2AD4A5";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(px + cellSize * 0.18, py + cellSize * 0.18, cellSize * 0.64, cellSize * 0.64, 6);
+        ctx.roundRect(px + cellSize * 0.18, py + cellSize * 0.18, cellSize * 0.64, cellSize * 0.64, 5);
         ctx.fill();
         ctx.stroke();
-        const barW = cellSize * 0.48 * fillRatio;
         ctx.fillStyle = "#2AD4A5";
-        ctx.fillRect(px + cellSize * 0.26, py + cellSize * 0.36, barW, cellSize * 0.28);
+        ctx.fillRect(px + cellSize * 0.26, py + cellSize * 0.36, cellSize * 0.48 * fillRatio, cellSize * 0.28);
       } else if (kind === "substation") {
-        // Poste HT / Transformateur (booste les sources adjacentes et soulage les lignes)
         ctx.fillStyle = "#1E303A";
         ctx.strokeStyle = "#F0A43A";
-        ctx.lineWidth = 2.2;
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(px + cellSize * 0.12, py + cellSize * 0.14, cellSize * 0.76, cellSize * 0.72, 7);
+        ctx.roundRect(px + cellSize * 0.12, py + cellSize * 0.14, cellSize * 0.76, cellSize * 0.72, 6);
         ctx.fill();
         ctx.stroke();
-        // Éclair doré central
         ctx.fillStyle = "#F0A43A";
         ctx.beginPath();
         ctx.moveTo(cx + cellSize * 0.04, py + cellSize * 0.24);
@@ -266,16 +305,14 @@ export function renderRewire(
         ctx.closePath();
         ctx.fill();
       } else if (kind === "city") {
-        // Quartier / sous-station urbaine
         const ok = s.powered[k] && s.stability > 25;
         ctx.fillStyle = ok ? "#1E4641" : "#4A2320";
-        ctx.strokeStyle = ok ? "#2AD4A5" : "#E85D3F";
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = ok ? "#2AD4A5" : "#FF4D3D";
+        ctx.lineWidth = 2.2;
         ctx.beginPath();
-        ctx.roundRect(px + cellSize * 0.08, py + cellSize * 0.1, cellSize * 0.84, cellSize * 0.8, 8);
+        ctx.roundRect(px + cellSize * 0.08, py + cellSize * 0.1, cellSize * 0.84, cellSize * 0.8, 6);
         ctx.fill();
         ctx.stroke();
-        // Fenêtres allumées
         ctx.fillStyle = ok ? "#F0A43A" : "#77413C";
         for (let r = 0; r < 2; r++) {
           for (let c = 0; c < 3; c++) {
@@ -283,27 +320,27 @@ export function renderRewire(
           }
         }
         const label = cityLookup.get(k);
-        if (label && cellSize >= 36) {
-          ctx.font = `600 ${Math.max(10, Math.round(cellSize * 0.21))}px "DM Sans", sans-serif`;
+        if (label && cellSize >= 32) {
+          ctx.font = `600 ${Math.max(9, Math.round(cellSize * 0.19))}px "DM Sans", sans-serif`;
           ctx.textAlign = "center";
           ctx.fillStyle = "#FBF7EE";
-          ctx.fillText(label, cx, py + cellSize + 12);
+          ctx.fillText(label, cx, py + cellSize - 2);
         }
       }
     }
   }
 
-  // 4. Voile nuit subtil
-  const nightDarkness = (1 - s.sunFactor) * 0.22;
+  // 4. Voile nuit
+  const nightDarkness = (1 - Math.min(1, s.sunFactor)) * 0.24;
   if (nightDarkness > 0.01) {
     ctx.fillStyle = `rgba(9, 18, 28, ${nightDarkness.toFixed(3)})`;
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(0, 0, sizePx, sizePx);
   }
 
-  // 5. Aperçu au survol
-  if (hover && s.phase === "play") {
-    const px = hover.x * cellSize;
-    const py = hover.y * cellSize;
+  // 5. Survol
+  if (hover && s.phase === "play" && isUnlocked(s, hover.x, hover.y)) {
+    const px = (hover.x - minX) * cellSize;
+    const py = (hover.y - minY) * cellSize;
     ctx.strokeStyle = activeTool === "erase" ? "#E85D3F" : activeTool === "convert" ? "#F0A43A" : "#2AD4A5";
     ctx.lineWidth = 2.5;
     ctx.strokeRect(px + 2, py + 2, cellSize - 4, cellSize - 4);

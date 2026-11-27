@@ -1,20 +1,22 @@
-// Contrôleur navigateur de REWIRE v0.2 (clicker actif, coûts croissants, tech tree, secteurs & prestige).
-import { TECH_UPGRADES, TOOLS, type ToolId, type UpgradeId } from "./content";
+// Contrôleur navigateur REWIRE v0.3 : monde qui s'agrandit (7×7 → 23×23), dynamo à surchauffe, goulots et tech tree.
+import { TECH_UPGRADES, TOOLS, ZONES, type ToolId, type UpgradeId } from "./content";
 import {
   applyTool,
   buyUpgrade,
-  clickGenerate,
-  clickPower,
+  canExpand,
+  clickDynamo,
   currentToolCost,
+  dynamoStats,
+  expandWorld,
   newRewireGame,
   tickRewire,
   upgradeCost,
   type Modifiers,
   type RewireState,
 } from "./sim";
-import { renderRewire } from "./render";
+import { computeView, renderRewire, type ViewTransform } from "./render";
 
-const BEST_SECTOR_KEY = "rewire-v02-best-sector";
+const BEST_ZONE_KEY = "rewire-v03-best-zone";
 
 export function bootRewire(root: HTMLElement): void {
   const canvas = root.querySelector<HTMLCanvasElement>("[data-canvas]");
@@ -24,39 +26,36 @@ export function bootRewire(root: HTMLElement): void {
 
   const mods: Modifiers = { gravityTowers: true, flywheels: false };
   let seed = Math.floor(Date.now() % 100000);
-  let sector = 1;
-  let state: RewireState = newRewireGame(seed, mods, sector);
-  let activeTool: ToolId = "solar";
+  let state: RewireState = newRewireGame(seed, mods);
+  let activeTool: ToolId = "cable";
   let paused = false;
   let speed = 1;
-  let cellSize = 48;
+  let canvasCssSize = 540;
+  let view: ViewTransform = computeView(state, canvasCssSize);
   let hover: { x: number; y: number } | null = null;
   let dragging = false;
-  let bestSector = Number(localStorage.getItem(BEST_SECTOR_KEY) || "1");
-  let winRecorded = false;
+  let bestZone = Number(localStorage.getItem(BEST_ZONE_KEY) || "1");
 
   const $ = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel);
 
   function resize() {
     const wrap = canvas!.parentElement!;
-    const avail = Math.max(300, wrap.clientWidth - 4);
-    cellSize = Math.max(24, Math.min(54, Math.floor(avail / state.level.w)));
+    canvasCssSize = Math.max(300, Math.min(620, wrap.clientWidth - 8));
     const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const W = state.level.w * cellSize;
-    const H = state.level.h * cellSize + 18;
-    canvas!.width = Math.round(W * dpr);
-    canvas!.height = Math.round(H * dpr);
-    canvas!.style.width = `${W}px`;
-    canvas!.style.height = `${H}px`;
+    canvas!.width = Math.round(canvasCssSize * dpr);
+    canvas!.height = Math.round(canvasCssSize * dpr);
+    canvas!.style.width = `${canvasCssSize}px`;
+    canvas!.style.height = `${canvasCssSize}px`;
     ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    view = computeView(state, canvasCssSize);
   }
 
   function cellAt(ev: PointerEvent): { x: number; y: number } | null {
     const r = canvas!.getBoundingClientRect();
-    const x = Math.floor((ev.clientX - r.left) / cellSize);
-    const y = Math.floor((ev.clientY - r.top) / cellSize);
-    if (x < 0 || y < 0 || x >= state.level.w || y >= state.level.h) return null;
-    return { x, y };
+    const vx = Math.floor((ev.clientX - r.left) / view.cellSize);
+    const vy = Math.floor((ev.clientY - r.top) / view.cellSize);
+    if (vx < 0 || vy < 0 || vx >= view.span || vy >= view.span) return null;
+    return { x: view.minX + vx, y: view.minY + vy };
   }
 
   canvas.addEventListener("pointerdown", (ev) => {
@@ -75,32 +74,42 @@ export function bootRewire(root: HTMLElement): void {
   canvas.addEventListener("pointermove", (ev) => {
     const pos = cellAt(ev);
     hover = pos;
-    if (dragging && pos) {
-      applyTool(state, activeTool, pos.x, pos.y);
-    }
+    if (dragging && pos) applyTool(state, activeTool, pos.x, pos.y);
   });
 
   window.addEventListener("pointerup", () => {
     dragging = false;
   });
-
   canvas.addEventListener("pointerleave", () => {
     hover = null;
   });
-
   canvas.addEventListener("contextmenu", (ev) => ev.preventDefault());
 
-  // Bouton Cookie Clicker ⚡ Générer du courant
-  const btnGenerate = $<HTMLButtonElement>("[data-generate]");
-  btnGenerate?.addEventListener("click", () => {
-    clickGenerate(state);
-    btnGenerate.classList.remove("rw-pop");
-    void btnGenerate.offsetWidth;
-    btnGenerate.classList.add("rw-pop");
+  // Dynamo d'urgence (clicker avec jauge de surchauffe)
+  const btnDynamo = $<HTMLButtonElement>("[data-generate]");
+  btnDynamo?.addEventListener("click", () => {
+    if (clickDynamo(state)) {
+      btnDynamo.classList.remove("rw-pop");
+      void btnDynamo.offsetWidth;
+      btnDynamo.classList.add("rw-pop");
+    }
     updateUi();
   });
 
-  // Sélection d'outil
+  // Bouton Étendre la carte (agrandit le monde 7×7 → 11×11 → 15×15 → 19×19 → 23×23)
+  const btnExpand = $<HTMLButtonElement>("[data-expand]");
+  btnExpand?.addEventListener("click", () => {
+    if (expandWorld(state)) {
+      view = computeView(state, canvasCssSize);
+      if (state.unlockedZone > bestZone) {
+        bestZone = state.unlockedZone;
+        localStorage.setItem(BEST_ZONE_KEY, String(bestZone));
+      }
+    }
+    updateUi();
+  });
+
+  // Outils
   const toolButtons = root.querySelectorAll<HTMLButtonElement>("[data-tool]");
   const syncToolButtons = () => {
     toolButtons.forEach((b) => {
@@ -115,16 +124,14 @@ export function bootRewire(root: HTMLElement): void {
   });
   syncToolButtons();
 
-  // Améliorations incrémentales (Tech Tree)
+  // Améliorations Tech Tree
   root.querySelectorAll<HTMLButtonElement>("[data-upgrade]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const id = btn.dataset.upgrade as UpgradeId;
-      buyUpgrade(state, id);
+      buyUpgrade(state, btn.dataset.upgrade as UpgradeId);
       updateUi();
     });
   });
 
-  // Contrôles temps / nouvelle carte / secteur suivant
   const btnPause = $<HTMLButtonElement>("[data-pause]");
   btnPause?.addEventListener("click", () => {
     paused = !paused;
@@ -137,30 +144,20 @@ export function bootRewire(root: HTMLElement): void {
     btnSpeed.textContent = speed === 2 ? "×2 actif" : "×2";
   });
 
-  const startFresh = (newSeed: number, newSector: number) => {
+  const startFresh = (newSeed: number) => {
     seed = newSeed;
-    sector = newSector;
-    state = newRewireGame(seed, mods, sector);
+    state = newRewireGame(seed, mods);
     paused = false;
-    winRecorded = false;
     if (btnPause) btnPause.textContent = "Pause";
     resize();
     updateUi();
   };
 
   root.querySelectorAll<HTMLButtonElement>("[data-new-map]").forEach((b) =>
-    b.addEventListener("click", () => startFresh(Math.floor(Math.random() * 900000) + 1000, 1)),
+    b.addEventListener("click", () => startFresh(Math.floor(Math.random() * 900000) + 1000)),
   );
+  $<HTMLButtonElement>("[data-retry]")?.addEventListener("click", () => startFresh(seed));
 
-  $<HTMLButtonElement>("[data-next-sector]")?.addEventListener("click", () => {
-    startFresh(seed, sector + 1);
-  });
-
-  $<HTMLButtonElement>("[data-retry]")?.addEventListener("click", () => {
-    startFresh(seed, sector);
-  });
-
-  // Modificateurs Vote Épisode 1
   const chkA = $<HTMLInputElement>("[data-mod-gravity]");
   const chkB = $<HTMLInputElement>("[data-mod-flywheels]");
   chkA?.addEventListener("change", () => {
@@ -180,27 +177,44 @@ export function bootRewire(root: HTMLElement): void {
       if (el) el.textContent = val;
     };
 
-    const cp = clickPower(state);
-    setText("[data-click-gain]", `+${cp.credits} cr. · +${cp.mwh.toFixed(0)} MWh`);
-    setText("[data-prod]", `${state.totalProdMw.toFixed(0)} / ${state.demandMw.toFixed(0)} MW`);
+    const ds = dynamoStats(state);
+    setText(
+      "[data-click-gain]",
+      state.dynamoLocked ? "🔥 Surchauffe…" : `+${ds.credits} cr. · +${ds.mw} MW`,
+    );
+    const heatBar = $("[data-heat-fill]");
+    if (heatBar) heatBar.style.width = `${Math.round(state.dynamoHeat)}%`;
+    if (btnDynamo) btnDynamo.disabled = state.dynamoLocked || state.phase !== "play";
+
+    const curZ = ZONES[state.unlockedZone - 1];
+    const spanLabel = `${curZ.radius * 2 + 1}×${curZ.radius * 2 + 1}`;
+    setText("[data-prod]", `${state.deliveredMw.toFixed(0)} / ${state.demandMw.toFixed(0)} MW`);
     setText("[data-storage]", `${state.storageMwh.toFixed(0)} / ${state.storageCapMwh} MWh`);
     setText("[data-green]", `${Math.round(state.greenShare * 100)} %`);
     setText("[data-renature]", `${Math.round(state.renature * 100)} %`);
     setText("[data-freq]", `${state.frequencyHz.toFixed(1)} Hz`);
-    setText("[data-credits]", `${Math.floor(state.credits)} cr. (+${state.incomeRate.toFixed(1)}/s)`);
+    const rateSign = state.incomeRate >= 0 ? "+" : "";
+    setText("[data-credits]", `${Math.floor(state.credits)} cr. (${rateSign}${state.incomeRate.toFixed(1)}/s)`);
     setText("[data-clock]", `${hh}:${mm}`);
-    setText("[data-fossil]", `${state.fossilRemaining}`);
-    setText("[data-sector]", `Secteur ${state.sector} (×${state.prestigeMult.toFixed(2)})`);
-    setText("[data-best-sector]", `${bestSector}`);
+    setText("[data-zone]", `Zone ${state.unlockedZone}/5 (${spanLabel})`);
+    setText("[data-cities]", `${state.poweredCities}/${state.unlockedCities} · ${state.fossilRemaining} foss.`);
+    setText("[data-best-zone]", `${bestZone}/5`);
     setText("[data-msg]", state.message);
 
-    // Bannière d'événement actif ou d'alerte surcharge
+    // Bouton d'extension de la carte
+    const exp = canExpand(state);
+    if (btnExpand) {
+      btnExpand.disabled = !exp.ok;
+      btnExpand.textContent = exp.ok ? `🗺️ ${exp.reason} (${exp.cost} cr.)` : `🔒 Extension : ${exp.reason}`;
+    }
+
+    // Bannière d'alerte goulot ou événement
     const evEl = $("[data-event-banner]");
     if (evEl) {
-      if (state.overloadRatio > 0.35) {
+      if (state.overloadedCables > 0) {
         evEl.hidden = false;
         evEl.dataset.tone = "danger";
-        evEl.textContent = "⚠ Surcharge de lignes ! Ajoutez des câbles parallèles, un Poste HT ou l'amélioration Supraconducteurs.";
+        evEl.textContent = `⚠ ${state.overloadedCables} câble(s) saturé(s) (${state.wastedMw.toFixed(0)} MW perdus) ! Ajoutez un chemin parallèle, un Poste HT ou Supraconducteurs.`;
       } else if (state.activeEvent) {
         evEl.hidden = false;
         evEl.dataset.tone = "event";
@@ -210,18 +224,14 @@ export function bootRewire(root: HTMLElement): void {
       }
     }
 
-    // Coûts dynamiques des outils
     for (const t of TOOLS) {
       const costEl = $(`[data-tool-cost="${t.id}"]`);
       const btn = $<HTMLButtonElement>(`[data-tool="${t.id}"]`);
       const c = currentToolCost(state, t.id);
       if (costEl) costEl.textContent = t.id === "erase" ? "50 %" : `${c} cr.`;
-      if (btn && t.id !== "erase") {
-        btn.dataset.afford = state.credits >= c ? "true" : "false";
-      }
+      if (btn && t.id !== "erase") btn.dataset.afford = state.credits >= c ? "true" : "false";
     }
 
-    // Coûts & niveaux des améliorations tech tree
     for (const u of TECH_UPGRADES) {
       const btn = $<HTMLButtonElement>(`[data-upgrade="${u.id}"]`);
       const lvl = state.upgrades[u.id];
@@ -233,31 +243,13 @@ export function bootRewire(root: HTMLElement): void {
       if (btn) btn.disabled = lvl >= u.maxLevel || state.credits < cost;
     }
 
-    // Overlay fin de partie
     const overlay = $("[data-end-overlay]");
-    const btnNext = $<HTMLButtonElement>("[data-next-sector]");
     if (overlay) {
       if (state.phase === "play") {
         overlay.hidden = true;
       } else {
         overlay.hidden = false;
-        if (state.phase === "won") {
-          if (!winRecorded) {
-            winRecorded = true;
-            if (state.sector + 1 > bestSector) {
-              bestSector = state.sector + 1;
-              localStorage.setItem(BEST_SECTOR_KEY, String(bestSector));
-              setText("[data-best-sector]", `${bestSector}`);
-            }
-          }
-          if (btnNext) btnNext.hidden = false;
-        } else if (btnNext) {
-          btnNext.hidden = true;
-        }
-        setText(
-          "[data-end-title]",
-          state.phase === "won" ? `Secteur ${state.sector} renaturé !` : "Blackout sur le secteur",
-        );
+        setText("[data-end-title]", state.phase === "won" ? "Monde 23×23 renaturé !" : "Blackout généralisé");
         setText("[data-end-desc]", state.message);
       }
     }
@@ -279,9 +271,9 @@ export function bootRewire(root: HTMLElement): void {
       animT += dt;
       tickRewire(state, dt);
     }
-    renderRewire(ctx!, state, cellSize, hover, activeTool, animT);
+    renderRewire(ctx!, state, view, hover, activeTool, animT);
     uiAccum += rawDt;
-    if (uiAccum >= 0.14) {
+    if (uiAccum >= 0.12) {
       uiAccum = 0;
       updateUi();
     }
